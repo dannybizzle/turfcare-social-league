@@ -1,0 +1,1 @@
+The frontend expects the existing Supabase tables and public SELECT policies created in the initial setup. Do not run a replacement schema blindly. The next database milestone is to add and test secure RPC functions and row-level security for score submissions, organizer operations, and invitation acceptance.
