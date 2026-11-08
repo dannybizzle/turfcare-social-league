@@ -163,4 +163,78 @@ $('signout').onclick=async()=>{await client.auth.signOut();await refreshAuth();s
 client.auth.onAuthStateChange(()=>refreshAuth());
 loadPublic().catch(e=>{$('standings').innerHTML='<div class="empty">Could not load league data. Check that the Supabase tables and public read policies are set up.</div>';console.error(e);});refreshAuth();
 </script>
-</body></html>
+<!-- PLAYER PASSWORD SETUP -->
+<div id="password-setup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fffaf0;padding:30px;border-radius:16px;width:100%;max-width:420px;color:#173d32;">
+    <h2>Welcome to the League!</h2>
+    <p>Choose a password to access your player account.</p>
+
+    <form id="password-setup-form">
+      <label for="new-player-password">New password</label>
+      <input id="new-player-password" type="password" minlength="8" required
+        placeholder="At least 8 characters"
+        style="display:block;width:100%;padding:12px;margin:8px 0 18px;box-sizing:border-box;">
+
+      <label for="confirm-player-password">Confirm password</label>
+      <input id="confirm-player-password" type="password" minlength="8" required
+        placeholder="Enter your password again"
+        style="display:block;width:100%;padding:12px;margin:8px 0 18px;box-sizing:border-box;">
+
+      <button type="submit" style="width:100%;padding:13px;background:#245b49;color:white;border:0;border-radius:8px;cursor:pointer;">
+        Set My Password
+      </button>
+    </form>
+
+    <p id="password-setup-message" style="margin-top:15px;"></p>
+  </div>
+</div>
+
+<script>
+const passwordSetup = $('password-setup');
+
+function showPasswordSetup() {
+  passwordSetup.style.display = 'flex';
+}
+
+client.auth.onAuthStateChange((event, session) => {
+  const linkType = window.location.hash;
+
+  if (
+    event === 'PASSWORD_RECOVERY' ||
+    (session && /type=(invite|recovery)/i.test(linkType))
+  ) {
+    showPasswordSetup();
+  }
+});
+
+$('password-setup-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const password = $('new-player-password').value;
+  const confirmation = $('confirm-player-password').value;
+  const message = $('password-setup-message');
+
+  if (password !== confirmation) {
+    message.textContent = 'Your passwords do not match.';
+    return;
+  }
+
+  message.textContent = 'Saving your password...';
+
+  const { error } = await client.auth.updateUser({ password });
+
+  if (error) {
+    message.textContent = error.message;
+    return;
+  }
+
+  message.textContent = 'Password saved! Welcome to the league.';
+  $('password-setup-form').reset();
+
+  setTimeout(() => {
+    passwordSetup.style.display = 'none';
+  }, 2500);
+});
+</script>
+</body>
+</html>
