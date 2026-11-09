@@ -22,8 +22,24 @@
 <section class="panel admin-form"><h3>Create a season</h3><label for="season-name">Season name</label><input id="season-name" placeholder="Season 1 – Fall 2026"><label for="season-start">Start date</label><input id="season-start" type="date"><label for="season-end">End date</label><input id="season-end" type="date"><button id="create-season">Create season</button><div class="notice">This creates the season record only. It does not publish any matchups.</div></section>
 <section class="panel admin-form"><h3>Random schedule generator</h3><label for="schedule-season">Choose season</label><select id="schedule-season" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit"></select><label for="deadline-time">Weekly deadline time</label><input id="deadline-time" type="time" value="23:59"><button id="preview-schedule">Generate schedule preview</button><div class="notice">The draw uses all registered player accounts, avoids repeat opponents until unique pairings are exhausted, and rotates byes fairly when the roster is odd. Each matchup gets three different disciplines.</div></section>
 </div><section class="panel" style="margin-top:16px">
-  <h3>Player Management</h3>
+<h3>Player Management</h3>
   <p class="muted">Manage league participation and administrator access.</p>
+
+  <div style="background:#edf2e9;padding:16px;border-radius:12px;margin:16px 0;">
+    <h4 style="margin:0 0 8px;color:var(--green);">Invite a New Player</h4>
+
+    <label for="invite-player-name">Player name</label>
+    <input id="invite-player-name" type="text" placeholder="Enter player's name">
+
+    <label for="invite-player-email">Player email</label>
+    <input id="invite-player-email" type="email" placeholder="player@example.com">
+
+    <button id="invite-player-button" type="button" style="margin-top:12px;">
+      Send Player Invitation
+    </button>
+
+    <div id="invite-player-message" class="notice" role="status"></div>
+  </div>
 
   <div id="player-management-list">
     Loading players...
@@ -151,7 +167,49 @@ $('player-management-list').addEventListener('click',async e=>{
 
   await loadPublic();
 });
+$('invite-player-button').onclick = async () => {
+  const name = $('invite-player-name').value.trim();
+  const email = $('invite-player-email').value.trim();
+  const message = $('invite-player-message');
+  const button = $('invite-player-button');
 
+  if (!name || !email) {
+    message.className = 'status error';
+    message.textContent = 'Please enter both the player name and email.';
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = 'Sending invitation...';
+  message.className = 'notice';
+  message.textContent = 'Please wait...';
+
+  try {
+    const { data, error } = await client.functions.invoke('invite-player', {
+      body: {
+        email: email,
+        display_name: name
+      }
+    });
+
+    if (error) throw error;
+
+    message.className = 'status';
+    message.textContent = `Invitation sent to ${email}.`;
+
+    $('invite-player-name').value = '';
+    $('invite-player-email').value = '';
+
+    await loadPublic();
+
+  } catch (error) {
+    message.className = 'status error';
+    message.textContent = error.message || 'Could not send invitation.';
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Send Player Invitation';
+  }
+};
 $('create-season').onclick=async()=>{const name=$('season-name').value.trim(),start=$('season-start').value,end=$('season-end').value;if(!name||!start||!end)return showAdminMessage('Enter a season name, start date, and end date.',true);if(end<start)return showAdminMessage('End date must be on or after start date.',true);const {data,error}=await client.from('seasons').insert({name,starts_on:start,ends_on:end,status:'upcoming'}).select().single();if(error)return showAdminMessage(error.message,true);seasons.push(data);$('season-name').value='';populateSeasonSelect();$('season-label').textContent=data.name;showAdminMessage('Season created successfully.');};
 function showAdminMessage(msg,error=false){$('admin-message').className=error?'status error':'status';$('admin-message').textContent=msg;}
 $('preview-schedule').onclick=()=>{try{const result=makeSchedule($('schedule-season').value);pendingSchedule=result.payload;const names=Object.fromEntries(result.players.map(p=>[p.id,p.display_name]));$('schedule-preview').innerHTML=Array.from({length:result.weeks},(_,i)=>{const rows=pendingSchedule.filter(x=>x.week_number===i+1),bye=result.byes.find(x=>x.week_number===i+1);return `<h4>Week ${i+1}</h4>${rows.length?`<table><thead><tr><th>Matchup</th><th>Three disciplines</th><th>Deadline</th></tr></thead><tbody>${rows.map(m=>`<tr><td>${esc(names[m.player1_id])} vs ${esc(names[m.player2_id])}</td><td>${m.disciplines.map(esc).join(', ')}</td><td>${new Date(m.deadline).toLocaleDateString()} ${new Date(m.deadline).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</td></tr>`).join('')}</tbody></table>`:''}${bye?`<div class="notice">Bye this week: <strong>${esc(names[bye.player_id])}</strong></div>`:''}`}).join('');$('schedule-summary').textContent=`${result.players.length} players · ${result.weeks} weeks · ${pendingSchedule.length} matchups · ${result.players.length%2?'Rotating bye weeks included and shown in the preview.':'No bye weeks.'} Preview only — nothing has been saved yet.`;$('schedule-preview-panel').classList.remove('hidden');showAdminMessage('');}catch(e){showAdminMessage(e.message,true);}};
