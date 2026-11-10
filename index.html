@@ -1,3 +1,131 @@
+
+Continued from
+Build Sports Club Website (13)
+
+Pasted text(4).txt
+Document
+
+I've taken your uploaded website code and prepared the next version of the Turfcare Social Games League.
+
+Version 2 files ready
+Your updated files
+Updated website — Version 2
+
+Complete HTML file, including the updated Admin Dashboard
+
+Download updated website
+
+Updated player-deletion function
+
+Corrects the public-key configuration and retains administrator security checks
+
+Download deletion function
+
+What's included
+Delete Player: Confirmation prompts, removal of associated league records, and a request to remove the login account.
+
+Transfer Ownership: The current owner can appoint a replacement and remain an administrator.
+
+Delete Season: Choose an existing season and permanently delete its matchups and results.
+
+Code fixes: Missing variable declarations, countdown timer cleanup, and more reliable administrator messages.
+
+I've checked the updated website's JavaScript syntax. The changes haven't yet been tested against your live Supabase database, so we'll test with disposable accounts before deleting real records.
+
+Let's install it
+We'll do this in the safest order: update the Supabase deletion function first, then replace index.html in GitHub.
+
+Your next step: Open Supabase → Edge Functions → delete-player → Code. Replace the existing code with the contents of the downloaded delete-player-edge-function.ts file, then deploy it.
+
+Tell me when the deployment succeeds. We'll move directly to installing the updated website.
+
+
+turfcare-social-league-v2.html
+HTML
+
+delete-player-edge-function.ts
+Code
+done
+Excellent! The updated delete-player function is deployed.
+
+Next step: Update your website in GitHub
+Open your Turfcare Social Games League GitHub repository.
+
+Click index.html.
+
+Click the pencil icon to edit the file.
+
+Press Ctrl + A to select all the existing code, then delete it.
+
+Open the updated file below, copy its entire contents, and paste them into GitHub.
+
+Download Turfcare Social Games League — Version 2
+
+6. Click Commit changes, then confirm the commit.
+
+GitHub should automatically trigger your Cloudflare deployment.
+
+Important: Keep the filename as index.html. Don't rename it to the downloaded filename.
+
+Once that's done, tell me "committed".
+
+Then we'll check the live Admin Dashboard and carefully test the new management features before using them on real players.
+
+
+turfcare-social-league-v2.html
+HTML
+it wont work
+No problem. We'll get it sorted without losing any of your existing work.
+
+The updated website file is still available here:
+
+Download Turfcare Social Games League — Version 2
+
+Where exactly is it failing?
+
+
+I can't download or open the file.
+
+I can't paste the code or commit it in GitHub.
+
+I committed it, but the website isn't working.
+We'll fix whichever step is causing trouble before moving forward.
+
+
+turfcare-social-league-v2.html
+HTML
+I can't download or open the Version 2 HTML file.
+
+Worked for 14s
+I've checked the file and created two alternative versions. The original HTML file is intact.
+
+Try this one first:
+
+Download Turfcare League Version 2 — ZIP
+
+Contains the complete updated website, already named index.html for GitHub.
+
+If the ZIP doesn't work, try the plain-text version.
+
+Once downloaded, extract the ZIP. You'll find index.html inside, which you can upload directly to GitHub.
+
+Can you download the ZIP file successfully? If not, we'll use another method that doesn't require downloading anything.
+
+
+turfcare-social-league-v2-code.txt
+Document
+text worked
+Perfect! Glad the text version worked.
+
+Now we'll get Version 2 onto your live website.
+
+Next step: Update GitHub
+1. Open your [Turfcare Social Games League repository
+
+
+
+
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -5,7 +133,7 @@
 <title>Turfcare Social Games League</title>
 <meta name="description" content="The Turfcare Social Games League — friendly competition for the crew.">
 <style>
-:root{--green:#173d32;--green2:#245b49;--lime:#c8d98b;--cream:#f5f3e9;--ink:#1d2924;--muted:#66736c;--line:#dce2d9;--white:#fff;--gold:#d7b56d}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}header{background:linear-gradient(120deg,#102c25,#245b49);color:white;padding:34px max(22px,calc((100vw - 1120px)/2));position:relative;overflow:hidden}header:after{content:'⛳';position:absolute;right:7%;top:-26px;font-size:150px;opacity:.13}nav{display:flex;align-items:center;justify-content:space-between;gap:16px;position:relative;z-index:1}.brand{font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.85rem}.pill{border:1px solid #ffffff66;border-radius:30px;padding:7px 13px;font-size:.82rem}.hero{padding:48px 0 35px;position:relative;z-index:1}.eyebrow{color:var(--lime);font-weight:700;text-transform:uppercase;letter-spacing:.14em;font-size:.75rem}.hero h1{font-size:clamp(2.2rem,5vw,4.2rem);line-height:1.02;max-width:700px;margin:10px 0}.hero p{max-width:610px;color:#e0e9e2;margin:14px 0 0}.wrap{max-width:1120px;margin:auto;padding:26px 22px 60px}.countdown{display:grid;grid-template-columns:1.4fr 2fr;gap:20px;background:var(--white);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:-2px;box-shadow:0 12px 30px #153a2b0d}.countdown h2{margin:0 0 4px;font-size:1.05rem}.muted{color:var(--muted)}.timer{display:flex;gap:12px;align-items:center;justify-content:flex-end}.timebox{background:#edf2e9;border-radius:12px;padding:10px 15px;text-align:center;min-width:68px}.timebox strong{display:block;font-size:1.45rem;color:var(--green);font-variant-numeric:tabular-nums}.timebox span{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:34px 0 14px}.section-head h2{margin:0;font-size:1.45rem;color:var(--green)}.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:20px}.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:20px;min-width:0}.panel h3{margin:0 0 12px;color:var(--green)}table{border-collapse:collapse;width:100%;font-size:.92rem}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}th{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}.discipline-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.discipline{background:#edf2e9;border-radius:12px;padding:14px 8px;text-align:center}.discipline .ico{font-size:1.5rem}.discipline strong{display:block;color:var(--green);font-size:.85rem}.discipline small{color:var(--muted)}.auth{display:flex;align-items:center;gap:8px}.button,button{border:0;border-radius:9px;padding:10px 15px;background:var(--green2);color:white;font-weight:700;cursor:pointer}.button.secondary,button.secondary{background:#edf2e9;color:var(--green)}input,select{padding:10px 12px;border:1px solid var(--line);border-radius:8px;width:100%;font:inherit}label{display:block;font-size:.82rem;font-weight:700;margin:10px 0 5px}.authbox{max-width:440px}.hidden{display:none!important}.status{padding:10px 12px;border-radius:9px;background:#edf2e9;color:var(--green);margin:10px 0}.error{background:#fbe9e6;color:#8b2d1d}.empty{color:var(--muted);padding:18px 0}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.admin-form{max-width:100%}.admin-form button{margin-top:12px}.preview{max-height:360px;overflow:auto}.notice{font-size:.88rem;color:var(--muted);margin:8px 0}.foot{color:var(--muted);font-size:.8rem;text-align:center;padding:24px}a{color:var(--green2)}@media(max-width:760px){.countdown,.grid,.admin-grid{grid-template-columns:1fr}.timer{justify-content:flex-start;flex-wrap:wrap}.discipline-grid{grid-template-columns:repeat(2,1fr)}nav{align-items:flex-start}.auth{flex-wrap:wrap}}
+:root{--green:#173d32;--green2:#245b49;--lime:#c8d98b;--cream:#f5f3e9;--ink:#1d2924;--muted:#66736c;--line:#dce2d9;--white:#fff;--gold:#d7b56d}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}header{background:linear-gradient(120deg,#102c25,#245b49);color:white;padding:34px max(22px,calc((100vw - 1120px)/2));position:relative;overflow:hidden}header:after{content:'⛳';position:absolute;right:7%;top:-26px;font-size:150px;opacity:.13}nav{display:flex;align-items:center;justify-content:space-between;gap:16px;position:relative;z-index:1}.brand{font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.85rem}.pill{border:1px solid #ffffff66;border-radius:30px;padding:7px 13px;font-size:.82rem}.hero{padding:48px 0 35px;position:relative;z-index:1}.eyebrow{color:var(--lime);font-weight:700;text-transform:uppercase;letter-spacing:.14em;font-size:.75rem}.hero h1{font-size:clamp(2.2rem,5vw,4.2rem);line-height:1.02;max-width:700px;margin:10px 0}.hero p{max-width:610px;color:#e0e9e2;margin:14px 0 0}.wrap{max-width:1120px;margin:auto;padding:26px 22px 60px}.countdown{display:grid;grid-template-columns:1.4fr 2fr;gap:20px;background:var(--white);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:-2px;box-shadow:0 12px 30px #153a2b0d}.countdown h2{margin:0 0 4px;font-size:1.05rem}.muted{color:var(--muted)}.timer{display:flex;gap:12px;align-items:center;justify-content:flex-end}.timebox{background:#edf2e9;border-radius:12px;padding:10px 15px;text-align:center;min-width:68px}.timebox strong{display:block;font-size:1.45rem;color:var(--green);font-variant-numeric:tabular-nums}.timebox span{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:34px 0 14px}.section-head h2{margin:0;font-size:1.45rem;color:var(--green)}.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:20px}.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:20px;min-width:0}.panel h3{margin:0 0 12px;color:var(--green)}table{border-collapse:collapse;width:100%;font-size:.92rem}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}th{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}.discipline-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.discipline{background:#edf2e9;border-radius:12px;padding:14px 8px;text-align:center}.discipline .ico{font-size:1.5rem}.discipline strong{display:block;color:var(--green);font-size:.85rem}.discipline small{color:var(--muted)}.auth{display:flex;align-items:center;gap:8px}.button,button{border:0;border-radius:9px;padding:10px 15px;background:var(--green2);color:white;font-weight:700;cursor:pointer}.button.secondary,button.secondary{background:#edf2e9;color:var(--green)}input,select{padding:10px 12px;border:1px solid var(--line);border-radius:8px;width:100%;font:inherit}label{display:block;font-size:.82rem;font-weight:700;margin:10px 0 5px}.authbox{max-width:440px}.hidden{display:none!important}.status{padding:10px 12px;border-radius:9px;background:#edf2e9;color:var(--green);margin:10px 0}.error{background:#fbe9e6;color:#8b2d1d}.empty{color:var(--muted);padding:18px 0}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.admin-form{max-width:100%}.admin-form button{margin-top:12px}.preview{max-height:360px;overflow:auto}.notice{font-size:.88rem;color:var(--muted);margin:8px 0}.danger{background:#a13b32!important;color:#fff!important}.action-buttons{display:flex;gap:6px;flex-wrap:wrap}.action-buttons button{padding:7px 10px;font-size:.8rem}.table-scroll{overflow-x:auto}.foot{color:var(--muted);font-size:.8rem;text-align:center;padding:24px}a{color:var(--green2)}@media(max-width:760px){.countdown,.grid,.admin-grid{grid-template-columns:1fr}.timer{justify-content:flex-start;flex-wrap:wrap}.discipline-grid{grid-template-columns:repeat(2,1fr)}nav{align-items:flex-start}.auth{flex-wrap:wrap}}
 </style>
 </head>
 <body>
@@ -19,9 +147,18 @@
 <section id="admin-area" class="hidden">
 <div class="section-head"><div><div class="eyebrow" style="color:var(--green2)">Organizer tools</div><h2>Administrator dashboard</h2></div><span class="muted">Admin access</span></div>
 <div class="admin-grid">
-<section class="panel admin-form"><h3>Create a season</h3><label for="season-name">Season name</label><input id="season-name" placeholder="Season 1 – Fall 2026"><label for="season-start">Start date</label><input id="season-start" type="date"><label for="season-end">End date</label><input id="season-end" type="date"><button id="create-season">Create season</button><div class="notice">This creates the season record only. It does not publish any matchups.</div></section>
+<section class="panel admin-form"><h3>Create a season</h3><label for="season-name">Season name</label><input id="season-name" placeholder="Season 1 – Fall 2026"><label for="season-start">Start date</label><input id="season-start" type="date"><label for="season-end">End date</label><input id="season-end" type="date"><button id="create-season">Create season</button><div id="create-season-message" class="notice" role="status"></div><div class="notice">This creates the season record only. It does not publish any matchups.</div></section>
 <section class="panel admin-form"><h3>Random schedule generator</h3><label for="schedule-season">Choose season</label><select id="schedule-season" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit"></select><label for="deadline-time">Weekly deadline time</label><input id="deadline-time" type="time" value="23:59"><button id="preview-schedule">Generate schedule preview</button><div class="notice">The draw uses all registered player accounts, avoids repeat opponents until unique pairings are exhausted, and rotates byes fairly when the roster is odd. Each matchup gets three different disciplines.</div></section>
-</div><section class="panel" style="margin-top:16px">
+</div>
+<section class="panel admin-form" style="margin-top:16px">
+<h3>Season Management</h3>
+<p class="muted">Remove a season and all its matchups and game results. This cannot be undone.</p>
+<label for="delete-season-select">Choose season to delete</label>
+<select id="delete-season-select"></select>
+<button id="delete-season-button" type="button" class="danger">Delete selected season</button>
+<div id="season-management-message" class="notice" role="status"></div>
+</section>
+<section class="panel" style="margin-top:16px">
 <h3>Player Management</h3>
   <p class="muted">Manage league participation and administrator access.</p>
 
@@ -41,7 +178,8 @@
     <div id="invite-player-message" class="notice" role="status"></div>
   </div>
 
-  <div id="player-management-list">
+  <p class="notice">Deleting a player permanently removes their account and every matchup involving them, including their opponents' results from those matchups. The League Owner cannot be deleted.</p>
+  <div id="player-management-list" class="table-scroll">
     Loading players...
   </div>
 
@@ -60,20 +198,46 @@ const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_K
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let profiles=[], matchups=[], games=[], seasons=[];
+let isAdmin=false, isOwner=false, pendingSchedule=null, countdownInterval=null;
 function showMessage(msg,error=false){$('auth-message').className=error?'status error':'status';$('auth-message').textContent=msg;}
 function renderStandings(){
  const rows=profiles.map(p=>{const mine=matchups.filter(m=>m.status==='completed' && (m.player1_id===p.id||m.player2_id===p.id));let wins=0,losses=0,gameWins=0;mine.forEach(m=>{const gs=games.filter(g=>g.matchup_id===m.id);let a=gs.filter(g=>g.winner_id===m.player1_id).length,b=gs.filter(g=>g.winner_id===m.player2_id).length;gameWins+=gs.filter(g=>g.winner_id===p.id).length;if((m.player1_id===p.id&&a>b)||(m.player2_id===p.id&&b>a))wins++;else losses++;});return {...p,wins,losses,gameWins};}).sort((a,b)=>b.wins-a.wins||b.gameWins-a.gameWins||a.display_name.localeCompare(b.display_name));
  $('standings').innerHTML=rows.length?`<table><thead><tr><th>#</th><th>Player</th><th class="num">W</th><th class="num">L</th><th class="num">Game wins</th></tr></thead><tbody>${rows.map((p,i)=>`<tr><td>${i+1}</td><td><strong>${esc(p.display_name)}</strong></td><td class="num">${p.wins}</td><td class="num">${p.losses}</td><td class="num">${p.gameWins}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Players will appear here once they have registered.</div>';
 }
 function renderMatchups(){const list=matchups.slice().sort((a,b)=>a.week_number-b.week_number);$('matchups').innerHTML=list.length?`<table><thead><tr><th>Week</th><th>Matchup</th><th>Deadline</th><th>Status</th></tr></thead><tbody>${list.map(m=>{const p1=profiles.find(p=>p.id===m.player1_id),p2=profiles.find(p=>p.id===m.player2_id);return `<tr><td>${m.week_number}</td><td>${esc(p1?.display_name||'TBD')} vs ${esc(p2?.display_name||'TBD')}</td><td>${m.deadline?new Date(m.deadline).toLocaleString():'—'}</td><td>${esc(m.status)}</td></tr>`}).join('')}</tbody></table>`:'<div class="empty">No matchups have been published yet.</div>';}
-function renderCountdown(){const pending=matchups.filter(m=>m.status==='scheduled'&&m.deadline).sort((a,b)=>new Date(a.deadline)-new Date(b.deadline))[0];if(!pending){$('deadline-label').textContent='No active weekly deadline is published.';return;}const d=new Date(pending.deadline);$('deadline-label').textContent='Week '+pending.week_number+' deadline · '+d.toLocaleString();const tick=()=>{let ms=Math.max(0,d-Date.now()),days=Math.floor(ms/86400000),hours=Math.floor(ms%86400000/3600000),mins=Math.floor(ms%3600000/60000),secs=Math.floor(ms%60000/1000);$('timer').innerHTML=[[days,'Days'],[hours,'Hours'],[mins,'Minutes'],[secs,'Seconds']].map(x=>`<div class="timebox"><strong>${String(x[0]).padStart(2,'0')}</strong><span>${x[1]}</span></div>`).join('');};tick();setInterval(tick,1000);}
-async function loadPublic(){const [p,m,g,s]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status')]);for(const r of [p,m,g,s])if(r.error)throw r.error;profiles=p.data||[];matchups=m.data||[];games=g.data||[];seasons=s.data||[];const active=seasons.find(x=>x.status==='active')||seasons[0];$('season-label').textContent=active?.name||'Season not yet published';renderStandings();renderMatchups();renderCountdown();if(isAdmin){populateSeasonSelect();renderPlayerManagement();} else $('player-management-list').innerHTML='Administrator access required.';}
-async function refreshAuth(){const {data:{session}}=await client.auth.getSession();$('auth-form').classList.toggle('hidden',!!session);$('signout').classList.toggle('hidden',!session);$('auth-state').textContent=session?'Signed in as '+session.user.email+'.':'Sign in to access your player tools and submit completed matchups.';isAdmin=false;isOwner=false;if(session){const {data:profile}=await client.from('profiles').select('role,is_owner').eq('id',session.user.id).maybeSingle();isAdmin=profile?.role==='admin';isOwner=profile?.is_owner===true;}$('admin-area').classList.toggle('hidden',!isAdmin);if(isAdmin){populateSeasonSelect();renderPlayerManagement();}}
+function renderCountdown(){
+  if(countdownInterval){clearInterval(countdownInterval);countdownInterval=null;}
+  const pending=matchups.filter(m=>m.status==='scheduled'&&m.deadline&&new Date(m.deadline)>new Date()).sort((a,b)=>new Date(a.deadline)-new Date(b.deadline))[0];
+  if(!pending){$('deadline-label').textContent='No active weekly deadline is published.';$('timer').innerHTML='';return;}
+  const d=new Date(pending.deadline);
+  $('deadline-label').textContent='Week '+pending.week_number+' deadline · '+d.toLocaleString();
+  const tick=()=>{const ms=Math.max(0,d-Date.now()),days=Math.floor(ms/86400000),hours=Math.floor(ms%86400000/3600000),mins=Math.floor(ms%3600000/60000),secs=Math.floor(ms%60000/1000);$('timer').innerHTML=[[days,'Days'],[hours,'Hours'],[mins,'Minutes'],[secs,'Seconds']].map(x=>`<div class="timebox"><strong>${String(x[0]).padStart(2,'0')}</strong><span>${x[1]}</span></div>`).join('');if(ms===0){clearInterval(countdownInterval);countdownInterval=null;}};
+  tick();if(countdownInterval===null && d>Date.now())countdownInterval=setInterval(tick,1000);
+}
+async function loadPublic(){const [p,m,g,s]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status')]);for(const r of [p,m,g,s])if(r.error)throw r.error;profiles=p.data||[];matchups=m.data||[];games=g.data||[];seasons=s.data||[];const active=seasons.find(x=>x.status==='active')||seasons[0];$('season-label').textContent=active?.name||'Season not yet published';renderStandings();renderMatchups();renderCountdown();if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();} else $('player-management-list').innerHTML='Administrator access required.';}
+async function refreshAuth(){const {data:{session}}=await client.auth.getSession();$('auth-form').classList.toggle('hidden',!!session);$('signout').classList.toggle('hidden',!session);$('auth-state').textContent=session?'Signed in as '+session.user.email+'.':'Sign in to access your player tools and submit completed matchups.';isAdmin=false;isOwner=false;if(session){const {data:profile}=await client.from('profiles').select('role,is_owner').eq('id',session.user.id).maybeSingle();isAdmin=profile?.role==='admin';isOwner=profile?.is_owner===true;}$('admin-area').classList.toggle('hidden',!isAdmin);if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();}}
 function localDatePlus(dateString, days){const d=new Date(dateString+'T12:00:00');d.setDate(d.getDate()+days);return d;}
 function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function roundRobin(players){const list=shuffle(players);if(list.length%2)list.push(null);const rounds=[];for(let r=0;r<list.length-1;r++){const pairs=[];let bye=null;for(let i=0;i<list.length/2;i++){const a=list[i],b=list[list.length-1-i];if(a&&b)pairs.push([a,b]);else bye=a||b;}rounds.push({pairs,bye});list.splice(1,0,list.pop());}return rounds;}
 function makeSchedule(seasonId){const season=seasons.find(x=>x.id===seasonId);if(!season)throw new Error('Choose a season first.');if(matchups.some(m=>m.season_id===seasonId))throw new Error('This season already has matchups. The existing schedule will not be overwritten.');const players=profiles.filter(p=>p.is_player);if(players.length<2)throw new Error('At least two registered player accounts are required.');const start=new Date(season.starts_on+'T12:00:00'),end=new Date(season.ends_on+'T12:00:00');if(end<start)throw new Error('Season end date must be on or after the start date.');const weeks=Math.floor((end-start)/604800000)+1;const rounds=roundRobin(players);const omissions=shuffle(['Ping Pong','Darts','Pool','Air Hockey']);const time=$('deadline-time').value||'23:59';const out=[],byes=[];for(let w=0;w<weeks;w++){const round=rounds[w%rounds.length];if(round.bye)byes.push({week_number:w+1,player_id:round.bye.id});const weekEnd=localDatePlus(season.starts_on,Math.min(w*7+6,Math.round((end-start)/86400000)));const [hh,mm]=time.split(':').map(Number);weekEnd.setHours(hh,mm,0,0);for(let k=0;k<round.pairs.length;k++){const omit=omissions[(w*round.pairs.length+k)%4];out.push({week_number:w+1,player1_id:round.pairs[k][0].id,player2_id:round.pairs[k][1].id,deadline:weekEnd.toISOString(),disciplines:shuffle(['Ping Pong','Darts','Pool','Air Hockey'].filter(x=>x!==omit))});}}return {payload:out,byes,players,weeks,season};}
-function populateSeasonSelect(){const sel=$('schedule-season');if(!sel)return;sel.innerHTML=seasons.map(s=>`<option value="${esc(s.id)}">${esc(s.name)} (${s.starts_on} – ${s.ends_on})</option>`).join('');if(!seasons.length)sel.innerHTML='<option value="">Create a season first</option>';}
+function populateSeasonSelect(){
+  const sel=$('schedule-season');if(!sel)return;
+  const previous=sel.value;
+  sel.innerHTML=seasons.map(s=>`<option value="${esc(s.id)}">${esc(s.name)} (${s.starts_on} – ${s.ends_on})</option>`).join('');
+  if(!seasons.length)sel.innerHTML='<option value="">Create a season first</option>';
+  else if(seasons.some(s=>s.id===previous))sel.value=previous;
+}
+function populateDeleteSeasonSelect(){
+  const sel=$('delete-season-select');if(!sel)return;
+  const previous=sel.value;
+  sel.innerHTML=seasons.length?seasons.map(s=>`<option value="${esc(s.id)}">${esc(s.name)} (${s.starts_on} – ${s.ends_on})</option>`).join(''):'<option value="">No seasons available</option>';
+  if(seasons.some(s=>s.id===previous))sel.value=previous;
+  $('delete-season-button').disabled=!seasons.length;
+}
+function showSeasonMessage(msg,error=false){
+  $('season-management-message').className=error?'status error':'status';
+  $('season-management-message').textContent=msg;
+}
 function showPlayerMessage(msg,error=false){
   $('player-management-message').className=error?'status error':'status';
   $('player-management-message').textContent=msg;
@@ -81,91 +245,74 @@ function showPlayerMessage(msg,error=false){
 
 function renderPlayerManagement(){
   const list=$('player-management-list');
-
-  if(!isAdmin){
-    list.innerHTML='Administrator access required.';
-    return;
-  }
-
-  if(!profiles.length){
-    list.innerHTML='<div class="empty">No registered players yet.</div>';
-    return;
-  }
-
-  list.innerHTML=`
-    <table>
-      <thead>
-        <tr>
-          <th>Player</th>
-          <th>Participation</th>
-          <th>Access</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${profiles.map(p=>`
-          <tr>
-            <td><strong>${esc(p.display_name)}</strong></td>
-            <td>${p.is_player?'Active':'Inactive'}</td>
-            <td>${p.is_owner?'League Owner':p.role==='admin'?'Administrator':'Player'}</td>
-            <td>
-              ${p.is_owner
-                ? '<span class="muted">Protected account</span>'
-                : `<button class="secondary" data-player-action="toggle-player" data-player-id="${esc(p.id)}">${p.is_player?'Deactivate':'Activate'}</button>`
-              }
-              ${isOwner&&!p.is_owner
-                ? `<button data-player-action="toggle-admin" data-player-id="${esc(p.id)}">${p.role==='admin'?'Remove admin':'Make admin'}</button>`
-                : ''
-              }
-            </td>
-          </tr>
-        `).join('')}
-      </tbody>
-    </table>
-  `;
+  if(!isAdmin){list.innerHTML='Administrator access required.';return;}
+  if(!profiles.length){list.innerHTML='<div class="empty">No registered players yet.</div>';return;}
+  list.innerHTML=`<table><thead><tr><th>Player</th><th>Participation</th><th>Access</th><th>Actions</th></tr></thead><tbody>
+    ${profiles.slice().sort((a,b)=>a.display_name.localeCompare(b.display_name)).map(p=>`<tr>
+      <td><strong>${esc(p.display_name)}</strong></td>
+      <td>${p.is_player?'Active':'Inactive'}</td>
+      <td>${p.is_owner?'League Owner':p.role==='admin'?'Administrator':'Player'}</td>
+      <td><div class="action-buttons">
+      ${p.is_owner?'<span class="muted">Protected account</span>':`
+        <button class="secondary" data-player-action="toggle-player" data-player-id="${esc(p.id)}">${p.is_player?'Deactivate':'Activate'}</button>
+        ${(p.role!=='admin'||isOwner)?`<button class="danger" data-player-action="delete-player" data-player-id="${esc(p.id)}">Delete player</button>`:''}
+        ${isOwner?`<button class="secondary" data-player-action="toggle-admin" data-player-id="${esc(p.id)}">${p.role==='admin'?'Remove admin':'Make admin'}</button><button data-player-action="transfer-owner" data-player-id="${esc(p.id)}">Transfer ownership</button>`:''}
+      `}
+      </div></td>
+    </tr>`).join('')}
+  </tbody></table>`;
 }
 
 $('player-management-list').addEventListener('click',async e=>{
   const button=e.target.closest('button[data-player-action]');
-  if(!button)return;
-
-  const playerId=button.dataset.playerId;
-  const action=button.dataset.playerAction;
+  if(!button||button.disabled)return;
+  const playerId=button.dataset.playerId,action=button.dataset.playerAction;
   const player=profiles.find(p=>p.id===playerId);
-
   if(!player)return;
-
-  if(action==='toggle-player'){
-    const newStatus=!player.is_player;
-
-    if(!confirm(`${newStatus?'Activate':'Deactivate'} ${player.display_name}?`))return;
-
-    const {error}=await client.from('profiles')
-      .update({is_player:newStatus})
-      .eq('id',playerId);
-
-    if(error)return showPlayerMessage(error.message,true);
-
-    showPlayerMessage(`${player.display_name} has been ${newStatus?'activated':'deactivated'}.`);
-  }
-
-  if(action==='toggle-admin'){
-    if(!isOwner)return showPlayerMessage('Only the League Owner can change administrator access.',true);
-
-    const newRole=player.role==='admin'?'player':'admin';
-
-    if(!confirm(`${newRole==='admin'?'Promote':'Remove administrator access for'} ${player.display_name}?`))return;
-
-    const {error}=await client.from('profiles')
-      .update({role:newRole})
-      .eq('id',playerId);
-
-    if(error)return showPlayerMessage(error.message,true);
-
-    showPlayerMessage(`${player.display_name}'s access has been updated.`);
-  }
-
-  await loadPublic();
+  const {data:{user}}=await client.auth.getUser();
+  if(!user||!isAdmin)return showPlayerMessage('Administrator access required.',true);
+  if(action==='delete-player'&&(player.is_owner||player.id===user.id))return showPlayerMessage('This account cannot be deleted.',true);
+  if(action==='transfer-owner'&&!isOwner)return showPlayerMessage('Only the League Owner can transfer ownership.',true);
+  button.disabled=true;
+  try{
+    if(action==='toggle-player'){
+      const newStatus=!player.is_player;
+      if(!confirm(`${newStatus?'Activate':'Deactivate'} ${player.display_name}?`))return;
+      const {error}=await client.from('profiles').update({is_player:newStatus}).eq('id',playerId);
+      if(error)throw error;
+      await loadPublic();showPlayerMessage(`${player.display_name} has been ${newStatus?'activated':'deactivated'}.`);
+    }else if(action==='toggle-admin'){
+      if(!isOwner)throw new Error('Only the League Owner can change administrator access.');
+      const newRole=player.role==='admin'?'player':'admin';
+      if(!confirm(`${newRole==='admin'?'Promote':'Remove administrator access for'} ${player.display_name}?`))return;
+      const {error}=await client.from('profiles').update({role:newRole}).eq('id',playerId);
+      if(error)throw error;
+      await loadPublic();showPlayerMessage(`${player.display_name}'s access has been updated.`);
+    }else if(action==='transfer-owner'){
+      if(!confirm(`Transfer League Ownership to ${player.display_name}? You will remain an administrator, but ${player.display_name} will control ownership and administrator privileges.`))return;
+      const typed=prompt(`To confirm, type TRANSFER exactly:`);
+      if(typed!=='TRANSFER')return showPlayerMessage('Ownership transfer cancelled.');
+      const {error}=await client.rpc('transfer_league_ownership',{p_new_owner_id:playerId});
+      if(error)throw error;
+      await refreshAuth();await loadPublic();
+      showPlayerMessage(`${player.display_name} is now League Owner. Your account remains an administrator.`);
+    }else if(action==='delete-player'){
+      if(player.role==='admin'&&!isOwner)throw new Error('Only the League Owner can delete an administrator.');
+      const affected=matchups.filter(m=>m.player1_id===playerId||m.player2_id===playerId).length;
+      if(!confirm(`Permanently delete ${player.display_name}? This removes their login, profile and ${affected} matchup(s), including opponents' results in those matchups. This cannot be undone.`))return;
+      const typed=prompt(`Type DELETE to permanently remove ${player.display_name}:`);
+      if(typed!=='DELETE')return showPlayerMessage('Player deletion cancelled.');
+      const {data,error}=await client.functions.invoke('delete-player',{body:{player_id:playerId}});
+      if(error){
+        let detail=error.message;
+        try{const response=error.context;if(response?.json){const body=await response.json();detail=body.error||detail;}}catch(_e){}
+        throw new Error(detail||'Player deletion failed.');
+      }
+      if(data?.error)throw new Error(data.error);
+      await loadPublic();showPlayerMessage(`${player.display_name} and their league records have been deleted.`);
+    }
+  }catch(error){showPlayerMessage(error.message||'The action could not be completed.',true);}
+  finally{button.disabled=false;}
 });
 $('invite-player-button').onclick = async () => {
   const name = $('invite-player-name').value.trim();
@@ -210,15 +357,44 @@ $('invite-player-button').onclick = async () => {
     button.textContent = 'Send Player Invitation';
   }
 };
-$('create-season').onclick=async()=>{const name=$('season-name').value.trim(),start=$('season-start').value,end=$('season-end').value;if(!name||!start||!end)return showAdminMessage('Enter a season name, start date, and end date.',true);if(end<start)return showAdminMessage('End date must be on or after start date.',true);const {data,error}=await client.from('seasons').insert({name,starts_on:start,ends_on:end,status:'upcoming'}).select().single();if(error)return showAdminMessage(error.message,true);seasons.push(data);$('season-name').value='';populateSeasonSelect();$('season-label').textContent=data.name;showAdminMessage('Season created successfully.');};
-function showAdminMessage(msg,error=false){$('admin-message').className=error?'status error':'status';$('admin-message').textContent=msg;}
+$('create-season').onclick=async()=>{
+  const name=$('season-name').value.trim(),start=$('season-start').value,end=$('season-end').value;
+  if(!name||!start||!end)return showCreateSeasonMessage('Enter a season name, start date, and end date.',true);
+  if(end<start)return showCreateSeasonMessage('End date must be on or after start date.',true);
+  const {error}=await client.from('seasons').insert({name,starts_on:start,ends_on:end,status:'upcoming'});
+  if(error)return showCreateSeasonMessage(error.message,true);
+  $('season-name').value='';await loadPublic();showCreateSeasonMessage('Season created successfully.');
+};
+function showCreateSeasonMessage(msg,error=false){$('create-season-message').className=error?'status error':'status';$('create-season-message').textContent=msg;}
+function showAdminMessage(msg,error=false){
+  $('admin-message').className=error?'status error':'status';
+  $('admin-message').textContent=msg;
+  if(msg)$('schedule-preview-panel').classList.remove('hidden');
+}
+$('delete-season-button').onclick=async()=>{
+  const id=$('delete-season-select').value;
+  const season=seasons.find(s=>s.id===id);
+  if(!season)return showSeasonMessage('Choose a season first.',true);
+  const count=matchups.filter(m=>m.season_id===id).length;
+  if(!confirm(`Delete season "${season.name}" and all ${count} matchups and their results? This cannot be undone.`))return;
+  const typed=prompt(`Type DELETE to permanently remove season "${season.name}":`);
+  if(typed!=='DELETE')return showSeasonMessage('Season deletion cancelled.');
+  const button=$('delete-season-button');button.disabled=true;
+  try{
+    const {error}=await client.rpc('delete_league_season',{p_season_id:id});
+    if(error)throw error;
+    pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');
+    await loadPublic();showSeasonMessage(`Season "${season.name}" has been deleted.`);
+  }catch(error){showSeasonMessage(error.message||'Could not delete season.',true);}
+  finally{button.disabled=false;}
+};
 $('preview-schedule').onclick=()=>{try{const result=makeSchedule($('schedule-season').value);pendingSchedule=result.payload;const names=Object.fromEntries(result.players.map(p=>[p.id,p.display_name]));$('schedule-preview').innerHTML=Array.from({length:result.weeks},(_,i)=>{const rows=pendingSchedule.filter(x=>x.week_number===i+1),bye=result.byes.find(x=>x.week_number===i+1);return `<h4>Week ${i+1}</h4>${rows.length?`<table><thead><tr><th>Matchup</th><th>Three disciplines</th><th>Deadline</th></tr></thead><tbody>${rows.map(m=>`<tr><td>${esc(names[m.player1_id])} vs ${esc(names[m.player2_id])}</td><td>${m.disciplines.map(esc).join(', ')}</td><td>${new Date(m.deadline).toLocaleDateString()} ${new Date(m.deadline).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</td></tr>`).join('')}</tbody></table>`:''}${bye?`<div class="notice">Bye this week: <strong>${esc(names[bye.player_id])}</strong></div>`:''}`}).join('');$('schedule-summary').textContent=`${result.players.length} players · ${result.weeks} weeks · ${pendingSchedule.length} matchups · ${result.players.length%2?'Rotating bye weeks included and shown in the preview.':'No bye weeks.'} Preview only — nothing has been saved yet.`;$('schedule-preview-panel').classList.remove('hidden');showAdminMessage('');}catch(e){showAdminMessage(e.message,true);}};
 $('cancel-preview').onclick=()=>{pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');};
 $('publish-schedule').onclick=async()=>{if(!pendingSchedule?.length)return showAdminMessage('Generate a preview first.',true);if(!confirm('Publish this schedule? This cannot be automatically undone.'))return;const {data,error}=await client.rpc('publish_season_schedule',{p_season_id:$('schedule-season').value,p_schedule:pendingSchedule});if(error)return showAdminMessage(error.message,true);pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');showAdminMessage(`Published ${data} matchups successfully.`);await loadPublic();};
 $('signin').onclick=async()=>{const {error}=await client.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)showMessage(error.message,true);else{showMessage('Signed in.');await refreshAuth();}};
 $('reset').onclick=async()=>{const email=$('email').value.trim();if(!email)return showMessage('Enter your email address first.',true);const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:location.origin});showMessage(error?error.message:'If that email is registered, a password reset link will be sent.',!!error);};
 $('signout').onclick=async()=>{await client.auth.signOut();await refreshAuth();showMessage('You have signed out.');};
-client.auth.onAuthStateChange(()=>refreshAuth());
+client.auth.onAuthStateChange(()=>{setTimeout(()=>{refreshAuth().catch(console.error);},0);});
 loadPublic().catch(e=>{$('standings').innerHTML='<div class="empty">Could not load league data. Check that the Supabase tables and public read policies are set up.</div>';console.error(e);});refreshAuth();
 </script>
 <!-- PLAYER PASSWORD SETUP -->
