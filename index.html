@@ -721,16 +721,6 @@ body.display-mode .lb-launch-slide.tsg-promo-poster-slide{position:relative;disp
 body.display-mode .tsg-promo-poster{display:block;object-fit:contain;width:100%;height:100%;max-width:100%;max-height:100%;min-height:0;min-width:0;filter:drop-shadow(0 5px 16px #0009)}
 body.display-mode .tsg-promo-bottom-note{position:absolute;right:12px;top:12px;background:#092a22ed;border:1px solid #cbaa68a8;color:#f8e6bb;border-radius:7px;padding:5px 10px;font:700 clamp(9px,.72vw,13px)/1.25 'Manrope',sans-serif;box-shadow:0 3px 14px #0009;max-width:52%;text-align:right}
 @media(max-height:650px){body.display-mode .tsg-promo-bottom-note{font-size:9px;padding:4px 7px}}
-
-/* V38 — administrator-only registration approvals */
-.tsg-approval-panel{margin-top:16px;border:1px solid #c5a05b;background:linear-gradient(145deg,#fffdf6,#f4edda)}
-.tsg-approval-panel h3{margin-bottom:4px}
-.tsg-approval-row{display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:1px solid #d9cba8;padding:13px 0}
-.tsg-approval-row:last-child{border-bottom:0}
-.tsg-approval-row strong{display:block;color:#173d32;overflow-wrap:anywhere}
-.tsg-approval-row small{color:#66736c}
-.tsg-approval-row button{flex:0 0 auto;background:#125139;border:1px solid #bc9952}
-@media(max-width:540px){.tsg-approval-row{align-items:stretch;flex-direction:column}.tsg-approval-row button{width:100%}}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -951,6 +941,11 @@ body.display-mode .lb-launch-social{
  body.display-mode .lb-launch-social{font-size:clamp(10px,2.9vw,18px)}
 }
 
+/* V39: QR homepage signup; original form, IDs and listeners retained. */
+body:not(.display-mode) .tsg-home-registration-cta{display:inline-flex;align-items:center;justify-content:center;margin-top:22px;padding:13px 21px;border:1px solid #e8c477;border-radius:10px;background:#dfbd77;color:#103626;font:800 15px 'Manrope',sans-serif;text-decoration:none;box-shadow:0 6px 20px #0003}
+body:not(.display-mode) .tsg-home-registration-cta:hover{background:#f2d695}
+body:not(.display-mode) #page-home #tsg-registration{scroll-margin-top:22px;margin:24px 0 30px}
+body.display-mode .tsg-home-registration-cta{display:none}
 /* V37: registration and pending approval, scoped away from TV mode */
 body:not(.display-mode) .tsg-register-panel{margin-top:18px;border:1px solid #c6a361;background:linear-gradient(135deg,#fffdf6,#f4eddc);border-radius:15px;padding:clamp(17px,3vw,26px)}
 body:not(.display-mode) .tsg-register-panel h3{margin:0 0 6px;color:#0c3e2b;font-family:'Cinzel',Georgia,serif}
@@ -964,7 +959,7 @@ body:not(.display-mode) .tsg-pending-panel strong{display:block;margin-bottom:5p
 </style>
 </head>
 <body>
-<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="home-nav-links"><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div></nav><div class="hero home-hero"><div class="home-hero-content"><div class="eyebrow">✦ &nbsp; 2026–2027 INAUGURAL SEASON</div><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p></div><div class="home-hero-mark"><span>THE GLENCOE</span><strong>TURFCARE<br>SOCIAL LEAGUE</strong><i>FIVE SPORTS · ONE CREW</i></div></div></header>
+<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="home-nav-links"><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div></nav><div class="hero home-hero"><div class="home-hero-content"><div class="eyebrow">✦ &nbsp; 2026–2027 INAUGURAL SEASON</div><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><a class="tsg-home-registration-cta" href="#tsg-registration">Register for the League</a></div><div class="home-hero-mark"><span>THE GLENCOE</span><strong>TURFCARE<br>SOCIAL LEAGUE</strong><i>FIVE SPORTS · ONE CREW</i></div></div></header>
 <main class="wrap home-body"><section class="home-launch-strip" aria-label="Season dates"><div><small>01 / REGISTRATION</small><strong>Closes Nov 19</strong></div><div><small>02 / PLAYER ACCESS</small><strong>Nov 20</strong></div><div><small>03 / SEASON KICKOFF</small><strong>Nov 23 · 7 AM</strong></div></section><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a href="#matchups-section" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a href="#page-matchups" class="home-sport-tile tsg-beer-tile"><div class="tsg-beer-icon" aria-hidden="true">🥤</div><span>05 <strong>BEER PONG</strong></span></a></div></section>
 
 <section class="countdown" id="deadline-section"><div><h2>Time left to finish this week's matchup</h2><div id="deadline-label" class="muted">The weekly deadline will appear here once matchups are published.</div></div><div class="timer" id="timer"><div class="timebox"><strong>--</strong><span>Days</span></div><div class="timebox"><strong>--</strong><span>Hours</span></div><div class="timebox"><strong>--</strong><span>Minutes</span></div><div class="timebox"><strong>--</strong><span>Seconds</span></div></div></section>
@@ -1022,13 +1017,6 @@ body:not(.display-mode) .tsg-pending-panel strong{display:block;margin-bottom:5p
 <select id="delete-season-select"></select>
 <button id="delete-season-button" type="button" class="danger">Delete selected season</button>
 <div id="season-management-message" class="notice" role="status"></div>
-</section>
-<section class="panel tsg-approval-panel" id="tsg-approval-panel" aria-labelledby="tsg-approval-heading">
-<h3 id="tsg-approval-heading">Pending Registrations <span id="tsg-approval-count" class="tag">0</span></h3>
-<p class="muted">New accounts wait here until an administrator approves them. Approval also activates league participation; regular player tools open November 20.</p>
-<div id="tsg-approval-list" aria-live="polite"><div class="notice">Loading registration requests…</div></div>
-<div id="tsg-approval-message" role="status" aria-live="polite" class="notice"></div>
-<button class="secondary" id="tsg-refresh-approvals" type="button">Refresh registrations</button>
 </section>
 <section class="panel" style="margin-top:16px">
 <h3>Player Management</h3>
@@ -1160,7 +1148,7 @@ async function loadPublic(){
  profiles=p.data||[];matchups=m.data||[];games=g.data||[];seasons=s.data||[];blackoutWeeks=b.data||[];weeklyUnavailable=u.error?[]:(u.data||[]);meetups=meet.error?[]:(meet.data||[]);if(meet.error&&meet.error.code!=='42P01')console.warn('Meetup schedule loading:',meet.error.message);
  const active=seasons.find(x=>x.status==='active')||seasons[0];$('season-label').textContent=active?.name||'Season not yet published';
  renderStandings();renderMatchups();renderCountdown();renderProfile();renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
- if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();await loadScheduleLog();await loadPendingRegistrations();}else $('player-management-list').innerHTML='Administrator access required.';
+ if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();await loadScheduleLog();}else $('player-management-list').innerHTML='Administrator access required.';
  if(document.body.classList.contains('display-mode'))renderLunchroom();
 }
 async function refreshAuth(){
@@ -1224,43 +1212,6 @@ function showPlayerMessage(msg,error=false){
   $('player-management-message').className=error?'status error':'status';
   $('player-management-message').textContent=msg;
 }
-
-// Approval list is fetched only for the signed-in administrator.
-// The database RPC independently validates the caller's administrator privileges.
-async function loadPendingRegistrations(){
- const list=$('tsg-approval-list'),count=$('tsg-approval-count');
- if(!list||!count)return;
- if(!isAdmin){list.textContent='Administrator access required.';count.textContent='0';return;}
- list.innerHTML='<div class="notice">Loading registration requests…</div>';
- const {data,error}=await client.from('profiles')
-   .select('id,display_name,role,is_owner,is_approved,is_player')
-   .eq('is_approved',false).eq('role','player').eq('is_owner',false)
-   .order('created_at',{ascending:true});
- if(error){list.textContent='Could not load requests: '+error.message;count.textContent='—';return;}
- const pending=data||[];
- count.textContent=String(pending.length);
- if(!pending.length){list.innerHTML='<div class="notice">No pending registrations right now.</div>';return;}
- list.innerHTML=pending.map(p=>`<div class="tsg-approval-row">
-   <div><strong>${esc(p.display_name)}</strong><small>Awaiting administrator approval</small></div>
-   <button type="button" data-approval-id="${esc(p.id)}" data-approval-name="${esc(p.display_name)}">Approve player</button>
- </div>`).join('');
-}
-$('tsg-refresh-approvals').addEventListener('click',()=>{loadPendingRegistrations().catch(e=>{$('tsg-approval-message').textContent=e.message;});});
-$('tsg-approval-list').addEventListener('click',async event=>{
- const button=event.target.closest('button[data-approval-id]');
- if(!button||button.disabled||!isAdmin)return;
- const id=button.dataset.approvalId,name=button.dataset.approvalName;
- if(!confirm(`Approve ${name} as a participating player?`))return;
- button.disabled=true;
- const message=$('tsg-approval-message');message.className='notice';message.textContent='Approving player…';
- try{
-   const {error}=await client.rpc('set_league_player_approval',{p_player_id:id,p_approved:true});
-   if(error)throw error;
-   message.className='status';message.textContent=`${name} approved successfully.`;
-   await loadPublic();
-   await loadPendingRegistrations();
- }catch(error){message.className='status error';message.textContent=error.message||'Approval failed.';button.disabled=false;}
-});
 
 function renderPlayerManagement(){
   const list=$('player-management-list');
@@ -2359,13 +2310,16 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  const originals=[...main.children];
  const pages={home:[],standings:[],matchups:[],player:[],admin:[]};
  originals.forEach((el,i)=>{
-  if(i<=3)pages.home.push(el);
+  if(i<=3 || el.id==='tsg-registration')pages.home.push(el);
   else if(i<=5 || (i>=8&&i<=9))pages.standings.push(el);
   else if(i<=7)pages.matchups.push(el);
   else if(i<=12)pages.player.push(el);
   else if(i===13)pages.admin.push(el);
   else pages.home.push(el);
  });
+ // The QR code opens the homepage: show the existing registration form prominently.
+ const signupPanel=pages.home.find(el=>el.id==='tsg-registration');
+ if(signupPanel){pages.home=pages.home.filter(el=>el!==signupPanel);pages.home.splice(1,0,signupPanel);}
  const names={home:['WELCOME TO THE LEAGUE','Your league, without the clutter','Find the information you need in one tap.'],standings:['LEAGUE RESULTS','Standings & player stats','Rankings and individual sport results in one place.'],matchups:['YOUR RIVALS','Schedules & matchups','See weekly opponents and confirmed meeting times.'],player:['PLAYER ACCESS','My League','Sign in, organize your matches and report your results.'],admin:['LEAGUE MANAGEMENT','Administration','Manage seasons, schedules, players and scores.']};
  const tabs=document.createElement('nav');tabs.className='tsg-page-tabs';tabs.setAttribute('aria-label','Website pages');
  for(const [key,label] of [['home','Home'],['standings','Standings'],['matchups','Matchups'],['player','My League'],['admin','Administration']]){
@@ -2391,7 +2345,7 @@ $('password-setup-form').addEventListener('submit', async (e) => {
   }
   main.appendChild(section);sections[key]=section;
  }
- const aliases={'home':'home','standings-section':'standings','statistics-section':'standings','profile-panel':'standings','matchups-section':'matchups','player-signin':'player','player-area':'player','admin-area':'admin'};
+ const aliases={'tsg-registration':'home','home':'home','standings-section':'standings','statistics-section':'standings','profile-panel':'standings','matchups-section':'matchups','player-signin':'player','player-area':'player','admin-area':'admin'};
  function activate(){
   const hash=decodeURIComponent(location.hash.slice(1));
   let key=hash.startsWith('page-')?hash.slice(5):aliases[hash]||'home';
