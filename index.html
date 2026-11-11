@@ -391,6 +391,28 @@ body.display-mode .wire-curling-link:focus-visible{outline:3px solid #b48a31;out
 .meetup-status small{font-weight:500}
 body.display-mode .lb-side-upcoming small{display:block;margin-top:5px;color:#cfdecb;font-size:clamp(11px,.9vw,16px);font-weight:650}
 body.display-mode .gold-vs{color:#e8c170;font-weight:1000;margin:0 3px}
+
+/* V15: clean broadcasts, non-intrusive controls, and launch cards */
+body.display-mode .lb-highlight-controls{opacity:0!important;visibility:hidden;transform:translateY(10px);pointer-events:none!important;transition:opacity .28s ease,transform .28s ease,visibility .28s ease}
+body.display-mode .lb-highlight-screen:hover .lb-highlight-controls{opacity:0!important;visibility:hidden;pointer-events:none!important}
+body.display-mode .lb-highlight-screen.controls-visible .lb-highlight-controls,
+body.display-mode .lb-highlight-screen:focus-within .lb-highlight-controls{opacity:1!important;visibility:visible;transform:none;pointer-events:auto!important}
+body.display-mode .lb-highlight-controls button{pointer-events:auto;min-height:45px}
+body.display-mode .lb-highlight-header span{font-family:'Barlow Condensed',sans-serif;letter-spacing:.16em;color:#d7bb79}
+body.display-mode .lb-highlight-credit{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#c7ccb9}
+body.display-mode .lb-launch-slide{height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:clamp(12px,2.2vh,32px);padding:clamp(15px,2.4vw,40px);text-align:center;background:radial-gradient(circle at 50% 0%,#28644399,transparent 53%),linear-gradient(145deg,#0c3225,#061d17);border:1px solid #d5af656e;border-radius:16px;box-shadow:inset 0 0 60px #0006;overflow:hidden}
+body.display-mode .lb-launch-eyebrow{font:800 clamp(12px,1.05vw,19px) 'Barlow Condensed',sans-serif;color:#d9b36a;letter-spacing:.24em;text-transform:uppercase}
+body.display-mode .lb-launch-title{font:700 clamp(32px,4.2vw,77px)/1.06 'Cinzel',Georgia,serif;color:#fff1ca;margin:0;text-shadow:0 5px 28px #0008}
+body.display-mode .lb-launch-desc{font:500 clamp(15px,1.38vw,26px)/1.4 'Manrope',sans-serif;color:#e0e4d6;max-width:800px}
+body.display-mode .lb-launch-countdown{font:800 clamp(35px,5.7vw,106px)/1 'Barlow Condensed','Arial Narrow',sans-serif;letter-spacing:.055em;color:#efd39b;font-variant-numeric:tabular-nums;text-shadow:0 0 30px #e6ba5560}
+body.display-mode .lb-launch-secondary{padding:9px 21px;border:1px solid #c5a26080;border-radius:30px;font:700 clamp(12px,1.1vw,21px) 'Barlow Condensed',sans-serif;letter-spacing:.12em;color:#f3d79b;text-transform:uppercase}
+body.display-mode .lb-launch-qr{display:grid;grid-template-columns: minmax(130px,clamp(160px,17vw,290px)) minmax(0,1fr);align-items:center;text-align:left;gap:clamp(15px,3vw,52px);max-width:min(95%,900px)}
+body.display-mode .lb-launch-qr img{display:block;width:100%;height:auto;background:#fff;border:9px solid #fff;border-radius:12px;box-shadow:0 12px 30px #0009}
+body.display-mode .lb-launch-qr .lb-launch-title{font-size:clamp(23px,3vw,58px)}
+body.display-mode .lb-launch-qr .lb-launch-desc{margin-top:12px}
+body.display-mode .lb-launch-qr code{font-family:'Manrope',sans-serif;color:#ebd0a0;font-size:clamp(12px,1vw,18px);word-break:break-all}
+@media(max-width:740px){body.display-mode .lb-launch-qr{grid-template-columns:1fr;text-align:center;justify-items:center}body.display-mode .lb-launch-qr img{max-width:150px}}
+
 </style>
 </head>
 <body>
@@ -784,12 +806,26 @@ $('save-display-name').onclick=async()=>{
 };
 function showDisplayNameMessage(msg,error=false){$('display-name-message').className=error?'status error':'status';$('display-name-message').textContent=msg;}
 // Five highlight / 24-hour weather pairs, then the full league leaderboard.
-const LB_TABS=Array.from({length:5},()=>['Highlights','Weather 24h']).flat().concat('Standings');
+const ACCESS_UNLOCK_AT=Date.parse('2026-11-20T00:00:00-07:00');
+const SEASON_KICKOFF_AT=Date.parse('2026-11-23T00:00:00-07:00');
+const SITE_ADDRESS='https://turfcare-social-league.pages.dev/';
+const PRELAUNCH_CARD_DURATION_MS=45*1000;
+function tvSequence(){
+ const prelaunch=Date.now()<SEASON_KICKOFF_AT;
+ const slides=[];
+ for(let i=0;i<5;i++){
+  slides.push('Highlights','Weather 24h');
+  if(prelaunch)slides.push(i%2===0?'Launch countdown':'League QR');
+ }
+ slides.push('Standings');
+ return slides;
+}
+let LB_TABS=tvSequence();
 const HIGHLIGHT_DURATION_MS=5*60*1000;
 const WEATHER_DURATION_MS=2*60*1000;
 const LEADERBOARD_DURATION_MS=60*1000;
 const WEATHER_PAGE_DURATION_MS=60*1000; // Two 12-hour panels per 120-second weather view
-const tvSlideDuration=page=>page==='Highlights'?HIGHLIGHT_DURATION_MS:page==='Standings'?LEADERBOARD_DURATION_MS:WEATHER_DURATION_MS;
+const tvSlideDuration=page=>page==='Highlights'?HIGHLIGHT_DURATION_MS:page==='Standings'?LEADERBOARD_DURATION_MS:page==='Weather 24h'?WEATHER_DURATION_MS:PRELAUNCH_CARD_DURATION_MS;
 let lastRenderedMainPage=null;
 const TV_TZ='America/Edmonton';
 function tvDateParts(date=new Date()){
@@ -896,6 +932,7 @@ function toggleHighlightSound(){
 // Subscribe to YouTube player-state events so the next clip starts only
 // after the current one finishes. Video is paused during weather screens.
 function listenToHighlightIframe(){
+ installHighlightAutoHide();
  const iframe=document.getElementById('clubhouse-highlight-iframe');
  if(!iframe)return;
  const subscribe=()=>{try{iframe.contentWindow.postMessage(JSON.stringify({event:'listening',id:'turfcare-player'}),'https://www.youtube-nocookie.com');}catch(e){console.warn('Video state subscription unavailable',e);}};
@@ -926,7 +963,26 @@ function highlightMarkup(sport=null){
  if(!activeHighlight)return '<div class="lb-tv-empty">Highlights are being prepared.</div>';
  const h=activeHighlight;
  const params=new URLSearchParams({autoplay:'1',mute:'1',playsinline:'1',controls:'0',rel:'0',iv_load_policy:'3',fs:'0',enablejsapi:'1',origin:location.origin});
- return `<div class="lb-highlight-shell"><div class="lb-highlight-header"><h2>${HIGHLIGHT_ICONS[h.sport]||'🏆'} ${esc(h.sport)} highlights</h2><span>RANDOM CLIPS BY SPORT · MUTED BY DEFAULT</span></div><div class="lb-highlight-screen" id="clubhouse-highlight-screen"><iframe id="clubhouse-highlight-iframe" title="${esc(h.sport)} highlight video" src="https://www.youtube-nocookie.com/embed/${h.id}?${params.toString()}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" loading="eager"></iframe><div class="lb-highlight-controls"><button type="button" id="highlight-sound-button" aria-pressed="false" onclick="toggleHighlightSound()">🔇 Turn sound on</button><button type="button" id="highlight-next-button" onclick="skipHighlight()">⏭ Next clip</button><button type="button" id="highlight-next-sport-button" onclick="skipHighlightSport()">🔀 Next sport</button></div></div><div class="lb-highlight-credit">${esc(h.title)} · ${esc(h.credit)} · ${highlightCatalog.length} available clips · Embedding and autoplay depend on YouTube/browser permissions</div></div>`;
+ return `<div class="lb-highlight-shell"><div class="lb-highlight-header"><h2>${HIGHLIGHT_ICONS[h.sport]||'🏆'} ${esc(h.sport)} highlights</h2><span>THE BEST OF THE GAME</span></div><div class="lb-highlight-screen" id="clubhouse-highlight-screen"><iframe id="clubhouse-highlight-iframe" title="${esc(h.sport)} highlight video" src="https://www.youtube-nocookie.com/embed/${h.id}?${params.toString()}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" loading="eager"></iframe><div class="lb-highlight-controls"><button type="button" id="highlight-sound-button" aria-pressed="false" onclick="toggleHighlightSound()">🔇 Turn sound on</button><button type="button" id="highlight-next-button" onclick="skipHighlight()">⏭ Next clip</button><button type="button" id="highlight-next-sport-button" onclick="skipHighlightSport()">🔀 Next sport</button></div></div><div class="lb-highlight-credit">${esc(h.title)} · ${esc(h.credit)}</div></div>`;
+}
+let highlightControlsTimeout=null;
+function setHighlightControlVisibility(show){
+ const screen=document.getElementById('clubhouse-highlight-screen');
+ if(!screen)return;
+ screen.classList.toggle('controls-visible',show);
+ clearTimeout(highlightControlsTimeout);
+ if(show)highlightControlsTimeout=setTimeout(()=>{
+  if(!screen.contains(document.activeElement))screen.classList.remove('controls-visible');
+ },3200);
+}
+function installHighlightAutoHide(){
+ const screen=document.getElementById('clubhouse-highlight-screen');
+ if(!screen)return;
+ screen.addEventListener('pointermove',()=>setHighlightControlVisibility(true));
+ screen.addEventListener('pointerdown',()=>setHighlightControlVisibility(true));
+ screen.addEventListener('focusin',()=>setHighlightControlVisibility(true));
+ screen.addEventListener('focusout',()=>setTimeout(()=>setHighlightControlVisibility(false),120));
+ screen.addEventListener('pointerleave',()=>setHighlightControlVisibility(false));
 }
 function skipHighlight(){
  if(LB_TABS[lbSlideIndex%LB_TABS.length]!=='Highlights')return;
@@ -1065,6 +1121,14 @@ function renderLunchroom(){
   html='';
  }else if(page==='Weather 24h'){
   html=tvWeatherMarkup(true);
+ }else if(page==='Launch countdown'){
+  const date=Date.now()<ACCESS_UNLOCK_AT?ACCESS_UNLOCK_AT:SEASON_KICKOFF_AT;
+  const headline=date===ACCESS_UNLOCK_AT?'PLAYER ACCESS OPENS NOVEMBER 20':'SEASON KICKS OFF NOVEMBER 23';
+  const next=date===ACCESS_UNLOCK_AT?'Week 1 schedule released November 20 · Season begins November 23':'Week 1 schedule released · The competition starts Monday, November 23';
+  html=`<div class="lb-launch-slide"><div class="lb-launch-eyebrow">The Glencoe · Turfcare Social League Live</div><h2 class="lb-launch-title">${headline}</h2><div class="lb-launch-countdown" id="lb-launch-countdown" data-target="${date}">${lbClock(date)}</div><div class="lb-launch-desc">Four sports. Three games per matchup. One crew.</div><div class="lb-launch-secondary">${next}</div></div>`;
+ }else if(page==='League QR'){
+  const preAccess=Date.now()<ACCESS_UNLOCK_AT;
+  html=`<div class="lb-launch-slide"><div class="lb-launch-eyebrow">Get ready for the league</div><div class="lb-launch-qr"><img src="assets/league-qr.png" alt="QR code linking to Turfcare Social League public website"><div><h2 class="lb-launch-title">SCAN TO EXPLORE</h2><div class="lb-launch-desc">See the latest league updates, check out the four sports, and follow the launch. ${preAccess?'Player access and Week 1 matchups are planned for November 20.':'Week 1 matchups are scheduled for release. Season begins November 23.'}</div><p><code>${SITE_ADDRESS.replace('https://','')}</code></p></div></div><div class="lb-launch-secondary">Ping Pong · Darts · Pool · Air Hockey</div></div>`;
  }else if(page==='Standings'){
   const rows=leaderboard().slice(0,6);
   html=`<div class="lb-tv-section-title">League standings</div>${rows.length?rows.map((p,i)=>`<div class="lb-tv-leader"><div class="lb-tv-rank">${i+1}</div><div class="lb-tv-name">${esc(p.display_name)}${p.freebies?` <span class="lb-tv-minor">· ${p.freebies} freebie${p.freebies===1?'':'s'}</span>`:''}</div><div class="lb-tv-record">${p.wins} W <span class="lb-tv-minor">· ${p.losses} L · ${p.gameWins} GW</span></div></div>`).join(''):'<div class="lb-tv-empty">Standings will appear once the season begins.</div>'}`;
@@ -1243,6 +1307,8 @@ if(new URLSearchParams(location.search).get('display')==='1'){
  lbClockTimer=setInterval(()=>{
   $('lb-local-time').textContent=tvTime();
   const node=$('lb-ticking-clock'),next=tvScheduled()[0];if(node&&next)node.textContent=lbClock(next.deadline);
+  const launchNode=$('lb-launch-countdown');if(launchNode)launchNode.textContent=lbClock(Number(launchNode.dataset.target));
+  if(Date.now()>=SEASON_KICKOFF_AT&&LB_TABS.some(t=>t==='League QR')){LB_TABS=tvSequence();lbSlideIndex=0;clearTimeout(lbRotateTimer);rotateTV();}
   updateClubhouseHeader(next?.deadline);
   const mode=sportsMode();if(mode.mode+'-'+mode.date!==sportsLastKey)refreshSportsWire(true);
  },1000);
