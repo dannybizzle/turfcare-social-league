@@ -1142,7 +1142,7 @@ body:not(.display-mode) .home-sport-tile:focus-visible{outline:3px solid #e4c071
 <div class="section-head"><div><div class="eyebrow" style="color:var(--green2)">Organizer tools</div><h2>Administrator dashboard</h2></div><span class="muted">Admin access</span></div>
 <div class="admin-grid">
 <section class="panel admin-form"><h3>Create a season</h3><label for="season-name">Season name</label><input id="season-name" placeholder="Season 1 – Fall 2026"><label for="season-start">Start date</label><input id="season-start" type="date"><label for="season-end">End date</label><input id="season-end" type="date"><div class="tsg-default-rules">Competition settings are reused automatically. Just enter the season name and dates; the schedule generator keeps the five sports, three-game matchups, random draw and established scoring rules.</div><button id="create-season">Create season</button><div id="create-season-message" class="notice" role="status"></div><div class="notice">This creates the season record only. It does not publish any matchups.</div></section>
-<section class="panel admin-form"><h3>Random schedule generator</h3><label for="schedule-season">Choose season</label><select id="schedule-season" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit"></select><input id="deadline-time" type="hidden" value="23:59"><div class="tsg-default-rules"><strong>Season defaults:</strong> Five sports (Ping Pong, Darts, Pool, Air Hockey and Beer Pong) · Three different sports per matchup · Two wins take the matchup · Total game wins break ties · Weekly deadline 11:59 PM (according to the schedule) · Fair rotating byes · Playing ahead allowed.</div><button id="preview-schedule">Generate schedule preview</button><div class="notice">The draw respects weekly opt-outs and blackout weeks, tries to avoid repeat opponents, and shares byes fairly. Opponents arrange their own playing day. Every matchup receives three randomly selected sports.</div></section>
+<section class="panel admin-form"><h3>Random schedule generator</h3><label for="schedule-season">Choose season</label><select id="schedule-season" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit"></select><input id="deadline-time" type="hidden" value="23:59"><div class="tsg-default-rules"><strong>Season defaults:</strong> Five sports (Ping Pong, Darts, Pool, Air Hockey and Beer Pong) · Three different sports per matchup · Two wins take the matchup · Total game wins break ties · Weekly deadline 11:59 PM (according to the schedule) · Fair rotating byes · Playing ahead allowed.</div><button id="preview-schedule">Generate schedule preview</button><div class="notice">The draw uses approved participating players, tries to avoid repeat opponents, and shares byes fairly. Individual days off and league blackout dates do not remove or replace opponents. The preview flags pairs without any mutually available dates. Every matchup receives three randomly selected sports.</div></section>
 </div>
 <section class="panel admin-form" style="margin-top:16px">
 <h3>Season Management</h3>
@@ -1287,7 +1287,7 @@ function renderCountdown(){
   tick();if(countdownInterval===null && d>Date.now())countdownInterval=setInterval(tick,1000);
 }
 async function loadPublic(){
- const [p,m,g,s,u,b,meet]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status,submitted_by,submitted_at,resolution,forfeit_winner_id,resolved_at'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status'),client.from('league_weekly_unavailability').select('season_id,week_number,player_id'),client.from('league_blackout_weeks').select('season_id,week_number,reason'),client.from('league_matchup_meetups').select('matchup_id,starts_at,proposed_by,confirmed_by,confirmed_at')]);
+ const [p,m,g,s,u,b,meet]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner,is_approved'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status,submitted_by,submitted_at,resolution,forfeit_winner_id,resolved_at'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status'),client.from('league_weekly_unavailability').select('season_id,week_number,player_id'),client.from('league_blackout_weeks').select('season_id,week_number,reason'),client.from('league_matchup_meetups').select('matchup_id,starts_at,proposed_by,confirmed_by,confirmed_at')]);
  for(const r of [p,m,g,s,b])if(r.error)throw r.error;
  profiles=p.data||[];matchups=m.data||[];games=g.data||[];seasons=s.data||[];blackoutWeeks=b.data||[];weeklyUnavailable=u.error?[]:(u.data||[]);meetups=meet.error?[]:(meet.data||[]);if(meet.error&&meet.error.code!=='42P01')console.warn('Meetup schedule loading:',meet.error.message);
  // Daily calendars use authenticated SELECT policies. Anonymous visitors see no availability data.
@@ -1322,13 +1322,17 @@ function roundRobin(players){const list=shuffle(players);if(list.length%2)list.p
 function makeSchedule(seasonId){
  const season=seasons.find(x=>x.id===seasonId);if(!season)throw new Error('Choose a season first.');
  if(matchups.some(m=>m.season_id===seasonId))throw new Error('This season already has matchups. The existing schedule will not be overwritten.');
- const players=profiles.filter(p=>p.is_player);if(players.length<2)throw new Error('At least two registered player accounts are required.');
- const weeks=weekCount(season),out=[],byes=[],blacks=[];const times=$('deadline-time').value||'23:59',pairHistory={},byeHistory={};
+ const players=profiles.filter(p=>p.is_player===true&&p.is_approved===true);
+ if(players.length<2)throw new Error('At least two approved participating players are required.');
+ const weeks=weekCount(season),out=[],byes=[],conflicts=[],pairHistory={},byeHistory={};
+ const times=$('deadline-time').value||'23:59';
  const pairKey=(a,b)=>[a,b].sort().join(':');
+ const unavailable=new Set(playerUnavailableDates.filter(d=>d.season_id===seasonId).map(d=>`${d.player_id}:${d.unavailable_on}`));
+ const blackouts=new Set(leagueBlackoutDates.filter(d=>d.season_id===seasonId).map(d=>d.blackout_on));
  for(let w=1;w<=weeks;w++){
-  if(isBlackout(seasonId,w)){blacks.push(w);continue;}
-  const active=shuffle(players.filter(p=>!isUnavail(seasonId,w,p.id)));const excluded=players.filter(p=>isUnavail(seasonId,w,p.id));
-  // When odd, give the bye to someone with the fewest previous byes.
+  // A daily absence never removes a player or replaces their opponent.
+  const active=shuffle(players);
+  // When odd, rotate the bye toward players who have received fewer.
   if(active.length%2){active.sort((a,b)=>(byeHistory[b.id]||0)-(byeHistory[a.id]||0));const bye=active.pop();byeHistory[bye.id]=(byeHistory[bye.id]||0)+1;byes.push({week_number:w,player_id:bye.id});}
   const pairs=[];
   while(active.length>=2){
@@ -1338,10 +1342,20 @@ function makeSchedule(seasonId){
   }
   const start=seasonWeekStart(season,w),last=new Date(season.ends_on+'T12:00:00');const deadline=new Date(start);deadline.setDate(deadline.getDate()+6);if(deadline>last)deadline.setTime(last.getTime());
   const [hh,mm]=times.split(':').map(Number);deadline.setHours(hh,mm,0,0);
-  for(const [a,b] of pairs){const three=shuffle(SPORTS).slice(0,3);out.push({week_number:w,player1_id:a.id,player2_id:b.id,deadline:deadline.toISOString(),disciplines:three});}
+  const playableDates=[];
+  for(let d=new Date(start);d<=last&&d<=deadline;d.setDate(d.getDate()+1)){
+   const ds=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
+   if(!blackouts.has(ds))playableDates.push(ds);
+  }
+  for(const [a,b] of pairs){
+   const three=shuffle(SPORTS).slice(0,3);
+   out.push({week_number:w,player1_id:a.id,player2_id:b.id,deadline:deadline.toISOString(),disciplines:three});
+   const shared=playableDates.filter(date=>!unavailable.has(`${a.id}:${date}`)&&!unavailable.has(`${b.id}:${date}`));
+   if(!shared.length)conflicts.push({week_number:w,player1_id:a.id,player2_id:b.id});
+  }
  }
- if(!out.length)throw new Error('No matchups could be generated. Check blackout weeks and player availability.');
- return {payload:out,byes,blacks,players,weeks,season};
+ if(!out.length)throw new Error('No matchups could be generated. Check approved participating players.');
+ return {payload:out,byes,conflicts,players,weeks,season};
 }
 function populateSeasonSelect(){
   const sel=$('schedule-season');if(!sel)return;
@@ -2505,13 +2519,13 @@ $('preview-schedule').onclick=()=>{try{
  const result=makeSchedule($('schedule-season').value);pendingSchedule=result.payload;
  const names=Object.fromEntries(result.players.map(p=>[p.id,p.display_name]));
  $('schedule-preview').innerHTML=Array.from({length:result.weeks},(_,i)=>{const wk=i+1,rows=pendingSchedule.filter(x=>x.week_number===wk),byes=result.byes.filter(x=>x.week_number===wk);
-  return `<h4>Week ${wk}</h4>${result.blacks.includes(wk)?'<div class="notice">Blackout week — no matchups</div>':''}${rows.length?`<table><thead><tr><th>Matchup</th><th>Three sports</th><th>Deadline</th></tr></thead><tbody>${rows.map(m=>`<tr><td>${esc(names[m.player1_id])} vs ${esc(names[m.player2_id])}</td><td>${m.disciplines.map(esc).join(', ')}</td><td>${new Date(m.deadline).toLocaleString()}</td></tr>`).join('')}</tbody></table>`:''}${byes.map(b=>`<div class="notice">Bye: ${esc(names[b.player_id])}</div>`).join('')}`;
+  return `<h4>Week ${wk}</h4>${result.conflicts.some(c=>c.week_number===wk)?'<div class="notice" style="color:#a13b32">Scheduling warning: At least one pair has no shared available dates this week. Review the daily calendars before publishing.</div>':''}${rows.length?`<table><thead><tr><th>Matchup</th><th>Three sports</th><th>Deadline</th></tr></thead><tbody>${rows.map(m=>`<tr><td>${esc(names[m.player1_id])} vs ${esc(names[m.player2_id])}${result.conflicts.some(c=>c.week_number===wk&&c.player1_id===m.player1_id&&c.player2_id===m.player2_id)?' ⚠ No shared available date':''}</td><td>${m.disciplines.map(esc).join(', ')}</td><td>${new Date(m.deadline).toLocaleString()}</td></tr>`).join('')}</tbody></table>`:''}${byes.map(b=>`<div class="notice">Bye: ${esc(names[b.player_id])}</div>`).join('')}`;
  }).join('');
- $('schedule-summary').textContent=`${result.players.length} players · ${result.weeks} weeks · ${pendingSchedule.length} matchups · ${result.blacks.length} blackout weeks. Preview only.`;
+ $('schedule-summary').textContent=`${result.players.length} players · ${result.weeks} weeks · ${pendingSchedule.length} matchups · ${result.conflicts.length} availability conflicts flagged. Preview only.`;
  $('schedule-preview-panel').classList.remove('hidden');showAdminMessage('');
  }catch(e){showAdminMessage(e.message,true);}};
 $('cancel-preview').onclick=()=>{pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');};
-$('publish-schedule').onclick=async()=>{if(!pendingSchedule?.length)return showAdminMessage('Generate a preview first.',true);if(!confirm('Publish this schedule? This cannot be automatically undone.'))return;const {data,error}=await client.rpc('publish_season_schedule',{p_season_id:$('schedule-season').value,p_schedule:pendingSchedule});if(error)return showAdminMessage(error.message,true);pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');showAdminMessage(`Published ${data} matchups successfully.`);await loadPublic();};
+$('publish-schedule').onclick=async()=>{if(!pendingSchedule?.length)return showAdminMessage('Generate a preview first.',true);if(pendingSchedule.some(m=>!profiles.some(p=>p.id===m.player1_id&&p.is_player&&p.is_approved)||!profiles.some(p=>p.id===m.player2_id&&p.is_player&&p.is_approved)))return showAdminMessage('An assigned player is no longer approved. Refresh and regenerate the preview.',true);if(!confirm('Publish this schedule? This cannot be automatically undone.'))return;const {data,error}=await client.rpc('publish_season_schedule',{p_season_id:$('schedule-season').value,p_schedule:pendingSchedule});if(error)return showAdminMessage(error.message,true);pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');showAdminMessage(`Published ${data} matchups successfully.`);await loadPublic();};
 // Public signup: Supabase trigger creates a non-participating, unapproved player profile.
 $('tsg-signup-form').addEventListener('submit',async(event)=>{
  event.preventDefault();
