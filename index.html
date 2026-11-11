@@ -733,6 +733,32 @@ body.display-mode .tsg-promo-bottom-note{position:absolute;right:12px;top:12px;b
 /* V46: Beer Pong photo replaces the old emoji tile. */
 body:not(.display-mode) .tsg-beer-tile img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 56%;}
 body:not(.display-mode) .tsg-beer-tile{overflow:hidden;}
+
+/* Version 48: compact individual-day availability calendars */
+.day-availability-panel{margin-top:16px}
+.day-calendar-shell{margin-top:12px}
+.day-week-head{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:10px 0 12px}
+.day-week-head strong{font-size:.94rem;color:#124631}
+.day-week-head .day-week-nav{display:flex;gap:7px}
+.day-week-nav button{padding:7px 11px;min-width:36px}
+.day-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px}
+.day-cell{min-width:0;min-height:76px;padding:9px 4px;border:1px solid #b6c5ae;background:#e7f1e5;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;color:#14472e}
+.day-cell .day-name{font-size:.72rem;font-weight:800}
+.day-cell .day-num{font-size:1.1rem;font-weight:850;font-variant-numeric:tabular-nums}
+.day-cell .day-state{font-size:.65rem;line-height:1.1;text-align:center}
+.day-cell.day-off{background:#fae8e3;border-color:#dcafa4;color:#832c20}
+.day-cell.day-blackout{background:#f4e5c7;border-color:#bc944e;color:#63440d}
+.day-cell:disabled{background:#f0f0ed;color:#9ba39c;border-color:#e1e2df;cursor:not-allowed}
+.day-calendar-key{display:flex;gap:14px;flex-wrap:wrap;font-size:.75rem;color:#607267;margin-top:10px}
+.day-calendar-key span{display:flex;align-items:center;gap:5px}
+.day-calendar-key i{width:11px;height:11px;border:1px solid #a7b9a4;background:#e7f1e5;border-radius:3px}
+.day-calendar-key i.off{background:#fae8e3;border-color:#dcafa4}
+.day-calendar-key i.black{background:#f4e5c7;border-color:#bc944e}
+.day-admin-toolbar{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0}
+.day-admin-history{margin-top:16px}
+.day-admin-history summary{cursor:pointer;font-weight:750}
+.day-opponent-note{font-size:.83rem;margin:9px 0;padding:10px;background:#f6f0dc;border:1px solid #dfd1a5;border-radius:9px;color:#51431f}
+@media(max-width:700px){.day-admin-toolbar,.admin-week-grid{grid-template-columns:1fr}.day-calendar-grid{gap:4px}.day-cell{min-height:68px;padding:6px 2px}.day-cell .day-name{font-size:.65rem}.day-cell .day-num{font-size:1rem}.day-cell .day-state{font-size:.57rem}}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1100,11 +1126,11 @@ body:not(.display-mode) .home-sport-tile:focus-visible{outline:3px solid #e4c071
 <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><input id="my-display-name" maxlength="40" placeholder="Your league display name" style="flex:1;min-width:180px"><button id="save-display-name" type="button">Save name</button></div>
 <div id="display-name-message" role="status" class="tool-status"></div>
 </section>
-<section class="panel player-tools" id="weekly-availability-panel">
-<h3>📅 Weekly availability</h3>
-<p class="muted">Everyone starts available. Mark a whole week unavailable before its Monday 11:59 PM Calgary-time cutoff. You arrange the actual day and time directly with your opponent. A completed matchup cannot be withdrawn.</p>
-<div id="weekly-availability-list" class="weekly-list"><div class="empty">Loading weeks…</div></div>
-<div id="weekly-availability-message" role="status" class="notice"></div>
+<section class="panel player-tools day-availability-panel" id="weekly-availability-panel">
+<h3>📅 My Playing Availability</h3>
+<p class="muted">Everyone is available by default. Tap only the days you cannot play. Your opponent can see these days; existing matchups stay in place.</p>
+<div id="weekly-availability-list" class="day-calendar-shell"><div class="empty">Loading dates…</div></div>
+<div id="weekly-availability-message" role="status" aria-live="polite" class="notice"></div>
 </section>
 <section class="panel score-panel">
 <h3>Submit my match results</h3><p class="muted">Either opponent may submit once. All three assigned sports must be entered. After submission both players are locked out; an admin can correct mistakes.</p>
@@ -1161,10 +1187,11 @@ body:not(.display-mode) .home-sport-tile:focus-visible{outline:3px solid #e4c071
   <div id="player-management-message" class="notice" role="status"></div>
 </section>
 <section class="panel score-panel" id="weekly-admin-panel">
-<h3>🗓 Weekly schedule controls</h3>
-<p class="muted">Close an entire future week before its games are published, view availability and repair history. Players arrange the actual date themselves. Existing published matchups cannot be blacked out automatically.</p>
-<div class="admin-week-grid"><div class="panel"><h4>Blackout weeks</h4><label for="blackout-season">Season</label><select id="blackout-season"></select><div class="admin-week-list" id="admin-blackout-weeks"></div><div id="blackout-week-message" class="notice" role="status"></div></div>
-<div class="panel"><h4>Recent schedule changes</h4><div id="schedule-change-log" class="admin-week-list"></div></div></div>
+<h3>🗓 Daily Schedule Controls</h3>
+<p class="muted">Tap individual dates. Player days off affect only that person; a league blackout blocks everyone. Existing matchups are not automatically removed.</p>
+<div class="day-admin-toolbar"><div><label for="blackout-season">Season</label><select id="blackout-season"></select></div><div><label for="day-admin-player">Player to manage</label><select id="day-admin-player"></select></div></div>
+<div class="admin-week-grid"><div class="panel"><h4>Player days off</h4><div id="day-admin-player-calendar" class="day-calendar-shell"></div><div id="day-admin-player-message" class="notice" role="status" aria-live="polite"></div></div><div class="panel"><h4>League blackout dates</h4><div id="admin-blackout-weeks" class="day-calendar-shell"></div><div id="blackout-week-message" class="notice" role="status" aria-live="polite"></div></div></div>
+<details class="day-admin-history"><summary>Recent schedule changes</summary><div id="schedule-change-log" class="admin-week-list"></div></details>
 </section>
 <section class="panel score-panel" id="forfeit-panel">
 <h3>🏅 Resolve missed matchups</h3>
@@ -1222,6 +1249,8 @@ let profiles=[], matchups=[], games=[], seasons=[],meetups=[];
 let isAdmin=false, isOwner=false, pendingSchedule=null, countdownInterval=null;
 let currentUserId=null, selectedProfileId=null, lbSlideIndex=0, lbRotateTimer=null, lbClockTimer=null;
 let weeklyUnavailable=[],blackoutWeeks=[],scheduleChanges=[],currentWeekSeasonId=null;
+let playerUnavailableDates=[],leagueBlackoutDates=[];
+const dayWeekIndex={player:0,adminPlayer:0,blackout:0};
 const calDate=d=>{const f=new Intl.DateTimeFormat('en-US',{timeZone:'America/Edmonton',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d);const x=Object.fromEntries(f.map(v=>[v.type,v.value]));return `${x.year}-${x.month}-${x.day}`;};
 const calMonday=d=>{const date=new Date(d+'T12:00:00Z');date.setUTCDate(date.getUTCDate()-((date.getUTCDay()+6)%7));return date.toISOString().slice(0,10);};
 const seasonWeekStart=(s,w)=>{const d=new Date(s.starts_on+'T12:00:00');d.setDate(d.getDate()+7*(w-1));return d;};
@@ -1261,6 +1290,15 @@ async function loadPublic(){
  const [p,m,g,s,u,b,meet]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status,submitted_by,submitted_at,resolution,forfeit_winner_id,resolved_at'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status'),client.from('league_weekly_unavailability').select('season_id,week_number,player_id'),client.from('league_blackout_weeks').select('season_id,week_number,reason'),client.from('league_matchup_meetups').select('matchup_id,starts_at,proposed_by,confirmed_by,confirmed_at')]);
  for(const r of [p,m,g,s,b])if(r.error)throw r.error;
  profiles=p.data||[];matchups=m.data||[];games=g.data||[];seasons=s.data||[];blackoutWeeks=b.data||[];weeklyUnavailable=u.error?[]:(u.data||[]);meetups=meet.error?[]:(meet.data||[]);if(meet.error&&meet.error.code!=='42P01')console.warn('Meetup schedule loading:',meet.error.message);
+ // Daily calendars use authenticated SELECT policies. Anonymous visitors see no availability data.
+ const [dailyPlayers,dailyBlackouts]=await Promise.all([
+   client.from('league_player_unavailable_dates').select('season_id,player_id,unavailable_on,created_by,created_at'),
+   client.from('league_blackout_dates').select('season_id,blackout_on,reason,created_by,created_at')
+ ]);
+ if(dailyPlayers.error && currentUserId)console.warn('Daily player availability:',dailyPlayers.error.message);
+ if(dailyBlackouts.error && currentUserId)console.warn('Daily blackout dates:',dailyBlackouts.error.message);
+ playerUnavailableDates=dailyPlayers.data||[];
+ leagueBlackoutDates=dailyBlackouts.data||[];
  const active=seasons.find(x=>x.status==='active')||seasons[0];$('season-label').textContent=active?.name||'Season not yet published';
  renderStandings();renderMatchups();renderCountdown();renderProfile();renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
  if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();await loadScheduleLog();await loadPendingRegistrations();}else $('player-management-list').innerHTML='Administrator access required.';
@@ -1470,8 +1508,17 @@ function meetupControls(m){
  if(m.status!=='scheduled')return '';
  const a=appointmentFor(m.id),confirmed=!!a?.confirmed_at;
  const label=a?`<div class="meetup-status ${confirmed?'confirmed':''}">${confirmed?'✓ CONFIRMED MATCH TIME':'⏳ TIME PROPOSED — AWAITING OPPONENT'}<strong>${esc(meetupWhen(a.starts_at))}</strong>${!confirmed?`<small>Proposed by ${esc(playerName(a.proposed_by))}</small>`:''}</div>`:'<div class="notice">Set a match time so the crew can watch. Both players must agree before it appears on TV.</div>';
+ const season=seasons.find(s=>s.id===m.season_id);
+ const opponent=m.player1_id===currentUserId?m.player2_id:m.player1_id;
+ let opponentDays='';
+ if(season){
+   const start=dayStart(season,m.week_number-1),days=Array.from({length:7},(_,i)=>dateAdd(start,i)).filter(d=>d<=season.ends_on);
+   const offDays=days.filter(d=>dayIsOff(season.id,opponent,d));
+   const blockedDays=days.filter(d=>dayIsBlack(season.id,d));
+   opponentDays=`<div class="day-opponent-note"><strong>${esc(playerName(opponent))}'s unavailable days:</strong> ${offDays.length?offDays.map(d=>esc(dateLabel(d))).join(', '):'None marked'}${blockedDays.length?`<br><strong>League blackout:</strong> ${blockedDays.map(d=>esc(dateLabel(d))).join(', ')}`:''}</div>`;
+ }
  const approve=a&&!confirmed&&a.proposed_by!==currentUserId?`<button type="button" data-meetup-confirm="${esc(m.id)}">Confirm this time</button>`:'';
- return `<div class="meetup-tools"><strong>📅 Schedule your matchup</strong>${label}<form data-meetup-propose="${esc(m.id)}"><label for="meetup-${esc(m.id)}">Propose a date and time (Calgary / Mountain time)</label><input id="meetup-${esc(m.id)}" type="datetime-local" required value="${esc(meetupInputDate(a?.starts_at))}"><button type="submit" class="secondary">${a?'Propose a different time':'Propose match time'}</button></form>${approve}</div>`;
+ return `<div class="meetup-tools"><strong>📅 Schedule your matchup</strong>${label}<form data-meetup-propose="${esc(m.id)}"><label for="meetup-${esc(m.id)}">Propose a date and time (Calgary / Mountain time)</label><input id="meetup-${esc(m.id)}" type="datetime-local" required value="${esc(meetupInputDate(a?.starts_at))}"><button type="submit" class="secondary">${a?'Propose a different time':'Propose match time'}</button></form>${approve}${opponentDays}</div>`;
 }
 function renderMyMatchups(){
  const box=$('my-matchups');if(!box)return;
@@ -2283,34 +2330,81 @@ if(new URLSearchParams(location.search).get('display')==='1'){
  refreshSportsWire(true);
 }
 // Version 4: weekly availability and adjudicated forfeits.
-function showWeeklyMessage(message,error=false){const n=$('weekly-availability-message');n.className=error?'status error':'status';n.textContent=message;}
+// Version 48: all date-only calendars use Calgary calendar dates.
+function dateAdd(ymd,days){const d=new Date(ymd+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10);}
+function dayWeekCount(s){return Math.ceil(((Date.parse(s.ends_on+'T12:00:00Z')-Date.parse(s.starts_on+'T12:00:00Z'))/86400000+1)/7);}
+function dayStart(s,idx){return dateAdd(s.starts_on,idx*7);}
+function dayIsOff(sid,pid,day){return playerUnavailableDates.some(x=>x.season_id===sid&&x.player_id===pid&&x.unavailable_on===day);}
+function dayIsBlack(sid,day){return leagueBlackoutDates.some(x=>x.season_id===sid&&x.blackout_on===day);}
+function activeDaySeason(){return seasons.find(x=>x.status==='active')||seasons.find(x=>x.status==='upcoming')||seasons[0];}
+function showDailyMessage(id,message,error=false){const n=$(id);if(!n)return;n.className=error?'status error':'status';n.textContent=message;}
+function dateLabel(ymd){return new Date(ymd+'T12:00:00Z').toLocaleDateString('en-CA',{timeZone:'UTC',month:'short',day:'numeric',year:'numeric'});}
+function dayCalendarMarkup(s,kind,idx,pid){
+ const weeks=dayWeekCount(s),index=Math.max(0,Math.min(weeks-1,idx));dayWeekIndex[kind]=index;
+ const start=dayStart(s,index),last=dateAdd(start,6),today=calDate(new Date());
+ let cells='';
+ for(let i=0;i<7;i++){
+   const date=dateAdd(start,i),inSeason=date>=s.starts_on&&date<=s.ends_on;
+   const off=kind==='blackout'?dayIsBlack(s.id,date):dayIsOff(s.id,pid,date);
+   const black=dayIsBlack(s.id,date);
+   const name=new Date(date+'T12:00:00Z').toLocaleDateString('en-CA',{weekday:'short',timeZone:'UTC'});
+   const state=!inSeason?'—':kind==='blackout'?(black?'Blocked':'Open'):off?'Off':black?'Blocked':'Available';
+   const disabled=!inSeason||date<today||(!isAdmin&&kind==='player'&&calDate(new Date())<'2026-11-20');
+   const style=off?'day-off':black?'day-blackout':'';
+   cells+=`<button type="button" class="day-cell ${style}" data-day-kind="${kind}" data-day-date="${date}" data-day-season="${esc(s.id)}" data-day-player="${esc(pid||'')}" ${disabled?'disabled':''} aria-label="${esc(name+' '+date+' '+state+'; click to change')}"><span class="day-name">${esc(name)}</span><span class="day-num">${date.slice(8)}</span><span class="day-state">${state}</span></button>`;
+ }
+ return `<div class="day-week-head"><strong>${esc(dateLabel(start))} – ${esc(dateLabel(last))}</strong><div class="day-week-nav"><button type="button" class="secondary" aria-label="Previous week" data-day-prev="${kind}" ${index<=0?'disabled':''}>‹</button><button type="button" class="secondary" aria-label="Next week" data-day-next="${kind}" ${index>=weeks-1?'disabled':''}>›</button></div></div><div class="day-calendar-grid">${cells}</div><div class="day-calendar-key"><span><i></i>Available</span><span><i class="off"></i>Unavailable</span><span><i class="black"></i>League blackout</span></div>`;
+}
 function renderWeeklyAvailability(){const n=$('weekly-availability-list');if(!n)return;
- if(!currentUserId){n.innerHTML='<p class="muted">Sign in to manage weekly availability.</p>';return;}
- const active=seasons.filter(s=>s.status==='active'||s.status==='upcoming').sort((a,b)=>a.starts_on.localeCompare(b.starts_on));
- if(!active.length){n.innerHTML='<p class="muted">No active or upcoming season yet.</p>';return;}
- n.innerHTML=active.map(s=>`<h4>${esc(s.name)}</h4>`+Array.from({length:weekCount(s)},(_,i)=>{const w=i+1,off=isUnavail(s.id,w,currentUserId),black=isBlackout(s.id,w),locked=weekLocked(s,w),played=matchups.some(m=>m.season_id===s.id&&m.week_number===w&&(m.player1_id===currentUserId||m.player2_id===currentUserId)&&(m.status!=='scheduled'||!!m.submitted_at));
- const disabled=locked||black||played;return `<div class="weekly-row ${off?'weekly-off':''} ${disabled?'week-closed':''}"><div><strong>Week ${w} · ${esc(weekDates(s,w))}</strong><div class="notice">${black?'League blackout':played?'Matchup already played/closed':locked?'Monday cutoff passed':off?'Unavailable · No penalty':'Available by default'}</div></div><div class="weekly-actions"><button type="button" class="${off?'':'secondary'}" data-week-season="${esc(s.id)}" data-week-number="${w}" data-week-off="${off?'0':'1'}" ${disabled?'disabled':''}>${off?'Mark available':'Withdraw this week'}</button></div></div>`;}).join('')).join('');
+ if(!currentUserId){n.innerHTML='<p class="muted">Sign in to manage availability.</p>';return;}
+ const s=activeDaySeason();if(!s){n.innerHTML='<p class="muted">No season yet.</p>';return;}
+ n.innerHTML=`<h4>${esc(s.name)}</h4>`+dayCalendarMarkup(s,'player',dayWeekIndex.player,currentUserId);
 }
-$('weekly-availability-list').addEventListener('click',async e=>{const b=e.target.closest('button[data-week-season]');if(!b)return;const s=seasons.find(x=>x.id===b.dataset.weekSeason),week=Number(b.dataset.weekNumber),off=b.dataset.weekOff==='1';
- if(!s)return;const message=off?`Mark Week ${week} unavailable? Any unplayed matchup may be replaced automatically. This is penalty-free until Monday night.`:`Mark Week ${week} available? This does not automatically restore an earlier pairing.`;
- if(!confirm(message))return;b.disabled=true;
- try{const {data,error}=await client.rpc('set_league_week_availability',{p_season_id:s.id,p_week_number:week,p_unavailable:off});if(error)throw error;await loadPublic();showWeeklyMessage(data||'Availability updated.');}
- catch(err){showWeeklyMessage(err.message||'Unable to update availability.',true);}finally{b.disabled=false;}
-});
-function populateBlackoutControl(){const n=$('blackout-season');if(!n)return;const old=n.value;
+function populateBlackoutControl(){const n=$('blackout-season'),p=$('day-admin-player');if(!n||!p)return;
+ const old=n.value,oldPlayer=p.value;
  n.innerHTML=seasons.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');
- if(seasons.some(s=>s.id===old))n.value=old;renderBlackoutControl();
+ if(seasons.some(s=>s.id===old))n.value=old;
+ const eligible=profiles.filter(x=>x.is_player).sort((a,b)=>a.display_name.localeCompare(b.display_name));
+ p.innerHTML=eligible.length?eligible.map(x=>`<option value="${esc(x.id)}">${esc(x.display_name)}</option>`).join(''):'<option value="">No active players</option>';
+ if(eligible.some(x=>x.id===oldPlayer))p.value=oldPlayer;
+ renderBlackoutControl();
 }
-function renderBlackoutControl(){const sid=$('blackout-season')?.value,n=$('admin-blackout-weeks');if(!n)return;const s=seasons.find(x=>x.id===sid);if(!s){n.innerHTML='<p class="muted">Create a season first.</p>';return;}
- n.innerHTML=Array.from({length:weekCount(s)},(_,i)=>{const w=i+1,black=isBlackout(s.id,w),published=matchups.some(m=>m.season_id===s.id&&m.week_number===w),past=weekLocked(s,w);
- return `<div class="admin-week-line"><div><strong>Week ${w}</strong><div class="notice">${esc(weekDates(s,w))} · ${black?'Blackout':published?'Published':'Open'}</div></div><button type="button" data-blackout-season="${esc(s.id)}" data-blackout-week="${w}" data-blackout-value="${black?'0':'1'}" class="${black?'':'secondary'}" ${(!black&&(published||past))?'disabled':''}>${black?'Unblock':'Blackout'}</button></div>`;}).join('');
+function renderBlackoutControl(){const sid=$('blackout-season')?.value,pid=$('day-admin-player')?.value;
+ const s=seasons.find(x=>x.id===sid),black=$('admin-blackout-weeks'),player=$('day-admin-player-calendar');
+ if(!black||!player)return;
+ if(!s){black.innerHTML='<p class="muted">Create a season first.</p>';player.innerHTML='';return;}
+ black.innerHTML=dayCalendarMarkup(s,'blackout',dayWeekIndex.blackout,null);
+ player.innerHTML=pid?dayCalendarMarkup(s,'adminPlayer',dayWeekIndex.adminPlayer,pid):'<p class="muted">Choose a participating player.</p>';
 }
-$('blackout-season').addEventListener('change',renderBlackoutControl);
-$('admin-blackout-weeks').addEventListener('click',async e=>{const b=e.target.closest('button[data-blackout-season]');if(!b)return;const sid=b.dataset.blackoutSeason,w=Number(b.dataset.blackoutWeek),block=b.dataset.blackoutValue==='1';
- if(!confirm(`${block?'Black out':'Reopen'} Week ${w}? Blackout weeks must not contain published matches.`))return;b.disabled=true;
- const {error}=await client.rpc('set_league_blackout_week',{p_season_id:sid,p_week_number:w,p_blackout:block});
- if(error){$('blackout-week-message').textContent=error.message;}else{await loadPublic();$('blackout-week-message').textContent=`Week ${w} updated.`;}
- b.disabled=false;
+function renderAllDailyCalendars(){renderWeeklyAvailability();if(isAdmin)renderBlackoutControl();renderMyMatchups();}
+document.addEventListener('change',e=>{
+ if(e.target.id==='blackout-season'){dayWeekIndex.blackout=0;dayWeekIndex.adminPlayer=0;renderBlackoutControl();}
+ if(e.target.id==='day-admin-player'){dayWeekIndex.adminPlayer=0;renderBlackoutControl();}
+});
+document.addEventListener('click',async e=>{
+ const prev=e.target.closest('[data-day-prev]'),next=e.target.closest('[data-day-next]');
+ if(prev||next){const kind=(prev||next).dataset.dayPrev||(prev||next).dataset.dayNext;dayWeekIndex[kind]+=next?1:-1;renderAllDailyCalendars();return;}
+ const btn=e.target.closest('button[data-day-kind]');if(!btn)return;
+ const {dayKind:kind,dayDate:date,daySeason:sid,dayPlayer:pid}=btn.dataset;
+ const off=kind==='blackout'?dayIsBlack(sid,date):dayIsOff(sid,pid,date);
+ if(kind==='blackout'&&!confirm(`${off?'Reopen':'Block'} ${dateLabel(date)} for the entire league? Existing confirmed matchups will not be deleted.`))return;
+ if(kind==='adminPlayer'&&!pid)return;
+ btn.disabled=true;
+ const args=kind==='blackout'?{p_season_id:sid,p_date:date,p_blocked:!off,p_reason:'League blackout'}:
+   kind==='adminPlayer'?{p_season_id:sid,p_player_id:pid,p_date:date,p_unavailable:!off}:
+   {p_season_id:sid,p_date:date,p_unavailable:!off};
+ const rpc=kind==='blackout'?'set_league_blackout_day':kind==='adminPlayer'?'set_league_player_day_admin':'set_league_day_availability';
+ const msg=kind==='blackout'?'blackout-week-message':kind==='adminPlayer'?'day-admin-player-message':'weekly-availability-message';
+ try{
+   const {error}=await client.rpc(rpc,args);if(error)throw error;
+   const [players,blacks]=await Promise.all([
+     client.from('league_player_unavailable_dates').select('season_id,player_id,unavailable_on,created_by,created_at'),
+     client.from('league_blackout_dates').select('season_id,blackout_on,reason,created_by,created_at')
+   ]);
+   if(players.error)throw players.error;if(blacks.error)throw blacks.error;
+   playerUnavailableDates=players.data||[];leagueBlackoutDates=blacks.data||[];
+   renderAllDailyCalendars();showDailyMessage(msg,`${dateLabel(date)} ${off?'reopened / marked available':'marked unavailable'} successfully.`);
+ }catch(err){showDailyMessage(msg,err.message||'Could not update availability.',true);btn.disabled=false;}
 });
 async function loadScheduleLog(){const node=$('schedule-change-log');if(!node)return;
  const {data,error}=await client.from('league_schedule_changes').select('week_number,changed_at,change_type,description').order('changed_at',{ascending:false}).limit(30);
