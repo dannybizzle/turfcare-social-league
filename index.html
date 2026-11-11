@@ -67,6 +67,68 @@ body.display-mode .lb-screen{display:flex;position:fixed;inset:0;padding:0;gap:0
 .wire-empty{font-size:clamp(16px,1.35vw,23px);font-weight:700;color:#65756b;white-space:nowrap}
 @media(max-height:700px){.lb-sports-wire{min-height:80px}.lb-tv-header{padding-top:8px;padding-bottom:8px}}
 @media(prefers-reduced-motion:reduce){.lb-tv-slide,.lb-tv-dot{animation:none}}
+
+/* TV layout hotfix — correct vertical stacking, compact identity, content-first proportions. */
+body.display-mode .lb-screen{
+  display:flex !important;flex-direction:column !important;
+  width:100vw;height:100vh;height:100dvh;min-height:0;
+  position:fixed;inset:0;box-sizing:border-box;
+  padding:0;gap:0;overflow:hidden;
+}
+body.display-mode .lb-tv-header{
+  flex:0 0 auto;min-height:0;
+  padding:clamp(8px,1.2vh,16px) clamp(18px,2.4vw,38px);
+  gap:14px;
+}
+body.display-mode .lb-tv-brand{gap:12px}
+body.display-mode .lb-tv-logo{
+  width:clamp(36px,3vw,52px);height:clamp(36px,3vw,52px);
+  font-size:clamp(21px,2vw,31px);border-radius:11px;flex-shrink:0;
+}
+body.display-mode .lb-tv-title{
+  font-size:clamp(19px,1.65vw,30px);letter-spacing:.025em;line-height:1.1;
+}
+body.display-mode .lb-tv-meta{min-width:0;white-space:nowrap}
+body.display-mode .lb-tv-date{font-size:clamp(11px,.95vw,17px);font-weight:700}
+body.display-mode .lb-tv-time{font-size:clamp(17px,1.7vw,30px);font-weight:850}
+body.display-mode .lb-tv-main{
+  flex:1 1 0;min-height:0;min-width:0;width:100%;
+  display:grid;grid-template-columns:minmax(0,1.9fr) minmax(270px,.85fr);
+  gap:clamp(10px,1.2vw,22px);
+  padding:clamp(10px,1.25vh,18px) clamp(18px,2.4vw,38px);
+  overflow:hidden;
+}
+body.display-mode .lb-tv-primary,
+body.display-mode .lb-tv-secondary{min-height:0;min-width:0;padding:clamp(16px,1.7vw,26px)}
+body.display-mode .lb-tv-primary{flex:1 1 auto}
+body.display-mode .lb-tv-slide{min-height:0;flex:1 1 auto}
+body.display-mode .lb-tv-secondary{gap:clamp(6px,.85vh,12px)}
+body.display-mode .lb-tv-section-title{font-size:clamp(28px,3.1vw,54px);margin:0 0 clamp(12px,2vh,22px)}
+body.display-mode .lb-tv-footer{
+  flex:0 0 clamp(27px,3.6vh,45px);height:auto;min-height:0;
+  padding:0 clamp(18px,2.4vw,38px);
+}
+body.display-mode .lb-sports-wire{
+  display:flex;flex-direction:row;flex:0 0 clamp(74px,10vh,120px);
+  min-height:0;height:auto;width:100%;max-width:100vw;
+  box-sizing:border-box;overflow:hidden;
+}
+body.display-mode .lb-sports-wire .lb-nhl-label{min-width:clamp(140px,14.5vw,235px);padding:8px clamp(12px,1.45vw,25px)}
+body.display-mode .lb-sports-wire .lb-nhl-label strong{font-size:clamp(16px,1.6vw,28px)}
+body.display-mode .lb-sports-wire .lb-nhl-label span{font-size:clamp(9px,.75vw,14px)}
+body.display-mode .lb-sports-wire .lb-nhl-track{flex:1;min-width:0;overflow:hidden}
+@media(max-width:950px){
+ body.display-mode .lb-tv-main{grid-template-columns:minmax(0,1.6fr) minmax(210px,.9fr)}
+ body.display-mode .lb-tv-side-title{font-size:clamp(18px,2vw,25px)}
+}
+@media(max-height:650px){
+ body.display-mode .lb-tv-header{padding-top:7px;padding-bottom:7px}
+ body.display-mode .lb-tv-main{padding-top:8px;padding-bottom:8px}
+ body.display-mode .lb-tv-primary,body.display-mode .lb-tv-secondary{padding:12px}
+ body.display-mode .lb-tv-footer{flex-basis:26px}
+ body.display-mode .lb-sports-wire{flex-basis:70px}
+}
+
 </style>
 </head>
 <body>
@@ -161,7 +223,7 @@ body.display-mode .lb-screen{display:flex;position:fixed;inset:0;padding:0;gap:0
 </main>
 <div class="lb-screen" id="lunchroom-screen" aria-label="Lunchroom league scoreboard">
  <div class="lb-tv-header">
-  <div class="lb-tv-brand"><div class="lb-tv-logo">⛳</div><div><div class="lb-tv-title">TURFCARE SOCIAL LEAGUE</div><div class="lb-tv-subtitle">The clubhouse scoreboard · Three sports per matchup</div></div></div>
+  <div class="lb-tv-brand"><div class="lb-tv-logo">⛳</div><div><div class="lb-tv-title">TURFCARE SOCIAL LEAGUE</div></div></div>
   <div class="lb-tv-meta"><div class="lb-tv-date" id="lb-date"></div><div class="lb-tv-time" id="lb-local-time">--:--</div></div>
  </div>
  <div class="lb-tv-main">
