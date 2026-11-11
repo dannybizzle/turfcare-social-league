@@ -980,9 +980,76 @@ body:not(.display-mode) .tsg-auth-menu-title{display:flex;align-items:center;jus
 body:not(.display-mode) .tsg-auth-menu-close{padding:6px 10px;background:#e8e7db;color:#143e2b}
 @media(max-width:580px){body:not(.display-mode) .tsg-top-auth{padding:9px 10px;min-height:40px;font-size:11px}body:not(.display-mode) .home-topbar{gap:6px}body:not(.display-mode) .tsg-auth-menu{padding:15px}}
 </style>
+<style id="tsg-v44-compact-crest">
+/* V44 — Crest-forward compact homepage. Leaves TV mode, admin, player, and data logic unchanged. */
+@media (min-width: 1001px) {
+ body:not(.display-mode) .home-topbar{min-height:78px;padding-top:8px;padding-bottom:8px}
+ body:not(.display-mode) .home-topbar .tsg-home-brand img{width:72px;height:72px;border:2px solid #d6b569;box-shadow:0 0 0 4px #ffffff0b,0 5px 20px #0005}
+ body:not(.display-mode) .home-hero{min-height:300px;padding:26px max(24px,calc((100vw - 1170px)/2)) 38px;gap:24px}
+ body:not(.display-mode) .home-hero h1{font-size:clamp(56px,6.1vw,79px);margin:15px 0 13px}
+ body:not(.display-mode) .home-hero-lede{font-size:16px}
+ body:not(.display-mode) .home-rotating-slogan{margin-top:8px}
+ body:not(.display-mode) .tsg-home-registration-cta{margin-top:13px}
+ body:not(.display-mode) .home-launch-strip{margin-top:-13px}
+ body:not(.display-mode) .home-launch-strip>div{padding:9px 17px}
+ body:not(.display-mode) .home-launch-strip small{font-size:9px;margin-bottom:2px}
+ body:not(.display-mode) .home-launch-strip strong{font-size:21px}
+ body:not(.display-mode) .home-welcome{padding:18px 0 15px}
+ body:not(.display-mode) .home-welcome-head{margin-bottom:10px;gap:16px}
+ body:not(.display-mode) .home-welcome-head h2{font-size:31px;margin:2px 0}
+ body:not(.display-mode) .home-welcome-head p{font-size:13px;line-height:1.35}
+ body:not(.display-mode) .home-sport-tile{height:100px}
+ body:not(.display-mode) .home-sport-tile strong{font-size:19px}
+ body:not(.display-mode) .home-sport-tile span{bottom:8px}
+ body:not(.display-mode) .tsg-beer-tile{min-height:100px}
+ body:not(.display-mode) .tsg-beer-icon{font-size:48px}
+ body:not(.display-mode) .tsg-hero-crest{display:flex;min-width:230px;min-height:240px;padding:17px 18px;opacity:1;transform:none;background:radial-gradient(circle,#2c5a3f 0%,#07261d 80%);border-color:#d7b56d}
+ body:not(.display-mode) .tsg-hero-crest img{display:block;width:173px;height:173px;object-fit:cover;border-radius:50%;border:3px solid #dfc27d;box-shadow:0 0 0 6px #d2ad4d20,0 8px 26px #0007}
+ body:not(.display-mode) .tsg-hero-crest i{font-size:10px}
+}
+@media (min-width: 801px) and (max-width:1000px) {
+ body:not(.display-mode) .home-topbar .tsg-home-brand img{width:66px;height:66px}
+ body:not(.display-mode) .home-hero{min-height:310px;padding-top:28px;padding-bottom:34px}
+ body:not(.display-mode) .home-hero h1{font-size:clamp(56px,7vw,75px);margin:14px 0 12px}
+ body:not(.display-mode) .home-rotating-slogan{margin-top:9px}
+ body:not(.display-mode) .home-welcome{padding:22px 0}
+ body:not(.display-mode) .home-welcome-head{margin-bottom:12px}
+ body:not(.display-mode) .home-sport-tile{height:100px}
+ body:not(.display-mode) .tsg-beer-tile{min-height:100px}
+}
+@media (max-width:800px) {
+ body:not(.display-mode) .home-topbar .tsg-home-brand img{width:58px;height:58px;border:2px solid #d6b569}
+ body:not(.display-mode) .home-hero{min-height:0;padding:27px 21px 33px}
+ body:not(.display-mode) .home-hero h1{font-size:clamp(52px,12vw,75px);margin:13px 0 12px}
+ body:not(.display-mode) .home-hero-lede{font-size:14px;line-height:1.35}
+ body:not(.display-mode) .home-rotating-slogan{margin-top:9px;font-size:12px}
+ body:not(.display-mode) .tsg-home-registration-cta{margin-top:12px;min-height:44px}
+ body:not(.display-mode) .home-launch-strip{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:-12px}
+ body:not(.display-mode) .home-launch-strip>div{display:block;text-align:center;padding:10px 5px;border-bottom:0;border-right:1px solid #ffffff1c}
+ body:not(.display-mode) .home-launch-strip small{font-size:8px;letter-spacing:0;margin-bottom:5px}
+ body:not(.display-mode) .home-launch-strip strong{font-size:clamp(13px,3.2vw,19px);white-space:normal}
+ body:not(.display-mode) .home-welcome{padding:19px 0 13px}
+ body:not(.display-mode) .home-welcome-head{display:block;margin-bottom:10px}
+ body:not(.display-mode) .home-welcome-head h2{font-size:29px;margin:3px 0}
+ body:not(.display-mode) .home-welcome-head p{font-size:12px;line-height:1.35}
+ body:not(.display-mode) .home-sport-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+ body:not(.display-mode) .home-sport-tile{height:76px;min-height:76px;border-radius:8px}
+ body:not(.display-mode) .tsg-beer-tile{min-height:76px}
+ body:not(.display-mode) .home-sport-tile span{font-size:0;bottom:5px;left:4px;right:4px;text-align:center}
+ body:not(.display-mode) .home-sport-tile strong{font-size:clamp(9px,2.25vw,14px);line-height:1.05;overflow-wrap:break-word}
+ body:not(.display-mode) .tsg-beer-icon{font-size:30px}
+}
+@media (max-width:380px) {
+ body:not(.display-mode) .home-topbar .tsg-home-brand img{width:51px;height:51px}
+ body:not(.display-mode) .home-hero h1{font-size:50px}
+ body:not(.display-mode) .home-sport-tile strong{font-size:9px}
+}
+/* Ensure no hidden overflow prevents reaching the signup form on short screens. */
+body:not(.display-mode){overflow-x:hidden}
+</style>
 </head>
 <body>
-<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="home-nav-links"><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><div class="eyebrow">✦ &nbsp; 2026–2027 INAUGURAL SEASON</div><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><a class="tsg-home-registration-cta" href="#tsg-registration" aria-controls="tsg-registration" aria-expanded="false">Register for the League</a></div><div class="home-hero-mark"><span>THE GLENCOE</span><strong>TURFCARE<br>SOCIAL LEAGUE</strong><i>FIVE SPORTS · ONE CREW</i></div></div></header>
+<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="home-nav-links"><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><div class="eyebrow">✦ &nbsp; 2026–2027 INAUGURAL SEASON</div><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><a class="tsg-home-registration-cta" href="#tsg-registration" aria-controls="tsg-registration" aria-expanded="false">Register for the League</a></div><div class="home-hero-mark tsg-hero-crest" aria-label="The Glencoe crest"><img src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><i>FIVE SPORTS · ONE CREW</i></div></div></header>
 <main class="wrap home-body"><section class="home-launch-strip" aria-label="Season dates"><div><small>01 / REGISTRATION</small><strong>Closes Nov 19</strong></div><div><small>02 / PLAYER ACCESS</small><strong>Nov 20</strong></div><div><small>03 / SEASON KICKOFF</small><strong>Nov 23 · 7 AM</strong></div></section><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a href="#matchups-section" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a href="#page-matchups" class="home-sport-tile tsg-beer-tile"><div class="tsg-beer-icon" aria-hidden="true">🥤</div><span>05 <strong>BEER PONG</strong></span></a></div></section>
 
 <section class="countdown" id="deadline-section"><div><h2>Time left to finish this week's matchup</h2><div id="deadline-label" class="muted">The weekly deadline will appear here once matchups are published.</div></div><div class="timer" id="timer"><div class="timebox"><strong>--</strong><span>Days</span></div><div class="timebox"><strong>--</strong><span>Hours</span></div><div class="timebox"><strong>--</strong><span>Minutes</span></div><div class="timebox"><strong>--</strong><span>Seconds</span></div></div></section>
