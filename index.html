@@ -167,6 +167,39 @@ body.display-mode .lb-tv-secondary .lb-tv-side-title{font-size:clamp(22px,2vw,38
 body.display-mode .lb-exit-button{flex:0 0 auto;border:1px solid #ffffff45;background:#ffffff12;color:#e4f0e8;font-size:clamp(10px,.8vw,14px);padding:7px 10px;border-radius:8px;font-weight:650;cursor:pointer;opacity:.65}
 body.display-mode .lb-exit-button:hover,body.display-mode .lb-exit-button:focus-visible{opacity:1;background:#ffffff28;outline:2px solid #c8d98b;outline-offset:2px}
 @media(max-width:720px){body.display-mode .lb-exit-button{padding:7px 9px;font-size:12px}}
+
+/* Clubhouse V6 weather panel and amber digital countdown */
+.lb-weather-shell{height:100%;min-height:0;display:flex;flex-direction:column;gap:clamp(8px,.9vh,14px)}
+.lb-weather-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.lb-weather-title{font-weight:950;color:#f7faf4;font-size:clamp(23px,2.6vw,47px);line-height:1.05}
+.lb-weather-sub{font-size:clamp(11px,1.1vw,18px);color:#c8d98b;font-weight:750;margin-top:6px}
+.lb-weather-label{padding:7px 11px;background:#d7b56d22;border:1px solid #d7b56d6c;color:#efcf7a;border-radius:9px;letter-spacing:.08em;font-size:clamp(10px,.8vw,14px);font-weight:850;white-space:nowrap}
+.lb-weather-summary{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px}
+.lb-weather-kpi{background:#142f28;border:1px solid #68837445;border-radius:11px;padding:clamp(9px,1.2vw,18px);min-width:0}
+.lb-weather-kpi small{display:block;color:#b9d0c4;font-size:clamp(10px,.85vw,15px)}
+.lb-weather-kpi strong{display:block;color:#fff;font-size:clamp(20px,2.4vw,43px);line-height:1.15;white-space:nowrap}
+.lb-weather-kpi .amber{color:#efca73}
+.lb-weather-hourly{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:clamp(6px,.75vw,12px);min-height:0;flex:1}
+.lb-weather-hour{border:1px solid #53756866;background:linear-gradient(180deg,#1c4035,#0c2721);border-radius:12px;padding:clamp(8px,1vw,17px) clamp(5px,.6vw,11px);min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;text-align:center;gap:2px}
+.lb-weather-hour .hour{color:#cadfcf;font-size:clamp(11px,.9vw,16px);font-weight:800}
+.lb-weather-hour .weather-icon{font-size:clamp(23px,2.3vw,42px);line-height:1}
+.lb-weather-hour .degrees{font-size:clamp(17px,1.8vw,32px);font-weight:950;color:#fff}
+.lb-weather-hour .pop{font-size:clamp(10px,.9vw,15px);color:#dfc77f;font-weight:800}
+.lb-weather-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:clamp(6px,.7vw,11px);min-height:0;flex:1}
+.lb-weather-day{background:linear-gradient(180deg,#1d4135,#0d2822);border:1px solid #587b6c77;border-radius:14px;padding:clamp(8px,1.15vw,18px) 6px;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;gap:5px;text-align:center;min-width:0}
+.lb-weather-day .day{font-size:clamp(12px,1.13vw,20px);font-weight:900;color:#cfe4d6}
+.lb-weather-day .weather-icon{font-size:clamp(24px,2.7vw,52px)}
+.lb-weather-day .hilo{font-size:clamp(16px,1.9vw,35px);color:white;font-weight:950;white-space:nowrap}
+.lb-weather-day .low{color:#a9c3b7}
+.lb-weather-day .precip{color:#e7c574;font-size:clamp(11px,.85vw,16px);font-weight:850}
+.lb-weather-footer{display:flex;justify-content:space-between;gap:10px;color:#b7d2c3;font-size:clamp(10px,.8vw,14px);font-weight:650}
+.lb-weather-progress{display:flex;gap:6px}.lb-weather-progress i{height:5px;width:24px;background:#ffffff32;border-radius:3px}.lb-weather-progress i.on{background:#d7b56d}
+body.display-mode .lb-tv-big-clock{font-family:Consolas,'Lucida Console','Courier New',monospace;font-size:clamp(40px,7vw,140px);letter-spacing:-.075em;font-weight:900;color:#ffd078;text-shadow:0 0 12px #d98b3d88,0 0 50px #ff993344;font-variant-numeric:tabular-nums;background:linear-gradient(150deg,#0b1818,#18231d);border:1px solid #b37a3755;border-radius:22px;padding:clamp(18px,4vh,50px) 4px;box-shadow:inset 0 0 44px #0006;animation:lb-clock-pulse 1s ease-in-out infinite alternate}
+@keyframes lb-clock-pulse{from{text-shadow:0 0 10px #d98b3d44}to{text-shadow:0 0 18px #ff9e42aa,0 0 60px #ff993333}}
+body.display-mode .lb-tv-side-metric strong{font-family:Consolas,'Courier New',monospace;color:#f0c26e;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+@media(max-width:950px){.lb-weather-hourly{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr))}.lb-weather-days{gap:5px}.lb-weather-day{padding:7px 2px}}
+@media(max-height:650px){.lb-weather-summary{gap:6px}.lb-weather-kpi{padding:7px}.lb-weather-hour{padding:4px}.lb-weather-day{padding:4px 2px}}
+
 </style>
 </head>
 <body>
@@ -525,7 +558,10 @@ $('save-display-name').onclick=async()=>{
  catch(err){showDisplayNameMessage(err.message||'Could not update your name.',true);}finally{btn.disabled=false;}
 };
 function showDisplayNameMessage(msg,error=false){$('display-name-message').className=error?'status error':'status';$('display-name-message').textContent=msg;}
-const LB_TABS=['Highlights','Standings','Highlights','This week','Highlights','Recent results','Highlights','Countdown','Coming up'];
+const LB_TABS=['Highlights','Weather 48h','Highlights','Weather 7d'];
+const MAIN_PANEL_DURATION_MS=64000; // Equal, slower time for video and weather
+const WEATHER_PAGE_DURATION_MS=16000; // Four readable 12-hour panels per 48-hour forecast
+let lastRenderedMainPage=null;
 const TV_TZ='America/Edmonton';
 function tvDateParts(date=new Date()){
  const parts=new Intl.DateTimeFormat('en-CA',{timeZone:TV_TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date);
@@ -549,7 +585,7 @@ const LEAGUE_HIGHLIGHTS=[
  {sport:'Air Hockey',icon:'🏒',id:'U_m09J-m4Nc',title:'Carter Cup air hockey highlights',credit:'Centerline Pro Air Hockey'}
 ];
 let highlightCursor=0,activeHighlightIndex=-1,sideSlideIndex=0;
-const SIDE_SECTIONS=['Overall leaders','Ping Pong','Darts','Pool','Air Hockey','Matchups'];
+const SIDE_SECTIONS=['Leaderboard','Ping Pong','Leaderboard','Darts','Pool','Leaderboard','Air Hockey','Matchups','Overall leaders'];
 function highlightMarkup(){
  const idx=highlightCursor++ % LEAGUE_HIGHLIGHTS.length;
  activeHighlightIndex=idx;
@@ -572,11 +608,14 @@ function renderLeagueSidebar(){
  const n=$('lb-side-fixtures');if(!n)return;
  const index=sideSlideIndex%SIDE_SECTIONS.length,section=SIDE_SECTIONS[index];
  $('lb-side-pips').innerHTML=SIDE_SECTIONS.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join('');
- if(index===0){
+ if(section==='Leaderboard'){
+  const ranked=leaderboard().slice(0,5);
+  n.innerHTML=`<div class="lb-side-kicker">LEAGUE STANDINGS</div>${ranked.length?ranked.map((p,i)=>`<div class="lb-side-upcoming" style="display:flex;gap:10px;justify-content:space-between;align-items:baseline"><span><span style="color:#d7b56d">${i+1}.</span> ${esc(p.display_name)}</span><small style="white-space:nowrap">${p.wins}W · ${p.losses}L</small></div>`).join(''):'<div class="lb-side-empty">Players will appear here soon.</div>'}`;
+ }else if(section==='Overall leaders'){
   const ranked=leaderboard().filter(p=>p.wins+p.losses>0).sort((a,b)=>b.wins/(b.wins+b.losses)-a.wins/(a.wins+a.losses)||b.wins-a.wins);
   const top=ranked[0];
   n.innerHTML=top?`<div class="lb-side-kicker">OVERALL WIN PERCENTAGE</div><div class="lb-side-focus">${esc(top.display_name)}</div><div class="lb-side-detail">${Math.round(100*top.wins/(top.wins+top.losses))}% win rate · ${top.wins}W–${top.losses}L</div><div class="lb-side-bar"><i style="width:${Math.round(100*top.wins/(top.wins+top.losses))}%"></i></div><div class="lb-side-metric-grid"><div class="lb-side-stat"><b>${top.gameWins}</b><small>Sport wins</small></div><div class="lb-side-stat"><b>${top.freebies}</b><small>Freebie wins</small></div></div>`:`<div class="lb-side-kicker">OVERALL WIN PERCENTAGE</div><div class="lb-side-empty">Win percentages will appear when results are submitted.</div><div class="lb-side-metric-grid"><div class="lb-side-stat"><b>${profiles.filter(p=>p.is_player).length}</b><small>Active players</small></div><div class="lb-side-stat"><b>${matchups.length}</b><small>Matchups published</small></div></div>`;
- }else if(index<=4){
+ }else if(SPORTS.includes(section)){
   const icon=sportIcon[section]||'🏆',rows=tvSportStats(section),leader=rows[0];
   n.innerHTML=leader?`<div class="lb-side-kicker">${icon} ${esc(section.toUpperCase())} LEADER</div><div class="lb-side-focus">${esc(leader.name)}</div><div class="lb-side-detail">${leader.pct}% win rate · ${leader.wins}W–${leader.losses}L</div><div class="lb-side-bar"><i style="width:${leader.pct}%"></i></div>${rows.slice(1,3).map(r=>`<div class="lb-side-upcoming">${esc(r.name)} · ${r.pct}% <small>${r.wins} wins · ${r.played} games played</small></div>`).join('')}`:`<div class="lb-side-kicker">${icon} ${esc(section.toUpperCase())}</div><div class="lb-side-focus">Stats coming soon</div><div class="lb-side-empty">Once ${esc(section)} games are recorded, this panel will show leaders and win percentages.</div>`;
  }else{
@@ -584,6 +623,41 @@ function renderLeagueSidebar(){
   n.innerHTML=`<div class="lb-side-kicker">UPCOMING MATCHUPS</div>${upcoming.length?upcoming.map(m=>`<div class="lb-side-upcoming">${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}<small>Week ${m.week_number} · ${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||'').join(' '))}</small></div>`).join(''):'<div class="lb-side-empty">No upcoming matches yet. The draw will show here once it is published.</div>'}`;
  }
 }
+
+// Public, read-only weather. The TV does not need a Supabase login.
+const WEATHER_REFRESH_MS=10*60*1000;
+let tvWeather=null,tvWeatherUpdated=0,tvWeatherError='',weatherPanel=0;
+const weatherIcon=c=>{if(c==null)return '🌤️';if(c===0)return '☀️';if(c<=2)return '🌤️';if(c===3)return '☁️';if([45,48].includes(c))return '🌫️';if([51,53,55,56,57,61,63,65,66,67,80,81,82].includes(c))return '🌧️';if([71,73,75,77,85,86].includes(c))return '🌨️';if([95,96,99].includes(c))return '⛈️';return '🌤️';};
+const safeNumber=x=>Number.isFinite(Number(x))?Math.round(Number(x)):null;
+const wxTemp=x=>safeNumber(x)==null?'—':`${safeNumber(x)}°`;
+function tvWeatherMarkup(isHourly){
+ const kind=isHourly?'48-HOUR HOURLY':'7-DAY OUTLOOK';
+ if(!tvWeather){return `<div class="lb-weather-shell"><div class="lb-weather-heading"><div><div class="lb-weather-title">Rocky View weather</div><div class="lb-weather-sub">${kind} · Alberta</div></div><span class="lb-weather-label">FORECAST</span></div><div class="lb-tv-empty">${esc(tvWeatherError||'Loading the local forecast…')}</div><div class="lb-weather-footer"><span>Forecast model: Open-Meteo · Area reference: Rocky View No. 44</span></div></div>`;}
+ const current=tvWeather.current||{},hourly=tvWeather.hourly||{},daily=tvWeather.daily||{};
+ const hourCount=Math.min(48,(hourly.time||[]).length);
+ const part=Math.max(0,Math.min(3,weatherPanel));
+ const timeFormat=t=>{const parts=String(t).split('T');if(parts.length<2)return String(t);const hour=Number(parts[1].slice(0,2));return `${hour%12||12}${hour<12?'a':'p'}`;};
+ const dayFormat=t=>{const d=new Date(`${t}T12:00:00Z`);return d.toLocaleDateString('en-CA',{timeZone:'UTC',weekday:'short'});};
+ let content='';
+ if(isHourly){
+  const start=part*12,stop=Math.min(start+12,hourCount);
+  content=`<div class="lb-weather-hourly">${Array.from({length:stop-start},(_,i)=>{const j=start+i;return `<div class="lb-weather-hour"><span class="hour">${esc(timeFormat(hourly.time[j]))}</span><span class="weather-icon">${weatherIcon(hourly.weather_code?.[j])}</span><span class="degrees">${wxTemp(hourly.temperature_2m?.[j])}</span><span class="pop">💧 ${safeNumber(hourly.precipitation_probability?.[j])??'—'}%</span></div>`;}).join('')}</div>`;
+ }else{
+  content=`<div class="lb-weather-days">${(daily.time||[]).slice(0,7).map((date,i)=>`<div class="lb-weather-day"><span class="day">${esc(dayFormat(date))}</span><span class="weather-icon">${weatherIcon(daily.weather_code?.[i])}</span><span class="hilo">${wxTemp(daily.temperature_2m_max?.[i])} <span class="low">${wxTemp(daily.temperature_2m_min?.[i])}</span></span><span class="precip">💧 ${safeNumber(daily.precipitation_probability_max?.[i])??'—'}%</span></div>`).join('')}</div>`;
+ }
+ return `<div class="lb-weather-shell"><div class="lb-weather-heading"><div><div class="lb-weather-title">Rocky View weather</div><div class="lb-weather-sub">${kind} · ${isHourly?`Hours ${part*12+1}–${Math.min((part+1)*12,48)} of 48`:'Next seven days'} · Mountain time</div></div><span class="lb-weather-label">${kind}</span></div><div class="lb-weather-summary"><div class="lb-weather-kpi"><small>Current temperature</small><strong>${wxTemp(current.temperature_2m)}</strong></div><div class="lb-weather-kpi"><small>Wind speed</small><strong>${safeNumber(current.wind_speed_10m)??'—'} <span style="font-size:.52em">km/h</span></strong></div><div class="lb-weather-kpi"><small>Conditions</small><strong class="amber">${weatherIcon(current.weather_code)} <span style="font-size:.48em">Local</span></strong></div></div>${content}<div class="lb-weather-footer"><span>Open-Meteo forecast model · Approx. Rocky View No. 44 centre · Updated ${tvWeatherUpdated?new Date(tvWeatherUpdated).toLocaleTimeString('en-CA',{timeZone:TV_TZ,hour:'numeric',minute:'2-digit'}):'—'}</span>${isHourly?`<div class="lb-weather-progress">${[0,1,2,3].map(i=>`<i class="${i===part?'on':''}"></i>`).join('')}</div>`:''}</div></div>`;
+}
+async function fetchTVWeather(){
+ try{
+  const response=await fetch('/api/weather',{headers:{Accept:'application/json'},cache:'no-store'});
+  if(!response.ok)throw new Error(`Forecast server: ${response.status}`);
+  const data=await response.json();
+  if(!data.hourly?.time?.length||!data.daily?.time?.length)throw new Error('Incomplete forecast response');
+  tvWeather=data;tvWeatherError='';tvWeatherUpdated=Date.now();
+  if(document.body.classList.contains('display-mode')&&['Weather 48h','Weather 7d'].includes(LB_TABS[lbSlideIndex%LB_TABS.length]))renderLunchroom();
+ }catch(err){tvWeatherError='Forecast temporarily unavailable. The league display will continue.';console.warn('Weather update:',err);}
+}
+
 function renderLunchroom(){
  if(!document.body.classList.contains('display-mode'))return;
  const now=new Date(),page=LB_TABS[lbSlideIndex%LB_TABS.length],scheduled=tvScheduled();
@@ -597,6 +671,8 @@ function renderLunchroom(){
  let html='';
  if(page==='Highlights'){
   html=highlightMarkup();
+ }else if(page==='Weather 48h'||page==='Weather 7d'){
+  html=tvWeatherMarkup(page==='Weather 48h');
  }else if(page==='Standings'){
   const rows=leaderboard().slice(0,6);
   html=`<div class="lb-tv-section-title">League standings</div>${rows.length?rows.map((p,i)=>`<div class="lb-tv-leader"><div class="lb-tv-rank">${i+1}</div><div class="lb-tv-name">${esc(p.display_name)}${p.freebies?` <span class="lb-tv-minor">· ${p.freebies} freebie${p.freebies===1?'':'s'}</span>`:''}</div><div class="lb-tv-record">${p.wins} W <span class="lb-tv-minor">· ${p.losses} L · ${p.gameWins} GW</span></div></div>`).join(''):'<div class="lb-tv-empty">Standings will appear once the season begins.</div>'}`;
@@ -610,7 +686,12 @@ function renderLunchroom(){
   const finished=matchups.filter(m=>m.status==='completed'||m.status==='played_ahead'||m.resolution==='freebie'||m.resolution==='double_forfeit').sort((a,b)=>new Date(b.resolved_at||b.submitted_at||0)-new Date(a.resolved_at||a.submitted_at||0)).slice(0,4);
   html=`<div class="lb-tv-section-title">Recent results</div>${finished.length?finished.map(m=>`<div class="lb-tv-fixture"><div class="lb-tv-fixture-top"><span>WEEK ${m.week_number}</span><span>${esc(matchStatus(m))}</span></div><div class="lb-tv-fixture-names">${esc(playerName(m.player1_id))} <span class="lb-tv-versus">${m.resolution==='normal'?`${matchupScore(m).a} – ${matchupScore(m).b}`:'VS'}</span> ${esc(playerName(m.player2_id))}</div><div class="lb-tv-fixture-sports">${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' · '))}</div></div>`).join(''):'<div class="lb-tv-empty">Results will appear after the first matches.</div>'}`;
  }
- $('lb-slide').innerHTML=html;
+ // Keep a playing video mounted during one-minute league-data refreshes.
+ // Rebuilding its iframe would cause unwanted restarts on the lunchroom TV.
+ if(page!=='Highlights'||lastRenderedMainPage!==page||!$('lb-slide').querySelector('iframe')){
+  $('lb-slide').innerHTML=html;
+ }
+ lastRenderedMainPage=page;
  renderLeagueSidebar();
  $('lb-side-countdown').textContent=primaryDeadline?lbClock(primaryDeadline):'No deadline';
  $('lb-update').textContent='Updated '+tvTime(now);
@@ -692,13 +773,23 @@ document.addEventListener('keydown',event=>{
 });
 if(new URLSearchParams(location.search).get('display')==='1'){
  document.body.classList.add('display-mode');
- // A highlight has time to play; league information rotates faster between videos.
+ // Highlights and weather each stay onscreen for 64 seconds.
+ // Hourly weather advances through four 12-hour pages at 16-second intervals.
  const rotateTV=()=>{
   lbSlideIndex=(lbSlideIndex+1)%LB_TABS.length;
+  weatherPanel=0;
   renderLunchroom();
-  lbRotateTimer=setTimeout(rotateTV,LB_TABS[lbSlideIndex]==='Highlights'?32000:13000);
+  lbRotateTimer=setTimeout(rotateTV,MAIN_PANEL_DURATION_MS);
  };
- lbRotateTimer=setTimeout(rotateTV,LB_TABS[0]==='Highlights'?32000:13000);
+ lbRotateTimer=setTimeout(rotateTV,MAIN_PANEL_DURATION_MS);
+ setInterval(()=>{
+  if(document.body.classList.contains('display-mode')&&LB_TABS[lbSlideIndex]==='Weather 48h'){
+   weatherPanel=(weatherPanel+1)%4;
+   renderLunchroom();
+  }
+ },WEATHER_PAGE_DURATION_MS);
+ fetchTVWeather();
+ setInterval(fetchTVWeather,WEATHER_REFRESH_MS);
  setInterval(()=>{sideSlideIndex=(sideSlideIndex+1)%SIDE_SECTIONS.length;renderLeagueSidebar();},10500);
  lbClockTimer=setInterval(()=>{
   $('lb-local-time').textContent=tvTime();
