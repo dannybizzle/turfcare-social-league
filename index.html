@@ -6,16 +6,35 @@
 <meta name="description" content="The Turfcare Social Games League — friendly competition for the crew.">
 <style>
 :root{--green:#173d32;--green2:#245b49;--lime:#c8d98b;--cream:#f5f3e9;--ink:#1d2924;--muted:#66736c;--line:#dce2d9;--white:#fff;--gold:#d7b56d}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}header{background:linear-gradient(120deg,#102c25,#245b49);color:white;padding:34px max(22px,calc((100vw - 1120px)/2));position:relative;overflow:hidden}header:after{content:'⛳';position:absolute;right:7%;top:-26px;font-size:150px;opacity:.13}nav{display:flex;align-items:center;justify-content:space-between;gap:16px;position:relative;z-index:1}.brand{font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.85rem}.pill{border:1px solid #ffffff66;border-radius:30px;padding:7px 13px;font-size:.82rem}.hero{padding:48px 0 35px;position:relative;z-index:1}.eyebrow{color:var(--lime);font-weight:700;text-transform:uppercase;letter-spacing:.14em;font-size:.75rem}.hero h1{font-size:clamp(2.2rem,5vw,4.2rem);line-height:1.02;max-width:700px;margin:10px 0}.hero p{max-width:610px;color:#e0e9e2;margin:14px 0 0}.wrap{max-width:1120px;margin:auto;padding:26px 22px 60px}.countdown{display:grid;grid-template-columns:1.4fr 2fr;gap:20px;background:var(--white);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:-2px;box-shadow:0 12px 30px #153a2b0d}.countdown h2{margin:0 0 4px;font-size:1.05rem}.muted{color:var(--muted)}.timer{display:flex;gap:12px;align-items:center;justify-content:flex-end}.timebox{background:#edf2e9;border-radius:12px;padding:10px 15px;text-align:center;min-width:68px}.timebox strong{display:block;font-size:1.45rem;color:var(--green);font-variant-numeric:tabular-nums}.timebox span{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:34px 0 14px}.section-head h2{margin:0;font-size:1.45rem;color:var(--green)}.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:20px}.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:20px;min-width:0}.panel h3{margin:0 0 12px;color:var(--green)}table{border-collapse:collapse;width:100%;font-size:.92rem}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}th{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}.discipline-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.discipline{background:#edf2e9;border-radius:12px;padding:14px 8px;text-align:center}.discipline .ico{font-size:1.5rem}.discipline strong{display:block;color:var(--green);font-size:.85rem}.discipline small{color:var(--muted)}.auth{display:flex;align-items:center;gap:8px}.button,button{border:0;border-radius:9px;padding:10px 15px;background:var(--green2);color:white;font-weight:700;cursor:pointer}.button.secondary,button.secondary{background:#edf2e9;color:var(--green)}input,select{padding:10px 12px;border:1px solid var(--line);border-radius:8px;width:100%;font:inherit}label{display:block;font-size:.82rem;font-weight:700;margin:10px 0 5px}.authbox{max-width:440px}.hidden{display:none!important}.status{padding:10px 12px;border-radius:9px;background:#edf2e9;color:var(--green);margin:10px 0}.error{background:#fbe9e6;color:#8b2d1d}.empty{color:var(--muted);padding:18px 0}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.admin-form{max-width:100%}.admin-form button{margin-top:12px}.preview{max-height:360px;overflow:auto}.notice{font-size:.88rem;color:var(--muted);margin:8px 0}.danger{background:#a13b32!important;color:#fff!important}.action-buttons{display:flex;gap:6px;flex-wrap:wrap}.action-buttons button{padding:7px 10px;font-size:.8rem}.table-scroll{overflow-x:auto}.foot{color:var(--muted);font-size:.8rem;text-align:center;padding:24px}a{color:var(--green2)}@media(max-width:760px){.countdown,.grid,.admin-grid{grid-template-columns:1fr}.timer{justify-content:flex-start;flex-wrap:wrap}.discipline-grid{grid-template-columns:repeat(2,1fr)}nav{align-items:flex-start}.auth{flex-wrap:wrap}}
+
+/* Version 3: player profiles, score entry, lunchroom screen */
+.score-panel{margin-top:18px}.score-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(160px,1.25fr);align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.score-row:last-child{border-bottom:0}.score-row select{width:100%}.player-link{background:transparent;color:var(--green2);padding:0;border-radius:0;text-decoration:underline;text-underline-offset:3px;font:inherit;font-weight:700}.player-link:hover{color:#101e18}.match-card{border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0;background:#fff}.match-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.match-sports{font-size:.86rem;color:var(--muted);margin:7px 0}.match-result{font-weight:700;color:var(--green)}.tag{display:inline-block;border-radius:20px;background:#edf2e9;color:var(--green);padding:4px 10px;font-size:.75rem;font-weight:700}.warning{background:#f5e7cf;color:#76521a}.player-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat-tile{background:#eef3eb;border-radius:12px;padding:15px;text-align:center}.stat-tile strong{font-size:1.35rem;display:block;color:var(--green)}.player-tools{margin-top:18px}.display-link{display:inline-flex;align-items:center;gap:8px;text-decoration:none;background:var(--green);color:#fff;border-radius:9px;padding:11px 16px;font-weight:800}.display-link:hover{background:var(--green2)}.lb-screen{display:none}.lb-screen.visible{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;background:#102a23;color:#f5f3e9;padding:clamp(20px,3.2vw,60px);gap:2.5vh}.lb-top{display:flex;justify-content:space-between;align-items:center;gap:20px}.lb-logo{font-size:clamp(16px,2vw,32px);font-weight:900;letter-spacing:.14em;text-transform:uppercase}.lb-sub{color:#c8d98b;letter-spacing:.14em;text-transform:uppercase;font-size:clamp(11px,1.1vw,20px)}.lb-slide{display:flex;flex:1;flex-direction:column;justify-content:center;min-height:0}.lb-title{font-size:clamp(30px,4.8vw,84px);line-height:1.02;margin:0 0 3vh}.lb-row{display:grid;grid-template-columns:70px 1fr auto;gap:2vw;align-items:center;border-bottom:1px solid #ffffff2a;padding:1.6vh 0;font-size:clamp(20px,3vw,52px);font-weight:800}.lb-rank{color:#d7b56d}.lb-kpi{color:#c8d98b}.lb-match{border:1px solid #ffffff3a;border-radius:20px;padding:2vh 3vw;margin:1vh 0;display:flex;flex-direction:column;gap:.5vh}.lb-match-main{font-size:clamp(19px,2.7vw,44px);font-weight:800}.lb-match-sub{font-size:clamp(13px,1.45vw,25px);color:#c8d98b}.lb-bigclock{font-size:clamp(55px,12vw,200px);font-variant-numeric:tabular-nums;letter-spacing:.03em;font-weight:900;line-height:1.1;color:#c8d98b;text-align:center}.lb-foot{display:flex;justify-content:space-between;align-items:center;gap:20px;color:#d0e2d6;font-size:clamp(12px,1.2vw,21px)}.lb-pips{display:flex;gap:10px}.lb-pips span{width:12px;height:12px;border-radius:50%;background:#5c786a}.lb-pips span.on{background:#c8d98b}body.display-mode{background:#102a23;overflow:hidden}body.display-mode>header,body.display-mode>main,body.display-mode>#password-setup{display:none!important}body.display-mode .lb-screen{display:flex}.tool-status{min-height:24px}@media(max-width:760px){.score-row{grid-template-columns:1fr}.player-stats{grid-template-columns:repeat(2,1fr)}.lb-row{grid-template-columns:34px 1fr auto}}
 </style>
 </head>
 <body>
 <header><nav><div class="brand">Turfcare • Social Games League</div><div class="pill">One crew. Four disciplines. Bragging rights.</div></nav><div class="hero"><div class="eyebrow">The season is on</div><h1>Good competition.<br>Better crew.</h1><p>A little friendly rivalry between the people who keep the course in championship shape. Check the standings, see the matchups, and keep the weekly games moving.</p></div></header>
 <main class="wrap">
+<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><a class="display-link" href="?display=1" target="_blank" rel="noopener">📺 Lunchroom display</a></div>
 <section class="countdown"><div><h2>Time left to finish this week's matchup</h2><div id="deadline-label" class="muted">The weekly deadline will appear here once matchups are published.</div></div><div class="timer" id="timer"><div class="timebox"><strong>--</strong><span>Days</span></div><div class="timebox"><strong>--</strong><span>Hours</span></div><div class="timebox"><strong>--</strong><span>Minutes</span></div><div class="timebox"><strong>--</strong><span>Seconds</span></div></div></section>
 <div class="section-head"><div><div class="eyebrow" style="color:var(--green2)">The leaderboard</div><h2>Overall standings</h2></div><span class="muted" id="season-label">Loading season…</span></div>
 <div class="grid"><section class="panel"><h3>League table</h3><div id="standings"><div class="empty">Connecting to the league…</div></div></section><section class="panel"><h3>Four ways to win</h3><div class="discipline-grid"><div class="discipline"><div class="ico">🏓</div><strong>Ping Pong</strong><small>Quick hands</small></div><div class="discipline"><div class="ico">🎯</div><strong>Darts</strong><small>Deadly aim</small></div><div class="discipline"><div class="ico">🎱</div><strong>Pool</strong><small>Play the angles</small></div><div class="discipline"><div class="ico">🏒</div><strong>Air Hockey</strong><small>Fast reactions</small></div></div><p class="muted" style="font-size:.88rem;margin:16px 0 0">Each weekly matchup is three games across three different disciplines. Win two games to take the weekly matchup.</p></section></div>
 <div class="section-head"><div><div class="eyebrow" style="color:var(--green2)">Who's up next</div><h2>Weekly matchups</h2></div></div><section class="panel"><div id="matchups"><div class="empty">Matchups will show here when the season schedule is published.</div></div></section>
+<div class="section-head"><div><div class="eyebrow" style="color:var(--green2)">Head-to-head</div><h2>Player statistics</h2></div></div>
+<section class="panel" id="profile-panel"><div id="profile-content" class="muted">Select a player name on the leaderboard to see their results in all four sports.</div></section>
 <div class="section-head"><div><div class="eyebrow" style="color:var(--green2)">Participant access</div><h2>Player sign in</h2></div></div><section class="panel authbox"><div id="auth-state" class="muted">Sign in to access your player tools and submit completed matchups.</div><div id="auth-form"><label for="email">Email</label><input id="email" type="email" autocomplete="username" placeholder="you@example.com"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Your password"><div style="display:flex;gap:8px;margin-top:14px"><button id="signin">Sign in</button><button class="secondary" id="reset">Reset password</button></div></div><button id="signout" class="secondary hidden">Sign out</button><div id="auth-message" role="status"></div></section>
+<section id="player-area" class="hidden">
+<div class="section-head"><div><div class="eyebrow" style="color:var(--green2)">Your league</div><h2>My Player Tools</h2></div></div>
+<section class="panel player-tools">
+<h3>Choose your display name</h3><p class="muted">Pick the name other players see on the board. Your sign-in email stays the same.</p>
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><input id="my-display-name" maxlength="40" placeholder="Your league display name" style="flex:1;min-width:180px"><button id="save-display-name" type="button">Save name</button></div>
+<div id="display-name-message" role="status" class="tool-status"></div>
+</section>
+<section class="panel score-panel">
+<h3>Submit my match results</h3><p class="muted">Either opponent may submit once. All three assigned sports must be entered. After submission both players are locked out; an admin can correct mistakes.</p>
+<div id="my-matchups"><div class="empty">Sign in to view your matchups.</div></div>
+<div id="score-message" role="status"></div>
+</section>
+</section>
 <section id="admin-area" class="hidden">
 <div class="section-head"><div><div class="eyebrow" style="color:var(--green2)">Organizer tools</div><h2>Administrator dashboard</h2></div><span class="muted">Admin access</span></div>
 <div class="admin-grid">
@@ -57,10 +76,16 @@
 
   <div id="player-management-message" class="notice" role="status"></div>
 </section>
+<section class="panel score-panel"><h3>Correct a matchup result</h3><p class="muted">Admin only. Select a published matchup, choose the winners of its three assigned sports, and save the corrected result. All changes replace the previous result.</p><label for="correction-matchup">Choose matchup</label><select id="correction-matchup"></select><div id="correction-games"></div><button id="save-correction" type="button" style="margin-top:12px">Save corrected result</button><div id="correction-message" class="notice" role="status"></div></section>
 <section id="schedule-preview-panel" class="panel hidden" style="margin-top:16px"><h3>Schedule preview</h3><div id="schedule-preview" class="preview"></div><div class="notice" id="schedule-summary"></div><button id="publish-schedule">Approve and publish schedule</button> <button id="cancel-preview" class="secondary">Discard preview</button><div id="admin-message" role="status"></div></section>
 </section>
 <div class="foot">Turfcare Social Games League · Built for the crew</div>
 </main>
+<div class="lb-screen" id="lunchroom-screen" aria-label="Lunchroom scoreboard">
+<div class="lb-top"><div><div class="lb-logo">⛳ Turfcare Social Games League</div><div class="lb-sub">One crew · Four sports · Three per matchup</div></div><div class="lb-sub" id="lb-date"></div></div>
+<div class="lb-slide" id="lb-slide"></div>
+<div class="lb-foot"><div id="lb-update">Live league scoreboard</div><div class="lb-pips" id="lb-pips"></div><div>Press Esc to exit fullscreen · Auto-refreshes</div></div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // The publishable key is designed for browser use. Never put a Supabase secret/service-role key here.
@@ -71,12 +96,24 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let profiles=[], matchups=[], games=[], seasons=[];
 let isAdmin=false, isOwner=false, pendingSchedule=null, countdownInterval=null;
+let currentUserId=null, selectedProfileId=null, lbSlideIndex=0, lbRotateTimer=null, lbClockTimer=null;
 function showMessage(msg,error=false){$('auth-message').className=error?'status error':'status';$('auth-message').textContent=msg;}
-function renderStandings(){
- const rows=profiles.map(p=>{const mine=matchups.filter(m=>m.status==='completed' && (m.player1_id===p.id||m.player2_id===p.id));let wins=0,losses=0,gameWins=0;mine.forEach(m=>{const gs=games.filter(g=>g.matchup_id===m.id);let a=gs.filter(g=>g.winner_id===m.player1_id).length,b=gs.filter(g=>g.winner_id===m.player2_id).length;gameWins+=gs.filter(g=>g.winner_id===p.id).length;if((m.player1_id===p.id&&a>b)||(m.player2_id===p.id&&b>a))wins++;else losses++;});return {...p,wins,losses,gameWins};}).sort((a,b)=>b.wins-a.wins||b.gameWins-a.gameWins||a.display_name.localeCompare(b.display_name));
- $('standings').innerHTML=rows.length?`<table><thead><tr><th>#</th><th>Player</th><th class="num">W</th><th class="num">L</th><th class="num">Game wins</th></tr></thead><tbody>${rows.map((p,i)=>`<tr><td>${i+1}</td><td><strong>${esc(p.display_name)}</strong></td><td class="num">${p.wins}</td><td class="num">${p.losses}</td><td class="num">${p.gameWins}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Players will appear here once they have registered.</div>';
-}
-function renderMatchups(){const list=matchups.slice().sort((a,b)=>a.week_number-b.week_number);$('matchups').innerHTML=list.length?`<table><thead><tr><th>Week</th><th>Matchup</th><th>Deadline</th><th>Status</th></tr></thead><tbody>${list.map(m=>{const p1=profiles.find(p=>p.id===m.player1_id),p2=profiles.find(p=>p.id===m.player2_id);return `<tr><td>${m.week_number}</td><td>${esc(p1?.display_name||'TBD')} vs ${esc(p2?.display_name||'TBD')}</td><td>${m.deadline?new Date(m.deadline).toLocaleString():'—'}</td><td>${esc(m.status)}</td></tr>`}).join('')}</tbody></table>`:'<div class="empty">No matchups have been published yet.</div>';}
+const SPORTS=['Ping Pong','Darts','Pool','Air Hockey'];
+const sportIcon={'Ping Pong':'🏓','Darts':'🎯','Pool':'🎱','Air Hockey':'🏒'};
+const playerName=id=>profiles.find(p=>p.id===id)?.display_name||'Unknown player';
+const playerLink=id=>`<button type="button" class="player-link" data-profile-id="${esc(id)}">${esc(playerName(id))}</button>`;
+const matchupGames=m=>games.filter(g=>g.matchup_id===m.id);
+function seasonWeekStarts(m){const s=seasons.find(s=>s.id===m.season_id);if(!s)return null;const d=new Date(s.starts_on+'T00:00:00');d.setDate(d.getDate()+(m.week_number-1)*7);return d;}
+function countsInStandings(m){return m.status==='completed'||(m.status==='played_ahead'&&seasonWeekStarts(m)&&Date.now()>=seasonWeekStarts(m).getTime());}
+function matchupScore(m){const gs=matchupGames(m);return {a:gs.filter(g=>g.winner_id===m.player1_id).length,b:gs.filter(g=>g.winner_id===m.player2_id).length};}
+function leaderboard(){return profiles.map(p=>{const mine=matchups.filter(m=>countsInStandings(m)&&(m.player1_id===p.id||m.player2_id===p.id));let wins=0,losses=0,gameWins=0;mine.forEach(m=>{const gs=matchupGames(m),a=gs.filter(g=>g.winner_id===m.player1_id).length,b=gs.filter(g=>g.winner_id===m.player2_id).length;gameWins+=gs.filter(g=>g.winner_id===p.id).length;if((m.player1_id===p.id&&a>b)||(m.player2_id===p.id&&b>a))wins++;else if(a!==b)losses++;});return {...p,wins,losses,gameWins};}).sort((a,b)=>b.wins-a.wins||b.gameWins-a.gameWins||a.display_name.localeCompare(b.display_name));}
+function renderStandings(){const rows=leaderboard();$('standings').innerHTML=rows.length?`<div class="table-scroll"><table><thead><tr><th>#</th><th>Player</th><th class="num">W</th><th class="num">L</th><th class="num">Game wins</th></tr></thead><tbody>${rows.map((p,i)=>`<tr><td>${i+1}</td><td>${playerLink(p.id)}</td><td class="num">${p.wins}</td><td class="num">${p.losses}</td><td class="num">${p.gameWins}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Players will appear here once they have registered.</div>';}
+function matchStatus(m){if(m.status==='played_ahead'&&!countsInStandings(m))return 'Played ahead · counts in week '+m.week_number;if(countsInStandings(m))return 'Completed';return m.status==='scheduled'?'Scheduled':m.status==='missed'?'Missed':m.status;}
+function renderMatchups(){const list=matchups.slice().sort((a,b)=>a.week_number-b.week_number||new Date(a.deadline)-new Date(b.deadline));$('matchups').innerHTML=list.length?`<div class="table-scroll"><table><thead><tr><th>Week</th><th>Matchup</th><th>3 sports</th><th>Deadline</th><th>Status</th></tr></thead><tbody>${list.map(m=>`<tr><td>${m.week_number}</td><td>${playerLink(m.player1_id)} vs ${playerLink(m.player2_id)}</td><td>${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' '))}</td><td>${m.deadline?new Date(m.deadline).toLocaleString():'—'}</td><td>${esc(matchStatus(m))}${countsInStandings(m)?` · ${matchupScore(m).a}–${matchupScore(m).b}`:''}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No matchups have been published yet.</div>';}
+function renderProfile(){if(!selectedProfileId)return;const p=profiles.find(p=>p.id===selectedProfileId);if(!p){$('profile-content').textContent='Player is no longer registered.';return;}
+  const mine=matchups.filter(m=>countsInStandings(m)&&(m.player1_id===p.id||m.player2_id===p.id));const stats=SPORTS.map(s=>{const gs=mine.flatMap(m=>matchupGames(m)).filter(g=>g.discipline===s);return {sport:s,w:gs.filter(g=>g.winner_id===p.id).length,l:gs.filter(g=>g.winner_id&&g.winner_id!==p.id).length};});
+  const row=leaderboard().find(x=>x.id===p.id);$('profile-content').innerHTML=`<h3>${esc(p.display_name)}</h3><p class="muted">${row.wins} matchup wins · ${row.losses} losses · ${row.gameWins} game wins</p><div class="player-stats">${stats.map(st=>`<div class="stat-tile"><div>${sportIcon[st.sport]} ${esc(st.sport)}</div><strong>${st.w}–${st.l}</strong><small>Wins – losses</small></div>`).join('')}</div>`;}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-profile-id]');if(!b)return;selectedProfileId=b.dataset.profileId;renderProfile();$('profile-panel').scrollIntoView({behavior:'smooth',block:'center'});});
 function renderCountdown(){
   if(countdownInterval){clearInterval(countdownInterval);countdownInterval=null;}
   const pending=matchups.filter(m=>m.status==='scheduled'&&m.deadline&&new Date(m.deadline)>new Date()).sort((a,b)=>new Date(a.deadline)-new Date(b.deadline))[0];
@@ -86,8 +123,26 @@ function renderCountdown(){
   const tick=()=>{const ms=Math.max(0,d-Date.now()),days=Math.floor(ms/86400000),hours=Math.floor(ms%86400000/3600000),mins=Math.floor(ms%3600000/60000),secs=Math.floor(ms%60000/1000);$('timer').innerHTML=[[days,'Days'],[hours,'Hours'],[mins,'Minutes'],[secs,'Seconds']].map(x=>`<div class="timebox"><strong>${String(x[0]).padStart(2,'0')}</strong><span>${x[1]}</span></div>`).join('');if(ms===0){clearInterval(countdownInterval);countdownInterval=null;}};
   tick();if(countdownInterval===null && d>Date.now())countdownInterval=setInterval(tick,1000);
 }
-async function loadPublic(){const [p,m,g,s]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status')]);for(const r of [p,m,g,s])if(r.error)throw r.error;profiles=p.data||[];matchups=m.data||[];games=g.data||[];seasons=s.data||[];const active=seasons.find(x=>x.status==='active')||seasons[0];$('season-label').textContent=active?.name||'Season not yet published';renderStandings();renderMatchups();renderCountdown();if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();} else $('player-management-list').innerHTML='Administrator access required.';}
-async function refreshAuth(){const {data:{session}}=await client.auth.getSession();$('auth-form').classList.toggle('hidden',!!session);$('signout').classList.toggle('hidden',!session);$('auth-state').textContent=session?'Signed in as '+session.user.email+'.':'Sign in to access your player tools and submit completed matchups.';isAdmin=false;isOwner=false;if(session){const {data:profile}=await client.from('profiles').select('role,is_owner').eq('id',session.user.id).maybeSingle();isAdmin=profile?.role==='admin';isOwner=profile?.is_owner===true;}$('admin-area').classList.toggle('hidden',!isAdmin);if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();}}
+async function loadPublic(){
+ const [p,m,g,s]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status,submitted_by,submitted_at'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status')]);
+ for(const r of [p,m,g,s])if(r.error)throw r.error;
+ profiles=p.data||[];matchups=m.data||[];games=g.data||[];seasons=s.data||[];
+ const active=seasons.find(x=>x.status==='active')||seasons[0];$('season-label').textContent=active?.name||'Season not yet published';
+ renderStandings();renderMatchups();renderCountdown();renderProfile();renderMyMatchups();renderAdminCorrections();
+ if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();}else $('player-management-list').innerHTML='Administrator access required.';
+ if(document.body.classList.contains('display-mode'))renderLunchroom();
+}
+async function refreshAuth(){
+ const {data:{session}}=await client.auth.getSession();currentUserId=session?.user?.id||null;
+ $('auth-form').classList.toggle('hidden',!!session);$('signout').classList.toggle('hidden',!session);
+ $('auth-state').textContent=session?'Signed in as '+session.user.email+'.':'Sign in to access your player tools and submit completed matchups.';
+ isAdmin=false;isOwner=false;
+ if(session){const {data:profile}=await client.from('profiles').select('role,is_owner,display_name').eq('id',session.user.id).maybeSingle();isAdmin=profile?.role==='admin';isOwner=profile?.is_owner===true;if(profile&&document.activeElement!==$('my-display-name'))$('my-display-name').value=profile.display_name||'';}
+ $('player-area').classList.toggle('hidden',!session);
+ $('admin-area').classList.toggle('hidden',!isAdmin);
+ if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();}
+ renderMyMatchups();renderAdminCorrections();
+}
 function localDatePlus(dateString, days){const d=new Date(dateString+'T12:00:00');d.setDate(d.getDate()+days);return d;}
 function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function roundRobin(players){const list=shuffle(players);if(list.length%2)list.push(null);const rounds=[];for(let r=0;r<list.length-1;r++){const pairs=[];let bye=null;for(let i=0;i<list.length/2;i++){const a=list[i],b=list[list.length-1-i];if(a&&b)pairs.push([a,b]);else bye=a||b;}rounds.push({pairs,bye});list.splice(1,0,list.pop());}return rounds;}
@@ -186,6 +241,102 @@ $('player-management-list').addEventListener('click',async e=>{
   }catch(error){showPlayerMessage(error.message||'The action could not be completed.',true);}
   finally{button.disabled=false;}
 });
+function renderAdminCorrections(){
+ const sel=$('correction-matchup');if(!sel||!isAdmin)return;
+ const previous=sel.value;
+ const available=matchups.filter(m=>matchupGames(m).length===3).slice().sort((a,b)=>a.week_number-b.week_number);
+ sel.innerHTML=available.length?available.map(m=>`<option value="${esc(m.id)}">Week ${m.week_number}: ${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))} (${esc(matchStatus(m))})</option>`).join(''):'<option value="">No published matchups</option>';
+ if(available.some(m=>m.id===previous))sel.value=previous;
+ renderAdminCorrectionGames();
+}
+function renderAdminCorrectionGames(){
+ const m=matchups.find(m=>m.id===$('correction-matchup').value);
+ const target=$('correction-games');
+ $('save-correction').disabled=!m;
+ if(!m){target.innerHTML='<div class="empty">Choose a published matchup.</div>';return;}
+ target.innerHTML=matchupGames(m).map(g=>`<div class="score-row"><label for="correct-${esc(g.id)}">${sportIcon[g.discipline]||''} ${esc(g.discipline)}</label><select id="correct-${esc(g.id)}" data-correct-game="${esc(g.id)}"><option value="">Choose winner</option><option value="${esc(m.player1_id)}" ${g.winner_id===m.player1_id?'selected':''}>${esc(playerName(m.player1_id))}</option><option value="${esc(m.player2_id)}" ${g.winner_id===m.player2_id?'selected':''}>${esc(playerName(m.player2_id))}</option></select></div>`).join('');
+}
+$('correction-matchup').addEventListener('change',renderAdminCorrectionGames);
+$('save-correction').onclick=async()=>{
+ const m=matchups.find(m=>m.id===$('correction-matchup').value);if(!m)return;
+ const choices=[...$('correction-games').querySelectorAll('select[data-correct-game]')];
+ if(choices.length!==3||choices.some(x=>!x.value))return showCorrectionMessage('Select a winner for all three sports.',true);
+ if(!confirm(`Replace the results for Week ${m.week_number}: ${playerName(m.player1_id)} vs ${playerName(m.player2_id)}?`))return;
+ const button=$('save-correction');button.disabled=true;
+ try{const {error}=await client.rpc('correct_league_matchup',{p_matchup_id:m.id,p_results:choices.map(x=>({game_id:x.dataset.correctGame,winner_id:x.value}))});if(error)throw error;await loadPublic();showCorrectionMessage('Result corrected successfully.');}
+ catch(err){showCorrectionMessage(err.message||'Could not correct results.',true);}finally{button.disabled=false;}
+};
+function showCorrectionMessage(msg,error=false){$('correction-message').className=error?'status error':'status';$('correction-message').textContent=msg;}
+function showScoreMessage(msg,error=false){$('score-message').className=error?'status error':'status';$('score-message').textContent=msg;}
+function renderMyMatchups(){
+ const box=$('my-matchups');if(!box)return;
+ if(!currentUserId){box.innerHTML='<div class="empty">Sign in to submit results.</div>';return;}
+ const mine=matchups.filter(m=>m.player1_id===currentUserId||m.player2_id===currentUserId).sort((a,b)=>a.week_number-b.week_number);
+ if(!mine.length){box.innerHTML='<div class="empty">No matchups assigned yet.</div>';return;}
+ box.innerHTML=mine.map(m=>{const gs=matchupGames(m);const locked=m.status!=='scheduled';const finished=countsInStandings(m)||m.status==='played_ahead';
+   const future=seasonWeekStarts(m)&&Date.now()<seasonWeekStarts(m).getTime();
+   const expired=m.deadline&&new Date(m.deadline).getTime()<Date.now();
+   const canSubmit=!locked&&!expired&&gs.length===3&&new Set(gs.map(g=>g.discipline)).size===3&&gs.every(g=>!g.winner_id);
+   const summary=finished?`<div class="match-result">Final: ${playerName(m.player1_id)} ${matchupScore(m).a} – ${matchupScore(m).b} ${playerName(m.player2_id)}</div>`:'';
+   return `<div class="match-card" data-match-id="${esc(m.id)}"><div class="match-head"><strong>Week ${m.week_number}: ${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}</strong><span class="tag ${future?'warning':''}">${esc(matchStatus(m))}</span></div>
+   <div class="match-sports">${esc(gs.map(g=>`${sportIcon[g.discipline]||''} ${g.discipline}`).join(' · '))}</div>${summary}
+   ${m.submitted_at?`<div class="notice">Submitted ${new Date(m.submitted_at).toLocaleString()} by ${esc(playerName(m.submitted_by))}</div>`:''}
+   ${canSubmit?`<div class="notice">${future?'Playing early? You can submit now. The result will count when Week '+m.week_number+' starts.':'Enter the winner of each assigned game.'}</div><form class="score-form" data-match-id="${esc(m.id)}">${gs.map(g=>`<div class="score-row"><label for="winner-${esc(g.id)}">${sportIcon[g.discipline]||''} ${esc(g.discipline)}</label><select required id="winner-${esc(g.id)}" data-game-id="${esc(g.id)}"><option value="">Choose winner</option><option value="${esc(m.player1_id)}">${esc(playerName(m.player1_id))}</option><option value="${esc(m.player2_id)}">${esc(playerName(m.player2_id))}</option></select></div>`).join('')}<button type="submit" style="margin-top:12px">Submit all 3 games</button></form>`:!finished?`<div class="notice">${expired?'Deadline passed. Contact an administrator.':gs.length!==3?'Matchup is missing its three assigned games. Contact an administrator.':'Score entry is closed.'}</div>`:''}</div>`;
+ }).join('');
+}
+$('my-matchups').addEventListener('submit',async e=>{
+ const form=e.target.closest('form.score-form');if(!form)return;e.preventDefault();
+ const m=matchups.find(x=>x.id===form.dataset.matchId);if(!m)return;
+ const selections=Array.from(form.querySelectorAll('select[data-game-id]'));
+ if(selections.length!==3||selections.some(x=>!x.value))return showScoreMessage('Choose a winner for all three assigned sports.',true);
+ const results=selections.map(x=>({game_id:x.dataset.gameId,winner_id:x.value}));
+ if(!confirm(`Submit these three game results for Week ${m.week_number}? Neither player can change them afterward.`))return;
+ const button=form.querySelector('button[type="submit"]');button.disabled=true;
+ try{const {error}=await client.rpc('submit_league_matchup',{p_matchup_id:m.id,p_results:results});if(error)throw error;await loadPublic();showScoreMessage('Results recorded and locked. Thanks!');}
+ catch(err){showScoreMessage(err.message||'Unable to submit scores.',true);button.disabled=false;}
+});
+$('save-display-name').onclick=async()=>{
+ const name=$('my-display-name').value.trim();if(name.length<2||name.length>40)return showDisplayNameMessage('Use a name between 2 and 40 characters.',true);
+ const btn=$('save-display-name');btn.disabled=true;
+ try{const {error}=await client.rpc('set_league_display_name',{p_display_name:name});if(error)throw error;await loadPublic();showDisplayNameMessage('Your display name is updated.');}
+ catch(err){showDisplayNameMessage(err.message||'Could not update your name.',true);}finally{btn.disabled=false;}
+};
+function showDisplayNameMessage(msg,error=false){$('display-name-message').className=error?'status error':'status';$('display-name-message').textContent=msg;}
+const LB_TABS=['Standings','This week','Countdown','Coming up','Recent results'];
+function lbClock(deadline){const ms=Math.max(0,new Date(deadline).getTime()-Date.now());const days=Math.floor(ms/86400000),h=Math.floor(ms%86400000/3600000),min=Math.floor(ms%3600000/60000),sec=Math.floor(ms%60000/1000);return `${String(days).padStart(2,'0')}:${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;}
+function renderLunchroom(){
+ if(!document.body.classList.contains('display-mode'))return;
+ const page=LB_TABS[lbSlideIndex%LB_TABS.length],now=new Date();
+ $('lb-date').textContent=now.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+ $('lb-pips').innerHTML=LB_TABS.map((x,i)=>`<span class="${i===lbSlideIndex?'on':''}"></span>`).join('');
+ const scheduled=matchups.filter(m=>m.status==='scheduled');
+ const deadlines=scheduled.filter(m=>m.deadline&&new Date(m.deadline)>now).map(m=>new Date(m.deadline));
+ const nextDeadline=deadlines.length?new Date(Math.min(...deadlines)):null;
+ const current=nextDeadline?scheduled.filter(m=>new Date(m.deadline).getTime()===nextDeadline.getTime()):[];
+ const next=scheduled.filter(m=>!nextDeadline||new Date(m.deadline)>nextDeadline).sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));
+ const card=m=>`<div class="lb-match"><div class="lb-match-main">${esc(playerName(m.player1_id))} <span style="color:#c8d98b">VS</span> ${esc(playerName(m.player2_id))}</div><div class="lb-match-sub">Week ${m.week_number} · ${esc(matchupGames(m).map(g=>`${sportIcon[g.discipline]||''} ${g.discipline}`).join('  ·  '))} · ${esc(matchStatus(m))}</div></div>`;
+ let html=`<div class="lb-sub">${esc(page.toUpperCase())}</div>`;
+ if(page==='Standings'){
+   const ranks=leaderboard().slice(0,7);html+=`<h1 class="lb-title">The leaderboard</h1>${ranks.length?ranks.map((p,i)=>`<div class="lb-row"><div class="lb-rank">${i+1}</div><div>${esc(p.display_name)}</div><div class="lb-kpi">${p.wins} W · ${p.gameWins} GW</div></div>`).join(''):'<h2>No players yet</h2>'}`;
+ }else if(page==='This week'){
+   html+=`<h1 class="lb-title">This week's matchups</h1>${current.length?current.slice(0,5).map(card).join(''):'<h2>No current scheduled matchups</h2>'}`;
+ }else if(page==='Countdown'){
+   html+=`<h1 class="lb-title">Weekly deadline</h1>${nextDeadline?`<div class="lb-bigclock" id="lb-ticking-clock">${lbClock(nextDeadline)}</div><div style="text-align:center;font-size:clamp(18px,2vw,34px)">Days : Hours : Minutes : Seconds</div>`:'<h2>No upcoming deadline</h2>'}`;
+ }else if(page==='Coming up'){
+   html+=`<h1 class="lb-title">Coming up next</h1>${next.length?next.slice(0,5).map(card).join(''):'<h2>No upcoming matchups</h2>'}`;
+ }else{
+   const finished=matchups.filter(m=>m.status==='completed'||m.status==='played_ahead').sort((a,b)=>new Date(b.submitted_at||0)-new Date(a.submitted_at||0)).slice(0,5);
+   html+=`<h1 class="lb-title">Recent results</h1>${finished.length?finished.map(m=>`<div class="lb-match"><div class="lb-match-main">${esc(playerName(m.player1_id))} ${matchupScore(m).a} – ${matchupScore(m).b} ${esc(playerName(m.player2_id))}</div><div class="lb-match-sub">Week ${m.week_number} · ${esc(matchStatus(m))}</div></div>`).join(''):'<h2>Results will appear here</h2>'}`;
+ }
+ $('lb-slide').innerHTML=html;
+ $('lb-update').textContent='Updated '+now.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+}
+if(new URLSearchParams(location.search).get('display')==='1'){
+ document.body.classList.add('display-mode');
+ lbRotateTimer=setInterval(()=>{lbSlideIndex=(lbSlideIndex+1)%LB_TABS.length;renderLunchroom();},12000);
+ lbClockTimer=setInterval(()=>{const node=$('lb-ticking-clock');if(node){const upcoming=matchups.filter(m=>m.status==='scheduled'&&m.deadline&&new Date(m.deadline)>new Date()).sort((a,b)=>new Date(a.deadline)-new Date(b.deadline))[0];if(upcoming)node.textContent=lbClock(upcoming.deadline);}},1000);
+ setInterval(()=>loadPublic().catch(console.error),60000);
+}
 $('invite-player-button').onclick = async () => {
   const name = $('invite-player-name').value.trim();
   const email = $('invite-player-email').value.trim();
