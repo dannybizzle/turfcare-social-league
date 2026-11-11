@@ -940,6 +940,17 @@ body.display-mode .lb-launch-social{
  body.display-mode .lb-launch-league-wordmark strong{font-size:clamp(22px,5.5vw,35px)}
  body.display-mode .lb-launch-social{font-size:clamp(10px,2.9vw,18px)}
 }
+
+/* V37: registration and pending approval, scoped away from TV mode */
+body:not(.display-mode) .tsg-register-panel{margin-top:18px;border:1px solid #c6a361;background:linear-gradient(135deg,#fffdf6,#f4eddc);border-radius:15px;padding:clamp(17px,3vw,26px)}
+body:not(.display-mode) .tsg-register-panel h3{margin:0 0 6px;color:#0c3e2b;font-family:'Cinzel',Georgia,serif}
+body:not(.display-mode) .tsg-register-panel p{margin:6px 0 13px;color:#516458}
+body:not(.display-mode) .tsg-register-panel .tsg-register-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+body:not(.display-mode) .tsg-register-panel button{margin-top:14px;background:#104a34;color:#fff2d5;border:1px solid #bd994e}
+body:not(.display-mode) .tsg-register-note{font-size:.84rem;color:#637168;margin-top:11px}
+body:not(.display-mode) .tsg-pending-panel{border:1px solid #d0ad63;background:#f5ecd7;padding:18px;border-radius:13px;margin-top:14px;color:#193e2d}
+body:not(.display-mode) .tsg-pending-panel strong{display:block;margin-bottom:5px}
+@media(max-width:620px){body:not(.display-mode) .tsg-register-panel .tsg-register-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -953,6 +964,22 @@ body.display-mode .lb-launch-social{
 <div class="section-head" id="statistics-section"><div><div class="eyebrow" style="color:var(--green2)">Head-to-head</div><h2>Player statistics</h2></div></div>
 <section class="panel" id="profile-panel"><div id="profile-content" class="muted">Select a player name on the leaderboard to see their results across all five sports.</div></section>
 <div class="section-head" id="player-signin"><div><div class="eyebrow" style="color:var(--green2)">Participant access</div><h2>Player sign in</h2></div></div><section class="panel authbox"><div id="auth-state" class="muted">Sign in to access your player tools and submit completed matchups.</div><div id="auth-form"><label for="email">Email</label><input id="email" type="email" autocomplete="username" placeholder="you@example.com"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Your password"><div style="display:flex;gap:8px;margin-top:14px"><button id="signin">Sign in</button><button class="secondary" id="reset">Reset password</button></div></div><button id="signout" class="secondary hidden">Sign out</button><div id="auth-message" role="status"></div></section>
+<section class="tsg-register-panel" id="tsg-registration" aria-labelledby="tsg-registration-title">
+<h3 id="tsg-registration-title">Join the League</h3>
+<p>New to the Turfcare Social League? Register for an account. League participation requires administrator approval.</p>
+<form id="tsg-signup-form">
+<div class="tsg-register-grid">
+<div><label for="tsg-signup-name">Player name</label><input id="tsg-signup-name" name="player_name" type="text" minlength="2" maxlength="40" autocomplete="name" required placeholder="First and last name"></div>
+<div><label for="tsg-signup-email">Email address</label><input id="tsg-signup-email" name="email" type="email" autocomplete="email" required placeholder="you@example.com"></div>
+<div><label for="tsg-signup-password">Password</label><input id="tsg-signup-password" name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"></div>
+<div><label for="tsg-signup-confirm">Confirm password</label><input id="tsg-signup-confirm" name="password_confirm" type="password" autocomplete="new-password" minlength="8" required placeholder="Repeat password"></div>
+</div>
+<button id="tsg-signup-submit" type="submit">Request League Access</button>
+<div class="tsg-register-note">Verify your email using the link we send you. New registrations start pending approval. Player access is planned for November 20; games begin November 23 at 7:00 AM Calgary time.</div>
+<div id="tsg-signup-message" role="status" aria-live="polite"></div>
+</form>
+</section>
+<div id="tsg-pending-approval" class="tsg-pending-panel hidden" role="status"><strong>Account awaiting approval</strong>Your email is signed in, but league participation has not yet been approved. Please check back after an administrator approves your account and player access opens.</div>
 <section id="player-area" class="hidden">
 <div class="section-head"><div><div class="eyebrow" style="color:var(--green2)">Your league</div><h2>My Player Tools</h2></div></div>
 <section class="panel player-tools">
@@ -1124,8 +1151,8 @@ async function refreshAuth(){
  $('auth-form').classList.toggle('hidden',!!session);$('signout').classList.toggle('hidden',!session);
  $('auth-state').textContent=session?'Signed in as '+session.user.email+'.':'Sign in to access your player tools and submit completed matchups.';
  isAdmin=false;isOwner=false;
- if(session){const {data:profile}=await client.from('profiles').select('role,is_owner,display_name').eq('id',session.user.id).maybeSingle();isAdmin=profile?.role==='admin';isOwner=profile?.is_owner===true;if(profile&&document.activeElement!==$('my-display-name'))$('my-display-name').value=profile.display_name||'';}
- $('player-area').classList.toggle('hidden',!session);
+ if(session){const {data:profile}=await client.from('profiles').select('role,is_owner,is_player,is_approved,display_name').eq('id',session.user.id).maybeSingle();isAdmin=profile?.role==='admin';isOwner=profile?.is_owner===true;const approved=profile?.is_approved===true&&(profile?.is_player===true||isAdmin);const cal=calDate(new Date());const unlocked=cal>='2026-11-20'||isAdmin;$('tsg-pending-approval').classList.toggle('hidden',approved&&unlocked);$('player-area').classList.toggle('hidden',!(approved&&unlocked));if(profile&&document.activeElement!==$('my-display-name'))$('my-display-name').value=profile.display_name||'';}else{$('tsg-pending-approval').classList.add('hidden');$('player-area').classList.add('hidden');}
+ $('tsg-registration').classList.toggle('hidden',!!session);
  $('admin-area').classList.toggle('hidden',!isAdmin);
  if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();}
  renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
@@ -2168,6 +2195,27 @@ $('preview-schedule').onclick=()=>{try{
  }catch(e){showAdminMessage(e.message,true);}};
 $('cancel-preview').onclick=()=>{pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');};
 $('publish-schedule').onclick=async()=>{if(!pendingSchedule?.length)return showAdminMessage('Generate a preview first.',true);if(!confirm('Publish this schedule? This cannot be automatically undone.'))return;const {data,error}=await client.rpc('publish_season_schedule',{p_season_id:$('schedule-season').value,p_schedule:pendingSchedule});if(error)return showAdminMessage(error.message,true);pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');showAdminMessage(`Published ${data} matchups successfully.`);await loadPublic();};
+// Public signup: Supabase trigger creates a non-participating, unapproved player profile.
+$('tsg-signup-form').addEventListener('submit',async(event)=>{
+ event.preventDefault();
+ const name=$('tsg-signup-name').value.trim().replace(/\s+/g,' ');
+ const email=$('tsg-signup-email').value.trim();
+ const password=$('tsg-signup-password').value;
+ const confirmPassword=$('tsg-signup-confirm').value;
+ const message=$('tsg-signup-message');
+ const button=$('tsg-signup-submit');
+ message.className='status';
+ if(name.length<2||name.length>40||/[\x00-\x1f\x7f]/.test(name)){message.textContent='Enter a name between 2 and 40 characters.';message.classList.add('error');return;}
+ if(password.length<8||password!==confirmPassword){message.textContent='Use a password of at least eight characters and make sure both passwords match.';message.classList.add('error');return;}
+ button.disabled=true;button.textContent='Submitting…';
+ try{
+  const {error}=await client.auth.signUp({email,password,options:{data:{display_name:name},emailRedirectTo:location.origin+location.pathname+'#page-player'}});
+  if(error)throw error;
+  $('tsg-signup-form').reset();
+  message.textContent='Registration received. Check your email for a verification link. After confirming your email, your account will remain pending league approval.';
+ }catch(error){message.classList.add('error');message.textContent=error.message||'Registration could not be completed.';}
+ finally{button.disabled=false;button.textContent='Request League Access';}
+});
 $('signin').onclick=async()=>{const {error}=await client.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)showMessage(error.message,true);else{showMessage('Signed in.');await refreshAuth();}};
 $('reset').onclick=async()=>{const email=$('email').value.trim();if(!email)return showMessage('Enter your email address first.',true);const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:location.origin});showMessage(error?error.message:'If that email is registered, a password reset link will be sent.',!!error);};
 $('signout').onclick=async()=>{await client.auth.signOut();await refreshAuth();showMessage('You have signed out.');};
