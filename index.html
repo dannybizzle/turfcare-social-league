@@ -343,7 +343,6 @@ body.display-mode .lb-tv-logo.tsg-crest{width:clamp(48px,5.4vw,86px);height:clam
 body.display-mode .tsg-wordmark{display:flex;flex-direction:column;min-width:0;gap:0}
 body.display-mode .lb-tv-title{font:700 clamp(20px,2.35vw,42px)/1.05 'Cinzel',Georgia,serif;letter-spacing:-.045em;color:#f9f0d4;white-space:nowrap;text-shadow:0 2px 11px #0008}
 body.display-mode .tsg-submark{font:800 clamp(12px,1.32vw,24px)/1.05 'Barlow Condensed','Arial Narrow',sans-serif;letter-spacing:.19em;color:#d7b364;white-space:nowrap}
-body.display-mode .tsg-live{display:inline-block;font:800 clamp(10px,.92vw,17px)/1 'Barlow Condensed',sans-serif;letter-spacing:.08em;color:#06291c;padding:5px 9px;margin-left:7px;background:linear-gradient(#fbe4a4,#b98a38);border:1px solid #ffdb88;border-radius:5px;box-shadow:0 0 12px #e2b96655}
 body.display-mode .lb-tv-main{grid-template-columns:minmax(0,1.85fr) minmax(290px,.9fr)!important;background:linear-gradient(180deg,#02241b11,transparent)}
 body.display-mode .lb-tv-primary,body.display-mode .lb-tv-secondary{background:linear-gradient(148deg,#174d38 0%,#072c20 53%,#041e16 100%);border:1px solid #c4a35b7a;border-radius:14px;box-shadow:inset 0 1px 0 #ffe5a721,0 6px 27px #0008}
 body.display-mode .lb-tv-primary:before{background:linear-gradient(90deg,#eed58c,#8b6932)!important;height:3px}
@@ -370,7 +369,7 @@ body.display-mode .clubhouse-deadline strong{font-family:'Barlow Condensed','Ari
 body.display-mode .lb-exit-button{position:relative;z-index:2;border-color:#dbc48d6e;color:#ead7a7;white-space:nowrap}
 body.display-mode .lb-tv-header .clubhouse-header-live{gap:clamp(9px,1vw,18px)}
 @media(max-width:1150px){body.display-mode .lb-tv-title{font-size:clamp(18px,2vw,29px)}body.display-mode .tsg-submark{font-size:clamp(11px,1.25vw,17px)}body.display-mode .clubhouse-current-weather{display:none}}
-@media(max-width:850px){body.display-mode .lb-tv-brand .tsg-live{display:none}body.display-mode .tsg-fullscreen{font-size:12px;padding:7px}}
+@media(max-width:850px){body.display-mode .tsg-fullscreen{font-size:12px;padding:7px}}
 @media(max-height:700px){body.display-mode .lb-tv-logo.tsg-crest{height:48px;width:48px}}
 
 
@@ -435,7 +434,6 @@ body.display-mode .lb-tv-brand{gap:clamp(7px,.9vw,15px)}
 body.display-mode .lb-tv-logo.tsg-crest{filter:drop-shadow(0 0 9px #e5bb6e55);border:2px solid #ddc083;border-radius:50%}
 body.display-mode .lb-tv-title{font-family:'Cinzel',Georgia,serif;font-weight:800;letter-spacing:.025em;color:#fff3d4;text-shadow:0 2px 10px #0009}
 body.display-mode .tsg-submark{font-family:'Barlow Condensed',sans-serif;font-weight:850;letter-spacing:.16em;color:#f0c878}
-body.display-mode .tsg-live{box-shadow:0 0 18px #ecc46c38;background:linear-gradient(140deg,#f3db9b,#d6a94d)}
 body.display-mode .lb-tv-primary{background:radial-gradient(ellipse at 18% 0%,#2e715127,transparent 42%),linear-gradient(148deg,#0b3425 4%,#041b13 94%);border-color:#c9a35b9c;box-shadow:inset 0 0 0 1px #f7df9e17,0 14px 36px #000a}
 body.display-mode .lb-tv-secondary{background:linear-gradient(159deg,#0d3929,#071d16 75%);border-color:#d5b46f99;box-shadow:inset 0 0 0 1px #eac87c10,0 12px 34px #0009}
 body.display-mode .lb-tv-side-head{font-family:'Barlow Condensed',sans-serif;font-size:clamp(12px,1.17vw,20px);font-weight:900;letter-spacing:.14em;color:#f4d38b;text-shadow:0 0 14px #ffc46333}
@@ -470,6 +468,10 @@ body.display-mode .tsg-crew-quote{font:800 clamp(21px,2.85vw,49px)/1.15 'Cinzel'
 @media(max-width:850px){body.display-mode .lb-tv-title{font-size:16px}body.display-mode .lb-tv-side-head{font-size:11px}body.display-mode .tsg-fullscreen{padding:4px!important;font-size:10px!important}}
 @media(prefers-reduced-motion:reduce){.tsg-slogan-enter{animation:none}}
 
+
+/* V20: registration deadline notice that matches the broadcast presentation */
+body.display-mode .tsg-registration-deadline{margin-top:clamp(8px,1.1vh,18px);padding:8px 16px;border-top:1px solid #c9a55b7a;border-bottom:1px solid #c9a55b7a;color:#f2d188;font:800 clamp(13px,1.35vw,25px)/1.2 'Barlow Condensed',sans-serif;letter-spacing:.13em;text-transform:uppercase;text-align:center}
+body.display-mode .tsg-registration-footnote{color:#aebfaf;font:600 clamp(10px,.9vw,15px)/1.35 'Manrope',sans-serif;text-align:center;max-width:720px}
 </style>
 </head>
 <body>
@@ -564,7 +566,7 @@ body.display-mode .tsg-crew-quote{font:800 clamp(21px,2.85vw,49px)/1.15 'Cinzel'
 </main>
 <div class="lb-screen" id="lunchroom-screen" aria-label="Lunchroom league scoreboard">
  <div class="lb-tv-header">
-  <div class="lb-tv-brand"><img class="lb-tv-logo tsg-crest" src="assets/glencoe-crest.jpg" alt="Glencoe Golf & Country Club crest"><div class="tsg-wordmark"><div class="lb-tv-title">TURFCARE</div><div class="tsg-submark">SOCIAL LEAGUE <span class="tsg-live">● LIVE</span></div></div></div>
+  <div class="lb-tv-brand"><img class="lb-tv-logo tsg-crest" src="assets/glencoe-crest.jpg" alt="Glencoe Golf & Country Club crest"><div class="tsg-wordmark"><div class="lb-tv-title">TURFCARE</div><div class="tsg-submark">SOCIAL LEAGUE</div></div></div>
   <div class="clubhouse-header-live">
    <div class="clubhouse-current-weather" id="lb-current-weather" aria-label="Current Rocky View weather"><span class="wx-symbol">🌤️</span><span class="wx-detail"><strong>Rocky View</strong><small>Loading weather…</small></span></div>
    <div class="clubhouse-deadline" aria-label="Weekly matchup deadline"><span class="clubhouse-micro">WEEKLY DEADLINE</span><strong id="lb-header-deadline">--:--:--:--</strong></div>
@@ -581,7 +583,7 @@ body.display-mode .tsg-crew-quote{font:800 clamp(21px,2.85vw,49px)/1.15 'Cinzel'
  </div>
  <div class="lb-tv-main">
   <section class="lb-tv-primary"><div class="lb-tv-eyebrow" id="lb-eyebrow">LEAGUE LIVE</div><div id="lb-slide" class="lb-tv-slide"></div></section>
-  <aside class="lb-tv-secondary"><div class="lb-tv-side-head"><span class="tsg-season-star">✦</span> 2026–2027 INAUGURAL SEASON</div><div class="lb-tv-side-title">League insights</div><div id="lb-side-fixtures" aria-live="off"></div><div class="lb-side-pips" id="lb-side-pips"></div><div class="clubhouse-stats-footer" id="lb-side-summary"><div><small>PLAYERS</small><strong id="lb-side-players">—</strong></div><div><small>MATCHUPS</small><strong id="lb-side-matchups">—</strong></div><div><small>RESULTS</small><strong id="lb-side-results">—</strong></div></div></aside>
+  <aside class="lb-tv-secondary"><div class="lb-tv-side-head"><span class="tsg-season-star">✦</span> 2026–2027 INAUGURAL SEASON</div><div id="lb-side-fixtures" aria-live="off"></div><div class="lb-side-pips" id="lb-side-pips"></div><div class="clubhouse-stats-footer" id="lb-side-summary"><div><small>PLAYERS</small><strong id="lb-side-players">—</strong></div><div><small>MATCHUPS</small><strong id="lb-side-matchups">—</strong></div><div><small>RESULTS</small><strong id="lb-side-results">—</strong></div></div></aside>
  </div>
  <div class="lb-tv-footer"><div><span class="lb-tv-dot"></span> LIVE LEAGUE BOARD</div><div id="lb-update">Updating automatically</div><div class="lb-tv-progress" id="lb-pips"></div></div>
  <div class="lb-nhl lb-sports-wire" aria-label="Major league scores, published betting odds, PGA Tour and World Curling updates">
@@ -872,6 +874,8 @@ function showDisplayNameMessage(msg,error=false){$('display-name-message').class
 const ACCESS_UNLOCK_AT=Date.parse('2026-11-20T00:00:00-07:00');
 const SEASON_KICKOFF_AT=Date.parse('2026-11-23T00:00:00-07:00');
 const SITE_ADDRESS='https://turfcare-social-league.pages.dev/';
+const REGISTRATION_CLOSE_AT=Date.parse('2026-11-20T00:00:00-07:00'); // End of Thursday Nov 19, Calgary
+function registrationNotice(){return Date.now()<REGISTRATION_CLOSE_AT?'REGISTRATION CLOSES THURSDAY, NOVEMBER 19':'REGISTRATION CLOSED NOVEMBER 19';}
 // Five signature crew taglines. Main site and TV promo slides rotate independently.
 const LEAGUE_TAGLINES=[
  'We maintain the greens. We settle scores indoors.',
@@ -1039,7 +1043,7 @@ function highlightMarkup(sport=null){
  if(!activeHighlight)return '<div class="lb-tv-empty">Highlights are being prepared.</div>';
  const h=activeHighlight;
  const params=new URLSearchParams({autoplay:'1',mute:'1',playsinline:'1',controls:'0',rel:'0',iv_load_policy:'3',fs:'0',enablejsapi:'1',origin:location.origin});
- return `<div class="lb-highlight-shell"><div class="lb-highlight-header"><h2>${HIGHLIGHT_ICONS[h.sport]||'🏆'} ${esc(h.sport)} highlights</h2><span>THE HIGHLIGHT REEL</span></div><div class="lb-highlight-screen" id="clubhouse-highlight-screen"><iframe id="clubhouse-highlight-iframe" title="${esc(h.sport)} highlight video" src="https://www.youtube-nocookie.com/embed/${h.id}?${params.toString()}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" loading="eager"></iframe><div class="lb-highlight-controls"><button type="button" id="highlight-sound-button" aria-pressed="false" onclick="toggleHighlightSound()">🔇 Turn sound on</button><button type="button" id="highlight-next-button" onclick="skipHighlight()">⏭ Next clip</button><button type="button" id="highlight-next-sport-button" onclick="skipHighlightSport()">🔀 Next sport</button></div></div><div class="lb-highlight-credit">${esc(h.title)} · ${esc(h.credit)}</div></div>`;
+ return `<div class="lb-highlight-shell"><div class="lb-highlight-header"><h2>${HIGHLIGHT_ICONS[h.sport]||'🏆'} ${esc(h.sport)} highlights</h2></div><div class="lb-highlight-screen" id="clubhouse-highlight-screen"><iframe id="clubhouse-highlight-iframe" title="${esc(h.sport)} highlight video" src="https://www.youtube-nocookie.com/embed/${h.id}?${params.toString()}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" loading="eager"></iframe><div class="lb-highlight-controls"><button type="button" id="highlight-sound-button" aria-pressed="false" onclick="toggleHighlightSound()">🔇 Turn sound on</button><button type="button" id="highlight-next-button" onclick="skipHighlight()">⏭ Next clip</button><button type="button" id="highlight-next-sport-button" onclick="skipHighlightSport()">🔀 Next sport</button></div></div><div class="lb-highlight-credit">${esc(h.title)} · ${esc(h.credit)}</div></div>`;
 }
 let highlightControlsTimeout=null;
 function setHighlightControlVisibility(show){
@@ -1199,14 +1203,14 @@ function renderLunchroom(){
   html=tvWeatherMarkup(true);
  }else if(page==='Launch countdown'){
   const date=Date.now()<ACCESS_UNLOCK_AT?ACCESS_UNLOCK_AT:SEASON_KICKOFF_AT;
-  const headline=date===ACCESS_UNLOCK_AT?'WEEK 1 REVEAL · NOV 20':'SEASON KICKOFF · NOV 23';
+  const headline=date===ACCESS_UNLOCK_AT?'WEEK 1 SCHEDULE RELEASE · NOV 20':'SEASON KICKOFF · NOV 23';
   const next=date===ACCESS_UNLOCK_AT?'Week 1 schedule released November 20 · Season begins November 23':'Week 1 schedule released · The competition starts Monday, November 23';
-  html=`<div class="lb-launch-slide"><div class="lb-launch-eyebrow">The Glencoe · Turfcare Social League Live</div><h2 class="lb-launch-title">${headline}</h2><div class="lb-launch-countdown" id="lb-launch-countdown" data-target="${date}">${lbClock(date)}</div><div class="lb-launch-desc">${esc(leagueTagline())}</div><div class="lb-launch-secondary">${next}</div></div>`;
+  html=`<div class="lb-launch-slide"><div class="lb-launch-eyebrow">The Glencoe · Turfcare Social League Live</div><h2 class="lb-launch-title">${headline}</h2><div class="lb-launch-countdown" id="lb-launch-countdown" data-target="${date}">${lbClock(date)}</div><div class="lb-launch-desc">${esc(leagueTagline())}</div><div class="lb-launch-secondary">${next}</div><div class="tsg-registration-deadline">${registrationNotice()}</div></div>`;
  }else if(page==='Crew mottos'){
-  html=`<div class="lb-launch-slide lb-crew-slide"><div class="lb-launch-eyebrow">THE GLENCOE PRESENTS · 2026–2027 INAUGURAL SEASON</div><div class="tsg-sport-strip"><div style="background-image:url('assets/ping-pong.jpg')"><span>PING PONG</span></div><div style="background-image:url('assets/darts.jpg')"><span>DARTS</span></div><div style="background-image:url('assets/pool.jpg')"><span>POOL</span></div><div style="background-image:url('assets/air-hockey.jpg')"><span>AIR HOCKEY</span></div></div><h2 class="tsg-crew-quote">${esc(leagueTagline())}</h2><div class="lb-launch-secondary">Four disciplines. One legendary season.</div></div>`;
+  html=`<div class="lb-launch-slide lb-crew-slide"><div class="lb-launch-eyebrow">THE GLENCOE PRESENTS · 2026–2027 INAUGURAL SEASON</div><div class="tsg-sport-strip"><div style="background-image:url('assets/ping-pong.jpg')"><span>PING PONG</span></div><div style="background-image:url('assets/darts.jpg')"><span>DARTS</span></div><div style="background-image:url('assets/pool.jpg')"><span>POOL</span></div><div style="background-image:url('assets/air-hockey.jpg')"><span>AIR HOCKEY</span></div></div><h2 class="tsg-crew-quote">${esc(leagueTagline())}</h2><div class="lb-launch-secondary">Four disciplines. One legendary season.</div><div class="tsg-registration-deadline">${registrationNotice()}</div></div>`;
  }else if(page==='League QR'){
   const preAccess=Date.now()<ACCESS_UNLOCK_AT;
-  html=`<div class="lb-launch-slide"><div class="lb-launch-eyebrow">Get ready for the league</div><div class="lb-launch-qr"><img src="assets/league-qr.png" alt="QR code linking to Turfcare Social League public website"><div><h2 class="lb-launch-title">SCAN TO EXPLORE</h2><div class="lb-launch-desc">See the latest league updates, check out the four sports, and follow the launch. ${preAccess?'Player access and Week 1 matchups are planned for November 20.':'Week 1 matchups are scheduled for release. Season begins November 23.'}</div><p><code>${SITE_ADDRESS.replace('https://','')}</code></p></div></div><div class="lb-launch-secondary">${esc(leagueTagline())}</div></div>`;
+  html=`<div class="lb-launch-slide"><div class="lb-launch-eyebrow">Get ready for the league</div><div class="lb-launch-qr"><img src="assets/league-qr.png" alt="QR code linking to Turfcare Social League public website"><div><h2 class="lb-launch-title">SCAN TO EXPLORE</h2><div class="lb-launch-desc">See the latest league updates, check out the four sports, and follow the launch. ${preAccess?'Player access and Week 1 matchups are planned for November 20.':'Week 1 matchups are scheduled for release. Season begins November 23.'}</div><p><code>${SITE_ADDRESS.replace('https://','')}</code></p></div></div><div class="lb-launch-secondary">${registrationNotice()}</div><div class="tsg-registration-footnote">QR opens the league website. Account registration will be available once enabled.</div></div>`;
  }else if(page==='Standings'){
   const rows=leaderboard().slice(0,6);
   html=`<div class="lb-tv-section-title">League standings</div>${rows.length?rows.map((p,i)=>`<div class="lb-tv-leader"><div class="lb-tv-rank">${i+1}</div><div class="lb-tv-name">${esc(p.display_name)}${p.freebies?` <span class="lb-tv-minor">· ${p.freebies} freebie${p.freebies===1?'':'s'}</span>`:''}</div><div class="lb-tv-record">${p.wins} W <span class="lb-tv-minor">· ${p.losses} L · ${p.gameWins} GW</span></div></div>`).join(''):'<div class="lb-tv-empty">Standings will appear once the season begins.</div>'}`;
