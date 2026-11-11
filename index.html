@@ -715,6 +715,12 @@ body.display-mode .tsg-clock-trigger:focus-visible{outline:2px solid #f2d588;out
  body.display-mode .tsg-display-actions:not(:focus-within):not(.tsg-controls-open) .tsg-header-controls{opacity:0;visibility:hidden}
 }
 
+
+/* V36: cinematic pre-registration promotion; logo, all five sports and real QR are in the artwork. */
+body.display-mode .lb-launch-slide.tsg-promo-poster-slide{position:relative;display:flex;justify-content:center;align-items:center;padding:clamp(4px,.65vw,12px);gap:0;background:#061c14;overflow:hidden;border:1px solid #caa35e;border-radius:14px}
+body.display-mode .tsg-promo-poster{display:block;object-fit:contain;width:100%;height:100%;max-width:100%;max-height:100%;min-height:0;min-width:0;filter:drop-shadow(0 5px 16px #0009)}
+body.display-mode .tsg-promo-bottom-note{position:absolute;right:12px;top:12px;background:#092a22ed;border:1px solid #cbaa68a8;color:#f8e6bb;border-radius:7px;padding:5px 10px;font:700 clamp(9px,.72vw,13px)/1.25 'Manrope',sans-serif;box-shadow:0 3px 14px #0009;max-width:52%;text-align:right}
+@media(max-height:650px){body.display-mode .tsg-promo-bottom-note{font-size:9px;padding:4px 7px}}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1805,7 +1811,12 @@ function renderLunchroom(){
   html=`<div class="lb-launch-slide lb-crew-slide"><div class="lb-launch-eyebrow">THE GLENCOE PRESENTS · 2026–2027 INAUGURAL SEASON</div><div class="tsg-sport-strip"><div style="background-image:url('assets/ping-pong.jpg')"><span>PING PONG</span></div><div style="background-image:url('assets/darts.jpg')"><span>DARTS</span></div><div style="background-image:url('assets/pool.jpg')"><span>POOL</span></div><div style="background-image:url('assets/air-hockey.jpg')"><span>AIR HOCKEY</span></div></div><h2 class="tsg-crew-quote">${esc(leagueTagline())}</h2><div class="lb-launch-secondary">Four disciplines. One legendary season.</div><div class="tsg-registration-deadline">${registrationNotice()}</div></div>`;
  }else if(page==='League QR'){
   const preAccess=Date.now()<ACCESS_UNLOCK_AT;
-  html=`<div class="lb-launch-slide"><div class="lb-launch-eyebrow">Get ready for the league</div><div class="lb-launch-qr"><img src="assets/league-qr.png" alt="QR code linking to Turfcare Social League public website"><div><h2 class="lb-launch-title">SCAN TO EXPLORE</h2><div class="lb-launch-desc">See the latest league updates, check out the four sports, and follow the launch. ${preAccess?'Player access and Week 1 matchups are planned for November 20.':'Week 1 matchups are scheduled for release. Season begins November 23.'}</div><p><code>${SITE_ADDRESS.replace('https://','')}</code></p></div></div><div class="lb-launch-secondary">${registrationNotice()}</div><div class="tsg-registration-footnote">QR opens the league website. Account registration will be available once enabled.</div></div>`;
+  // The illustrated QR poster is pre-registration advertising only; after closing, show accurate next steps.
+  if(Date.now()<REGISTRATION_CLOSE_AT){
+   html=`<div class="lb-launch-slide tsg-promo-poster-slide"><img class="tsg-promo-poster" src="assets/registration-promo.jpg" alt="The Glencoe Turfcare Social League. Registration opening soon; registration closes November 19, player access and Week 1 schedule November 20, league play starts November 23. QR links to public league website."><div class="tsg-promo-bottom-note">Scan to visit the league website · Registration opens soon</div></div>`;
+  }else{
+   html=`<div class="lb-launch-slide lb-launch-with-crest"><div class="lb-launch-league-lockup"><img class="lb-launch-crest" src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><div class="lb-launch-league-wordmark"><span class="lb-launch-glencoe">THE GLENCOE</span><strong>TURFCARE</strong><span class="lb-launch-social">SOCIAL LEAGUE</span></div></div><div class="lb-launch-eyebrow">REGISTRATION CLOSED NOVEMBER 19</div><h2 class="lb-launch-title">${preAccess?'WEEK 1 SCHEDULE RELEASE':'LEAGUE PLAY BEGINS'}</h2><div class="lb-launch-desc">${preAccess?'Player access, league functions and the Week 1 schedule release November 20.':'November 23 at 7:00 AM MST · Clock out. Game on.'}</div><div class="lb-launch-secondary">${preAccess?'NOVEMBER 20, 2026':'NOVEMBER 23, 2026'}</div></div>`;
+  }
  }else if(page==='Standings'){
   const rows=leaderboard().slice(0,6);
   html=`<div class="lb-tv-section-title">League standings</div>${rows.length?rows.map((p,i)=>`<div class="lb-tv-leader"><div class="lb-tv-rank">${i+1}</div><div class="lb-tv-name">${esc(p.display_name)}${p.freebies?` <span class="lb-tv-minor">· ${p.freebies} freebie${p.freebies===1?'':'s'}</span>`:''}</div><div class="lb-tv-record">${p.wins} W <span class="lb-tv-minor">· ${p.losses} L · ${p.gameWins} GW</span></div></div>`).join(''):'<div class="lb-tv-empty">Standings will appear once the season begins.</div>'}`;
