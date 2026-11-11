@@ -965,10 +965,24 @@ body:not(.display-mode) .tsg-register-note{font-size:.84rem;color:#637168;margin
 body:not(.display-mode) .tsg-pending-panel{border:1px solid #d0ad63;background:#f5ecd7;padding:18px;border-radius:13px;margin-top:14px;color:#193e2d}
 body:not(.display-mode) .tsg-pending-panel strong{display:block;margin-bottom:5px}
 @media(max-width:620px){body:not(.display-mode) .tsg-register-panel .tsg-register-grid{grid-template-columns:1fr}}
+
+/* V43: account controls are available from the upper navigation on desktop and mobile. */
+body:not(.display-mode) .tsg-top-auth{margin-left:0;flex:0 0 auto;border:1px solid #d8b76d;background:#dec080;color:#133b2a;border-radius:9px;font:800 12px 'Manrope',sans-serif;min-height:42px;padding:10px 15px;white-space:nowrap;position:relative;z-index:7}
+body:not(.display-mode) .tsg-top-auth:hover{background:#f3dca0}
+body:not(.display-mode) .tsg-auth-menu{position:fixed;z-index:10000;width:min(410px,calc(100vw - 24px));max-height:calc(100dvh - 100px);overflow-y:auto;background:#fffdf5;padding:18px;border:1px solid #bba16b;border-radius:16px;box-shadow:0 18px 55px #0007;color:#193626}
+body:not(.display-mode) .tsg-auth-menu[hidden]{display:none!important}
+body:not(.display-mode) .tsg-auth-menu .authbox{max-width:none;width:100%;box-shadow:none;border:none;background:transparent;padding:0}
+body:not(.display-mode) .tsg-auth-menu #auth-state{font-size:13px}
+body:not(.display-mode) .tsg-auth-menu #auth-form{margin-top:8px}
+body:not(.display-mode) .tsg-auth-menu #auth-form button{min-height:42px}
+body:not(.display-mode) .tsg-auth-menu #auth-message{font-size:13px;overflow-wrap:anywhere}
+body:not(.display-mode) .tsg-auth-menu-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;color:#143e2b;font-weight:900}
+body:not(.display-mode) .tsg-auth-menu-close{padding:6px 10px;background:#e8e7db;color:#143e2b}
+@media(max-width:580px){body:not(.display-mode) .tsg-top-auth{padding:9px 10px;min-height:40px;font-size:11px}body:not(.display-mode) .home-topbar{gap:6px}body:not(.display-mode) .tsg-auth-menu{padding:15px}}
 </style>
 </head>
 <body>
-<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="home-nav-links"><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div></nav><div class="hero home-hero"><div class="home-hero-content"><div class="eyebrow">✦ &nbsp; 2026–2027 INAUGURAL SEASON</div><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><a class="tsg-home-registration-cta" href="#tsg-registration" aria-controls="tsg-registration" aria-expanded="false">Register for the League</a></div><div class="home-hero-mark"><span>THE GLENCOE</span><strong>TURFCARE<br>SOCIAL LEAGUE</strong><i>FIVE SPORTS · ONE CREW</i></div></div></header>
+<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="home-nav-links"><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><div class="eyebrow">✦ &nbsp; 2026–2027 INAUGURAL SEASON</div><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><a class="tsg-home-registration-cta" href="#tsg-registration" aria-controls="tsg-registration" aria-expanded="false">Register for the League</a></div><div class="home-hero-mark"><span>THE GLENCOE</span><strong>TURFCARE<br>SOCIAL LEAGUE</strong><i>FIVE SPORTS · ONE CREW</i></div></div></header>
 <main class="wrap home-body"><section class="home-launch-strip" aria-label="Season dates"><div><small>01 / REGISTRATION</small><strong>Closes Nov 19</strong></div><div><small>02 / PLAYER ACCESS</small><strong>Nov 20</strong></div><div><small>03 / SEASON KICKOFF</small><strong>Nov 23 · 7 AM</strong></div></section><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a href="#matchups-section" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a href="#page-matchups" class="home-sport-tile tsg-beer-tile"><div class="tsg-beer-icon" aria-hidden="true">🥤</div><span>05 <strong>BEER PONG</strong></span></a></div></section>
 
 <section class="countdown" id="deadline-section"><div><h2>Time left to finish this week's matchup</h2><div id="deadline-label" class="muted">The weekly deadline will appear here once matchups are published.</div></div><div class="timer" id="timer"><div class="timebox"><strong>--</strong><span>Days</span></div><div class="timebox"><strong>--</strong><span>Hours</span></div><div class="timebox"><strong>--</strong><span>Minutes</span></div><div class="timebox"><strong>--</strong><span>Seconds</span></div></div></section>
@@ -977,7 +991,7 @@ body:not(.display-mode) .tsg-pending-panel strong{display:block;margin-bottom:5p
 <div class="section-head" id="matchups-section"><div><div class="eyebrow" style="color:var(--green2)">Who's up next</div><h2>Weekly matchups</h2></div></div><section class="panel"><div id="matchups"><div class="empty">Matchups will show here when the season schedule is published.</div></div></section>
 <div class="section-head" id="statistics-section"><div><div class="eyebrow" style="color:var(--green2)">Head-to-head</div><h2>Player statistics</h2></div></div>
 <section class="panel" id="profile-panel"><div id="profile-content" class="muted">Select a player name on the leaderboard to see their results across all five sports.</div></section>
-<div class="section-head" id="player-signin"><div><div class="eyebrow" style="color:var(--green2)">Participant access</div><h2>Player sign in</h2></div></div><section class="panel authbox"><div id="auth-state" class="muted">Sign in to access your player tools and submit completed matchups.</div><div id="auth-form"><label for="email">Email</label><input id="email" type="email" autocomplete="username" placeholder="you@example.com"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Your password"><div style="display:flex;gap:8px;margin-top:14px"><button id="signin">Sign in</button><button class="secondary" id="reset">Reset password</button></div></div><button id="signout" class="secondary hidden">Sign out</button><div id="auth-message" role="status"></div></section>
+<div class="section-head" id="player-signin"><div><div class="eyebrow" style="color:var(--green2)">Participant access</div><h2>Player sign in</h2></div></div><section class="panel authbox"><div id="auth-state" class="muted">Sign in to access your player tools and submit completed matchups.</div><form id="auth-form"><label for="email">Email</label><input id="email" type="email" autocomplete="username" placeholder="you@example.com"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Your password"><div style="display:flex;gap:8px;margin-top:14px"><button id="signin" type="submit">Sign in</button><button type="button" class="secondary" id="reset">Reset password</button></div></form><button id="signout" class="secondary hidden">Sign out</button><div id="auth-message" role="status"></div></section>
 <section class="tsg-register-panel hidden" id="tsg-registration" aria-labelledby="tsg-registration-title">
 <h3 id="tsg-registration-title">Join the League</h3>
 <p>New to the Turfcare Social League? Register for an account. League participation requires administrator approval.</p>
@@ -2274,7 +2288,7 @@ $('tsg-signup-form').addEventListener('submit',async(event)=>{
  }catch(error){message.classList.add('error');message.textContent=error.message||'Registration could not be completed.';}
  finally{button.disabled=false;button.textContent='Request League Access';}
 });
-$('signin').onclick=async()=>{const {error}=await client.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)showMessage(error.message,true);else{showMessage('Signed in.');await refreshAuth();}};
+$('auth-form').addEventListener('submit',async(e)=>{e.preventDefault();const button=$('signin');if(button.disabled)return;button.disabled=true;try{const {error}=await client.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)showMessage(error.message,true);else{showMessage('Signed in.');await refreshAuth();}}finally{button.disabled=false;}});
 $('reset').onclick=async()=>{const email=$('email').value.trim();if(!email)return showMessage('Enter your email address first.',true);const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:location.origin});showMessage(error?error.message:'If that email is registered, a password reset link will be sent.',!!error);};
 $('signout').onclick=async()=>{await client.auth.signOut();await refreshAuth();showMessage('You have signed out.');};
 client.auth.onAuthStateChange(()=>{setTimeout(()=>{refreshAuth().catch(console.error);},0);});
@@ -2362,12 +2376,13 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  if(!main)return;
  const originals=[...main.children];
  const pages={home:[],standings:[],matchups:[],player:[],admin:[]};
+ // Route by stable element IDs where possible. The registration panel added
+ // a child to <main>, so old numeric offsets placed admin tools on Home.
  originals.forEach((el,i)=>{
-  if(i<=3 || el.id==='tsg-registration')pages.home.push(el);
-  else if(i<=5 || (i>=8&&i<=9))pages.standings.push(el);
-  else if(i<=7)pages.matchups.push(el);
-  else if(i<=12)pages.player.push(el);
-  else if(i===13)pages.admin.push(el);
+  if(el.id==='admin-area')pages.admin.push(el);
+  else if(el.id==='player-area' || el.id==='tsg-pending-approval' || el.id==='player-signin' || i===10)pages.player.push(el);
+  else if(el.id==='standings-section' || el.id==='statistics-section' || el.id==='profile-panel' || i===4)pages.standings.push(el);
+  else if(el.id==='matchups-section' || i===6)pages.matchups.push(el);
   else pages.home.push(el);
  });
  // The QR code opens the homepage: show the existing registration form prominently.
@@ -2433,6 +2448,39 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  activate();
  // Profile navigation from clicking a player's name stays on the standings page.
  document.addEventListener('click',e=>{if(e.target.closest('[data-player-id]')&&location.hash!=='#page-standings'){location.hash='#page-standings';}});
+})();
+</script>
+
+<script>
+/* V43: Rehome the existing login, keeping its Supabase handlers and auth IDs intact. */
+(function(){
+ if(new URLSearchParams(location.search).get('display')==='1')return;
+ const toggle=document.getElementById('tsg-top-auth');
+ const form=document.getElementById('auth-form');
+ const signout=document.getElementById('signout');
+ const heading=document.getElementById('player-signin');
+ const authbox=heading?.nextElementSibling;
+ if(!toggle||!form||!signout||!authbox||!authbox.classList.contains('authbox'))return;
+ if(heading)heading.remove();
+ const menu=document.createElement('div');
+ menu.id='tsg-top-auth-menu';menu.className='tsg-auth-menu';menu.hidden=true;
+ menu.setAttribute('aria-label','Account sign in');
+ const title=document.createElement('div');title.className='tsg-auth-menu-title';
+ const caption=document.createElement('span');caption.textContent='League account';
+ const close=document.createElement('button');close.type='button';close.className='tsg-auth-menu-close';close.textContent='Close';
+ title.append(caption,close);menu.append(title,authbox);document.body.append(menu);
+ function isSignedIn(){return form.classList.contains('hidden');}
+ function update(){toggle.textContent=isSignedIn()?'Sign out':'Sign in';if(isSignedIn())hide();}
+ function place(){const r=toggle.getBoundingClientRect();menu.style.top=Math.max(8,Math.min(innerHeight-110,r.bottom+9))+'px';menu.style.right=Math.max(12,innerWidth-r.right)+'px';}
+ function hide(){menu.hidden=true;toggle.setAttribute('aria-expanded','false');}
+ function show(){place();menu.hidden=false;toggle.setAttribute('aria-expanded','true');document.getElementById('email')?.focus();}
+ toggle.addEventListener('click',()=>{if(isSignedIn()){signout.click();return;}menu.hidden?show():hide();});
+ close.addEventListener('click',hide);
+ document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!menu.contains(e.target)&&!toggle.contains(e.target))hide();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')hide();});
+ window.addEventListener('resize',()=>{if(!menu.hidden)place();});
+ new MutationObserver(update).observe(form,{attributes:true,attributeFilter:['class']});
+ update();
 })();
 </script>
 </body>
