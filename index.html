@@ -141,6 +141,12 @@ body.display-mode .lb-tv-slide{justify-content:flex-start;overflow:hidden}
 .lb-highlight-screen{position:relative;flex:1;min-height:0;background:#061b17;border:1px solid #94b18c55;border-radius:16px;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .lb-highlight-screen iframe,.lb-highlight-screen video{width:100%;height:100%;position:absolute;inset:0;border:0;object-fit:contain;background:#061b17}
 .lb-highlight-screen iframe{pointer-events:none}
+.lb-highlight-controls{position:absolute;z-index:4;right:clamp(12px,1.5vw,22px);bottom:clamp(12px,1.5vw,22px);display:flex;gap:10px;opacity:0;transform:translateY(7px);transition:opacity .2s,transform .2s;pointer-events:none}
+.lb-highlight-screen:hover .lb-highlight-controls,.lb-highlight-screen:focus-within .lb-highlight-controls{opacity:1;transform:none;pointer-events:auto}
+.lb-highlight-controls button{background:#102a23ef;color:#fff;border:1px solid #c8d98b99;box-shadow:0 4px 14px #0008;padding:12px 17px;font-size:clamp(14px,1vw,19px);border-radius:10px;cursor:pointer;pointer-events:auto}
+.lb-highlight-controls button:focus-visible{outline:3px solid #d7b56d;outline-offset:3px}
+@media(hover:none){.lb-highlight-controls{opacity:1;transform:none;pointer-events:auto}}
+
 .lb-highlight-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#0d3025,#041c17);color:#c8d98b;gap:12px;font-size:clamp(20px,2.4vw,42px)}
 .lb-highlight-credit{font-size:clamp(10px,.95vw,16px);color:#bdd3c4;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lb-tv-secondary{position:relative}
@@ -200,6 +206,11 @@ body.display-mode .lb-tv-side-metric strong{font-family:Consolas,'Courier New',m
 @media(max-width:950px){.lb-weather-hourly{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr))}.lb-weather-days{gap:5px}.lb-weather-day{padding:7px 2px}}
 @media(max-height:650px){.lb-weather-summary{gap:6px}.lb-weather-kpi{padding:7px}.lb-weather-hour{padding:4px}.lb-weather-day{padding:4px 2px}}
 
+
+/* Persistent video player: screen rotation never resets its playback position. */
+body.display-mode #lb-slide{position:relative;display:block;min-height:0;overflow:hidden}
+body.display-mode .tv-main-pane{position:absolute;inset:0;min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+body.display-mode .tv-main-pane.tv-hidden{visibility:hidden;pointer-events:none}
 </style>
 </head>
 <body>
@@ -577,22 +588,111 @@ function tvLongDate(date=new Date()){return new Intl.DateTimeFormat('en-CA',{tim
 function lbClock(deadline){const ms=Math.max(0,new Date(deadline).getTime()-Date.now());const days=Math.floor(ms/86400000),h=Math.floor(ms%86400000/3600000),min=Math.floor(ms%3600000/60000),sec=Math.floor(ms%60000/1000);return `${String(days).padStart(2,'0')}:${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;}
 function tvScheduled(){return matchups.filter(m=>m.status==='scheduled' && m.deadline && new Date(m.deadline)>new Date()).sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));}
 function tvFixture(m){const sports=matchupGames(m).map(g=>`${sportIcon[g.discipline]||''} ${g.discipline}`).join(' · ');return `<div class="lb-tv-fixture"><div class="lb-tv-fixture-top"><span>WEEK ${m.week_number}</span><span>${new Date(m.deadline).toLocaleDateString('en-CA',{timeZone:TV_TZ,month:'short',day:'numeric'})}</span></div><div class="lb-tv-fixture-names">${esc(playerName(m.player1_id))}<span class="lb-tv-versus">VS</span>${esc(playerName(m.player2_id))}</div><div class="lb-tv-fixture-sports">${esc(sports||'Three sports assigned at publish')}</div></div>`;}
-// Curated embeds from sports channels. Playback is requested muted; browsers can still block it.
-const LEAGUE_HIGHLIGHTS=[
- {sport:'Ping Pong',icon:'🏓',id:'7x0SO0o8lps',title:'Top table tennis rallies',credit:'ITTFWorld'},
- {sport:'Darts',icon:'🎯',id:'wceKkSwrSn4',title:'World Championship best moments',credit:'Professional Darts Corporation'},
- {sport:'Pool',icon:'🎱',id:'WdwpBJ2TlYE',title:'European Open top shots',credit:'Matchroom Pool'},
- {sport:'Air Hockey',icon:'🏒',id:'U_m09J-m4Nc',title:'Carter Cup air hockey highlights',credit:'Centerline Pro Air Hockey'}
+// Curated playlist is loaded from /highlights.json so it can grow without editing index.html.
+// YouTube playback availability depends on each video's creator and the browser.
+const FALLBACK_HIGHLIGHTS=[
+ {sport:'Ping Pong',id:'7x0SO0o8lps',title:'Top table tennis rallies',credit:'ITTFWorld'},
+ {sport:'Darts',id:'wceKkSwrSn4',title:'World Championship best moments',credit:'Professional Darts Corporation'},
+ {sport:'Pool',id:'WdwpBJ2TlYE',title:'European Open top shots',credit:'Matchroom Pool'},
+ {sport:'Air Hockey',id:'U_m09J-m4Nc',title:'Carter Cup highlights',credit:'Centerline Pro Air Hockey'}
 ];
-let highlightCursor=0,activeHighlightIndex=-1,sideSlideIndex=0;
+const HIGHLIGHT_ICONS={'Ping Pong':'🏓','Darts':'🎯','Pool':'🎱','Air Hockey':'🏒'};
+let highlightCatalog=FALLBACK_HIGHLIGHTS.slice(), highlightQueue=[], highlightLastId=null;
+let activeHighlight=null, highlightSoundOn=false,sideSlideIndex=0;
+let tvVideoPlaying=false,tvVideoInitialized=false,tvLastHighlightPage=false;
+
 const SIDE_SECTIONS=['Leaderboard','Ping Pong','Leaderboard','Darts','Pool','Leaderboard','Air Hockey','Matchups','Overall leaders'];
+function shuffleHighlightQueue(){
+ const a=highlightCatalog.slice();
+ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+ if(a.length>1&&a[a.length-1]?.id===highlightLastId){
+  const j=a.findIndex(x=>x.id!==highlightLastId);
+  if(j>=0)[a[j],a[a.length-1]]=[a[a.length-1],a[j]];
+ }
+ highlightQueue=a;
+}
+function nextHighlight(){
+ if(!highlightQueue.length)shuffleHighlightQueue();
+ const h=highlightQueue.pop();
+ if(!h)return null;
+ highlightLastId=h.id;
+ return h;
+}
+async function loadHighlightPlaylist(){
+ try{
+  const r=await fetch('/highlights.json',{cache:'no-store'});
+  if(!r.ok)throw new Error('Playlist request failed');
+  const raw=await r.json();
+  if(!Array.isArray(raw))throw new Error('Playlist must be an array');
+  const seen=new Set();
+  const valid=raw.filter(v=>{
+   if(!v||!['Ping Pong','Darts','Pool','Air Hockey'].includes(v.sport)||typeof v.id!=='string'||!/^[A-Za-z0-9_-]{11}$/.test(v.id)||seen.has(v.id))return false;
+   seen.add(v.id);return true;
+  }).map(v=>({sport:v.sport,id:v.id,title:String(v.title||'Sports highlight'),credit:String(v.credit||'YouTube')}));
+  if(!valid.length)throw new Error('Playlist has no valid entries');
+  highlightCatalog=valid;
+  highlightQueue=[];
+  // The current clip is not restarted when the playlist refreshes.
+  console.info('Loaded',valid.length,'highlight entries');
+ }catch(e){console.warn('Using bundled highlight fallback:',e);}
+}
+function youtubeSoundCommand(command){
+ const player=document.getElementById('clubhouse-highlight-iframe');
+ if(!player?.contentWindow)return false;
+ try{
+  player.contentWindow.postMessage(JSON.stringify({event:'command',func:command,args:[]}), 'https://www.youtube-nocookie.com');
+  return true;
+ }catch(err){console.warn('YouTube sound control unavailable',err);return false;}
+}
+function toggleHighlightSound(){
+ if(!document.getElementById('clubhouse-highlight-iframe'))return;
+ const next=!highlightSoundOn;
+ if(next){youtubeSoundCommand('setVolume');youtubeSoundCommand('unMute');}
+ else youtubeSoundCommand('mute');
+ highlightSoundOn=next;
+ const b=document.getElementById('highlight-sound-button');
+ if(b){b.textContent=next?'🔊 Sound on':'🔇 Turn sound on';b.setAttribute('aria-pressed',String(next));}
+}
+// Subscribe to YouTube player-state events so the next clip starts only
+// after the current one finishes. Video is paused during weather screens.
+function listenToHighlightIframe(){
+ const iframe=document.getElementById('clubhouse-highlight-iframe');
+ if(!iframe)return;
+ const subscribe=()=>{try{iframe.contentWindow.postMessage(JSON.stringify({event:'listening',id:'turfcare-player'}),'https://www.youtube-nocookie.com');}catch(e){console.warn('Video state subscription unavailable',e);}};
+ iframe.addEventListener('load',()=>{subscribe();if(!tvLastHighlightPage)youtubeSoundCommand('pauseVideo');});
+ subscribe();
+}
+window.addEventListener('message',event=>{
+ if(!/^https:\/\/(www\.)?youtube(-nocookie)?\.com$/.test(event.origin))return;
+ let message=event.data;
+ try{if(typeof message==='string')message=JSON.parse(message);}catch(_e){return;}
+ if(message?.event==='onStateChange'&&Number(message.info)===0&&activeHighlight){
+  // Ended: select the next shuffled clip; weather rotation is unaffected.
+  const pane=document.getElementById('tv-highlight-pane');
+  if(pane){pane.innerHTML=highlightMarkup();listenToHighlightIframe();}
+ }
+});
+function setVideoPanelVisible(visible){
+ if(visible===tvLastHighlightPage)return;
+ tvLastHighlightPage=visible;
+ if(tvVideoInitialized){
+  if(visible){youtubeSoundCommand('playVideo');}
+  else{youtubeSoundCommand('pauseVideo');}
+ }
+}
 function highlightMarkup(){
- const idx=highlightCursor++ % LEAGUE_HIGHLIGHTS.length;
- activeHighlightIndex=idx;
- const h=LEAGUE_HIGHLIGHTS[idx];
- // Youtube's muted autoplay is best-effort on Fire TV/Silk; no sound is requested.
- const params=new URLSearchParams({autoplay:'1',mute:'1',playsinline:'1',controls:'0',rel:'0',iv_load_policy:'3',fs:'0',loop:'1',playlist:h.id});
- return `<div class="lb-highlight-shell"><div class="lb-highlight-header"><h2>${h.icon} ${esc(h.sport)} highlights</h2><span>ON THE BIG SCREEN · MUTED</span></div><div class="lb-highlight-screen"><iframe title="${esc(h.sport)} highlights, silent autoplay" src="https://www.youtube-nocookie.com/embed/${h.id}?${params.toString()}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" loading="eager"></iframe></div><div class="lb-highlight-credit">${esc(h.title)} · ${esc(h.credit)} · YouTube video (playback subject to provider/browser permissions)</div></div>`;
+ activeHighlight=nextHighlight();
+ highlightSoundOn=false;
+ if(!activeHighlight)return '<div class="lb-tv-empty">Highlights are being prepared.</div>';
+ const h=activeHighlight;
+ const params=new URLSearchParams({autoplay:'1',mute:'1',playsinline:'1',controls:'0',rel:'0',iv_load_policy:'3',fs:'0',enablejsapi:'1',origin:location.origin});
+ return `<div class="lb-highlight-shell"><div class="lb-highlight-header"><h2>${HIGHLIGHT_ICONS[h.sport]||'🏆'} ${esc(h.sport)} highlights</h2><span>SHUFFLED PLAYLIST · MUTED BY DEFAULT</span></div><div class="lb-highlight-screen" id="clubhouse-highlight-screen"><iframe id="clubhouse-highlight-iframe" title="${esc(h.sport)} highlight video" src="https://www.youtube-nocookie.com/embed/${h.id}?${params.toString()}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" loading="eager"></iframe><div class="lb-highlight-controls"><button type="button" id="highlight-sound-button" aria-pressed="false" onclick="toggleHighlightSound()">🔇 Turn sound on</button><button type="button" id="highlight-next-button" onclick="skipHighlight()">⏭ Next clip</button></div></div><div class="lb-highlight-credit">${esc(h.title)} · ${esc(h.credit)} · ${highlightCatalog.length} available clips · Embedding and autoplay depend on YouTube/browser permissions</div></div>`;
+}
+function skipHighlight(){
+ if(LB_TABS[lbSlideIndex%LB_TABS.length]!=='Highlights')return;
+ // Re-render just this video; left/right weather and schedule rotation is unchanged.
+ const pane=document.getElementById('tv-highlight-pane');
+ if(pane){pane.innerHTML=highlightMarkup();listenToHighlightIframe();}
 }
 function tvSportStats(sport){
  const relevant=matchups.filter(m=>countsInStandings(m) && m.resolution!=='freebie' && m.resolution!=='double_forfeit');
@@ -647,15 +747,32 @@ function tvWeatherMarkup(isHourly){
  }
  return `<div class="lb-weather-shell"><div class="lb-weather-heading"><div><div class="lb-weather-title">Rocky View weather</div><div class="lb-weather-sub">${kind} · ${isHourly?`Hours ${part*12+1}–${Math.min((part+1)*12,48)} of 48`:'Next seven days'} · Mountain time</div></div><span class="lb-weather-label">${kind}</span></div><div class="lb-weather-summary"><div class="lb-weather-kpi"><small>Current temperature</small><strong>${wxTemp(current.temperature_2m)}</strong></div><div class="lb-weather-kpi"><small>Wind speed</small><strong>${safeNumber(current.wind_speed_10m)??'—'} <span style="font-size:.52em">km/h</span></strong></div><div class="lb-weather-kpi"><small>Conditions</small><strong class="amber">${weatherIcon(current.weather_code)} <span style="font-size:.48em">Local</span></strong></div></div>${content}<div class="lb-weather-footer"><span>Open-Meteo forecast model · Approx. Rocky View No. 44 centre · Updated ${tvWeatherUpdated?new Date(tvWeatherUpdated).toLocaleTimeString('en-CA',{timeZone:TV_TZ,hour:'numeric',minute:'2-digit'}):'—'}</span>${isHourly?`<div class="lb-weather-progress">${[0,1,2,3].map(i=>`<i class="${i===part?'on':''}"></i>`).join('')}</div>`:''}</div></div>`;
 }
+// Weather loads through Cloudflare when deployed. If that endpoint is missing
+// or temporarily fails, Open-Meteo's browser-accessible endpoint is tried.
 async function fetchTVWeather(){
- try{
-  const response=await fetch('/api/weather',{headers:{Accept:'application/json'},cache:'no-store'});
-  if(!response.ok)throw new Error(`Forecast server: ${response.status}`);
-  const data=await response.json();
-  if(!data.hourly?.time?.length||!data.daily?.time?.length)throw new Error('Incomplete forecast response');
-  tvWeather=data;tvWeatherError='';tvWeatherUpdated=Date.now();
-  if(document.body.classList.contains('display-mode')&&['Weather 48h','Weather 7d'].includes(LB_TABS[lbSlideIndex%LB_TABS.length]))renderLunchroom();
- }catch(err){tvWeatherError='Forecast temporarily unavailable. The league display will continue.';console.warn('Weather update:',err);}
+ const query=new URLSearchParams({
+  latitude:'51.166667',longitude:'-114.066667',timezone:'America/Edmonton',
+  forecast_days:'7',forecast_hours:'48',
+  current:'temperature_2m,weather_code,wind_speed_10m',
+  hourly:'temperature_2m,precipitation_probability,weather_code',
+  daily:'temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code',
+  wind_speed_unit:'kmh',temperature_unit:'celsius'
+ });
+ const candidates=['/api/weather',`https://api.open-meteo.com/v1/forecast?${query.toString()}`];
+ const errors=[];
+ for(const url of candidates){
+  try{
+   const response=await fetch(url,{headers:{Accept:'application/json'},cache:'no-store'});
+   if(!response.ok)throw new Error(`HTTP ${response.status}`);
+   const data=await response.json();
+   if(!data.hourly?.time?.length||!data.daily?.time?.length)throw new Error('Incomplete forecast response');
+   tvWeather=data;tvWeatherError='';tvWeatherUpdated=Date.now();
+   if(document.body.classList.contains('display-mode')&&['Weather 48h','Weather 7d'].includes(LB_TABS[lbSlideIndex%LB_TABS.length]))renderLunchroom();
+   return;
+  }catch(err){errors.push(`${url.startsWith('/')?'Cloudflare':'Direct forecast'}: ${err.message||err}`);}
+ }
+ tvWeatherError='Weather unavailable — verify functions/api/weather.js in GitHub.';
+ console.warn('All weather sources failed:',errors.join(' | '));
 }
 
 function renderLunchroom(){
@@ -670,7 +787,8 @@ function renderLunchroom(){
  const upcoming=scheduled.filter(m=>m.deadline!==primaryDeadline);
  let html='';
  if(page==='Highlights'){
-  html=highlightMarkup();
+  // The iframe stays mounted for the whole TV session, even during weather.
+  html='';
  }else if(page==='Weather 48h'||page==='Weather 7d'){
   html=tvWeatherMarkup(page==='Weather 48h');
  }else if(page==='Standings'){
@@ -686,11 +804,19 @@ function renderLunchroom(){
   const finished=matchups.filter(m=>m.status==='completed'||m.status==='played_ahead'||m.resolution==='freebie'||m.resolution==='double_forfeit').sort((a,b)=>new Date(b.resolved_at||b.submitted_at||0)-new Date(a.resolved_at||a.submitted_at||0)).slice(0,4);
   html=`<div class="lb-tv-section-title">Recent results</div>${finished.length?finished.map(m=>`<div class="lb-tv-fixture"><div class="lb-tv-fixture-top"><span>WEEK ${m.week_number}</span><span>${esc(matchStatus(m))}</span></div><div class="lb-tv-fixture-names">${esc(playerName(m.player1_id))} <span class="lb-tv-versus">${m.resolution==='normal'?`${matchupScore(m).a} – ${matchupScore(m).b}`:'VS'}</span> ${esc(playerName(m.player2_id))}</div><div class="lb-tv-fixture-sports">${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' · '))}</div></div>`).join(''):'<div class="lb-tv-empty">Results will appear after the first matches.</div>'}`;
  }
- // Keep a playing video mounted during one-minute league-data refreshes.
- // Rebuilding its iframe would cause unwanted restarts on the lunchroom TV.
- if(page!=='Highlights'||lastRenderedMainPage!==page||!$('lb-slide').querySelector('iframe')){
-  $('lb-slide').innerHTML=html;
+ // Permanent overlay panes prevent YouTube from restarting at each weather break.
+ const root=$('lb-slide');
+ if(!document.getElementById('tv-highlight-pane')){
+  root.innerHTML='<div class="tv-main-pane" id="tv-highlight-pane"></div><div class="tv-main-pane tv-hidden" id="tv-content-pane"></div>';
+  const pane=$('tv-highlight-pane');pane.innerHTML=highlightMarkup();
+  tvVideoInitialized=true;listenToHighlightIframe();
  }
+ const showingHighlight=page==='Highlights';
+ const videoPane=$('tv-highlight-pane'),contentPane=$('tv-content-pane');
+ videoPane.classList.toggle('tv-hidden',!showingHighlight);
+ contentPane.classList.toggle('tv-hidden',showingHighlight);
+ if(!showingHighlight)contentPane.innerHTML=html;
+ setVideoPanelVisible(showingHighlight);
  lastRenderedMainPage=page;
  renderLeagueSidebar();
  $('lb-side-countdown').textContent=primaryDeadline?lbClock(primaryDeadline):'No deadline';
@@ -771,6 +897,7 @@ document.addEventListener('keydown',event=>{
     exitClubhouseDisplay();
   }
 });
+loadHighlightPlaylist();
 if(new URLSearchParams(location.search).get('display')==='1'){
  document.body.classList.add('display-mode');
  // Highlights and weather each stay onscreen for 64 seconds.
