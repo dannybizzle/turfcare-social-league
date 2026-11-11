@@ -730,6 +730,9 @@ body.display-mode .tsg-promo-bottom-note{position:absolute;right:12px;top:12px;b
 .tsg-approval-row small{color:#66736c}
 .tsg-approval-row button{flex:0 0 auto;background:#125139;border:1px solid #bc9952}
 @media(max-width:540px){.tsg-approval-row{align-items:stretch;flex-direction:column}.tsg-approval-row button{width:100%}}
+/* V46: Beer Pong photo replaces the old emoji tile. */
+body:not(.display-mode) .tsg-beer-tile img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 56%;}
+body:not(.display-mode) .tsg-beer-tile{overflow:hidden;}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1049,8 +1052,8 @@ body:not(.display-mode){overflow-x:hidden}
 </style>
 </head>
 <body>
-<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="home-nav-links"><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><div class="eyebrow">✦ &nbsp; 2026–2027 INAUGURAL SEASON</div><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><a class="tsg-home-registration-cta" href="#tsg-registration" aria-controls="tsg-registration" aria-expanded="false">Register for the League</a></div><div class="home-hero-mark tsg-hero-crest" aria-label="The Glencoe crest"><img src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><i>FIVE SPORTS · ONE CREW</i></div></div></header>
-<main class="wrap home-body"><section class="home-launch-strip" aria-label="Season dates"><div><small>01 / REGISTRATION</small><strong>Closes Nov 19</strong></div><div><small>02 / PLAYER ACCESS</small><strong>Nov 20</strong></div><div><small>03 / SEASON KICKOFF</small><strong>Nov 23 · 7 AM</strong></div></section><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a href="#matchups-section" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a href="#page-matchups" class="home-sport-tile tsg-beer-tile"><div class="tsg-beer-icon" aria-hidden="true">🥤</div><span>05 <strong>BEER PONG</strong></span></a></div></section>
+<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="home-nav-links"><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><a class="tsg-home-registration-cta" href="#tsg-registration" aria-controls="tsg-registration" aria-expanded="false">Register for the League</a></div><div class="home-hero-mark tsg-hero-crest" aria-label="The Glencoe crest"><img src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><i>FIVE SPORTS · ONE CREW</i></div></div></header>
+<main class="wrap home-body"><section class="home-launch-strip" aria-label="Season dates"><div><small>01 / REGISTRATION</small><strong>Closes Nov 19</strong></div><div><small>02 / PLAYER ACCESS</small><strong>Nov 20</strong></div><div><small>03 / SEASON KICKOFF</small><strong>Nov 23 · 7 AM</strong></div></section><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a href="#matchups-section" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a href="#page-matchups" class="home-sport-tile tsg-beer-tile"><img src="assets/beer-pong.jpg" alt="Beer pong game with red cups and a ping-pong ball" loading="lazy"><span>05 <strong>BEER PONG</strong></span></a></div></section>
 
 <section class="countdown" id="deadline-section"><div><h2>Time left to finish this week's matchup</h2><div id="deadline-label" class="muted">The weekly deadline will appear here once matchups are published.</div></div><div class="timer" id="timer"><div class="timebox"><strong>--</strong><span>Days</span></div><div class="timebox"><strong>--</strong><span>Hours</span></div><div class="timebox"><strong>--</strong><span>Minutes</span></div><div class="timebox"><strong>--</strong><span>Seconds</span></div></div></section>
 <div class="section-head" id="standings-section"><div><div class="eyebrow" style="color:var(--green2)">The leaderboard</div><h2>Overall standings</h2></div><span class="muted" id="season-label">Loading season…</span></div>
@@ -1514,18 +1517,84 @@ const SEASON_KICKOFF_AT=Date.parse('2026-11-23T07:00:00-07:00');
 const SITE_ADDRESS='https://turfcare-social-league.pages.dev/';
 const REGISTRATION_CLOSE_AT=Date.parse('2026-11-20T00:00:00-07:00'); // End of Thursday Nov 19, Calgary
 function registrationNotice(){return Date.now()<REGISTRATION_CLOSE_AT?'REGISTRATION CLOSES THURSDAY, NOVEMBER 19':'REGISTRATION CLOSED NOVEMBER 19';}
-// Five signature crew taglines. Main site and TV promo slides rotate independently.
+// Expanded crew banter: a shuffled cycle avoids short repeat loops.
 const LEAGUE_TAGLINES=[
- 'We maintain the greens. We settle scores indoors.',
- 'Same crew. Different rivals. Endless bragging rights.',
- 'Professional on the course. Questionable sportsmanship off it.',
- 'Clock out. Game on.',
- 'We keep the course in shape. Each other? Not so much.'
+ "Our turf is immaculate. Our aim? Debatable.",
+ "The course has standards. This league has witnesses.",
+ "The only thing getting cut today is your lead.",
+ "Fresh-cut greens. Questionable indoor decisions.",
+ "We fix divots. We create rivalries.",
+ "Every crew needs a champion. Apparently, several applied.",
+ "Your handicap is not an excuse in darts.",
+ "Hard work, soft hands, terrible trash talk.",
+ "The grass is greener. The competition is not.",
+ "Clock out. Talk trash responsibly.",
+ "Somebody has to finish last. Thank you for volunteering.",
+ "Five sports. Three games. One suspiciously confident coworker.",
+ "There is no rake for the mess you just made.",
+ "We are professionals. Just not at this.",
+ "Your opponent has been practicing. Allegedly.",
+ "Keep the greens fast and the excuses short.",
+ "We can fix irrigation. Not your backhand.",
+ "Less time talking. More time losing gracefully.",
+ "Your best shot is still being reviewed.",
+ "The equipment is maintained better than our egos.",
+ "We came for the games. Stayed for the excuses.",
+ "No mulligans. No mercy. No idea what happened.",
+ "The only thing louder than the scoreboard is the crew.",
+ "Winner buys the bragging rights. Loser hears about it.",
+ "If confidence were points, this crew would be undefeated.",
+ "Please leave your excuses in the maintenance shop.",
+ "No spectators were impressed by that shot.",
+ "Our biggest rivalry is with the scoreboard.",
+ "Good sportsmanship is encouraged. Trash talk is inevitable.",
+ "A bad day at the table still beats paperwork.",
+ "We maintain championship conditions. Results may vary indoors.",
+ "Practice makes perfect. This league is proof of neither.",
+ "One crew. Five sports. An unreasonable amount of confidence.",
+ "The scoreboard remembers. Unfortunately.",
+ "This week’s strategy: hope your opponent is worse.",
+ "We sharpen mower blades, not our pool skills.",
+ "Darts fly straighter than the rumours after a loss.",
+ "Air hockey: where finesse goes to get loud.",
+ "Pool: geometry with an audience and consequences.",
+ "Ping pong: tiny ball, enormous ego.",
+ "Beer pong: the accuracy test nobody requested.",
+ "Nothing brings a team together like a disputed point.",
+ "We have a schedule, not a talent guarantee.",
+ "Come for the competition. Stay for the rematch.",
+ "No trophies for almost. Plenty of stories, though."
 ];
+let sloganOrder=[];
 let sloganIndex=0;
-function leagueTagline(){return LEAGUE_TAGLINES[sloganIndex%LEAGUE_TAGLINES.length];}
-function advanceLeagueTagline(){sloganIndex=(sloganIndex+1)%LEAGUE_TAGLINES.length;const el=document.getElementById('tsg-home-slogan');if(el){el.classList.remove('tsg-slogan-enter');void el.offsetWidth;el.textContent=leagueTagline();el.classList.add('tsg-slogan-enter');}}
-setInterval(advanceLeagueTagline,9500);
+function shuffleLeagueTaglines(){
+ const last=sloganOrder.length?sloganOrder[sloganOrder.length-1]:-1;
+ sloganOrder=LEAGUE_TAGLINES.map((_,i)=>i);
+ for(let i=sloganOrder.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));
+  [sloganOrder[i],sloganOrder[j]]=[sloganOrder[j],sloganOrder[i]];
+ }
+ if(sloganOrder[0]===last&&sloganOrder.length>1){
+  [sloganOrder[0],sloganOrder[1]]=[sloganOrder[1],sloganOrder[0]];
+ }
+ sloganIndex=0;
+}
+shuffleLeagueTaglines();
+function leagueTagline(){return LEAGUE_TAGLINES[sloganOrder[sloganIndex]];}
+function advanceLeagueTagline(){
+ sloganIndex++;
+ if(sloganIndex>=sloganOrder.length)shuffleLeagueTaglines();
+ const el=document.getElementById('tsg-home-slogan');
+ if(el){
+  el.classList.remove('tsg-slogan-enter');
+  void el.offsetWidth;
+  el.textContent=leagueTagline();
+  el.classList.add('tsg-slogan-enter');
+ }
+}
+const homeSlogan=document.getElementById('tsg-home-slogan');
+if(homeSlogan)homeSlogan.textContent=leagueTagline();
+setInterval(advanceLeagueTagline,14500);
 
 const PRELAUNCH_CARD_DURATION_MS=45*1000;
 function tvSequence(){
