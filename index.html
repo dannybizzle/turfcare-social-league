@@ -2565,7 +2565,11 @@ $('delete-season-button').onclick=async()=>{
   }catch(error){showSeasonMessage(error.message||'Could not delete season.',true);}
   finally{button.disabled=false;}
 };
-$('preview-schedule').onclick=()=>{try{
+$('preview-schedule').onclick=async()=>{try{
+ const {data:latestProfiles,error:rosterError}=await client.from('profiles').select('id,display_name,role,is_player,is_owner,is_approved');
+ if(rosterError)throw rosterError;
+ profiles=latestProfiles||[];
+ pendingSchedule=null;
  const result=makeSchedule($('schedule-season').value);pendingSchedule=result.payload;
  const names=Object.fromEntries(result.players.map(p=>[p.id,p.display_name]));
  $('schedule-preview').innerHTML=[result.week].map(wk=>{const rows=pendingSchedule.filter(x=>x.week_number===wk),byes=result.byes.filter(x=>x.week_number===wk);
@@ -2575,7 +2579,26 @@ $('preview-schedule').onclick=()=>{try{
  $('schedule-preview-panel').classList.remove('hidden');showAdminMessage('');
  }catch(e){showAdminMessage(e.message,true);}};
 $('cancel-preview').onclick=()=>{pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');};
-$('publish-schedule').onclick=async()=>{if(!pendingSchedule?.length)return showAdminMessage('Generate a preview first.',true);if(pendingSchedule.some(m=>!profiles.some(p=>p.id===m.player1_id&&p.is_player&&p.is_approved)||!profiles.some(p=>p.id===m.player2_id&&p.is_player&&p.is_approved)))return showAdminMessage('An assigned player is no longer approved. Refresh and regenerate the preview.',true);if(!confirm(`Publish Week ${pendingSchedule[0].week_number} only? Existing published weeks will stay unchanged.`))return;const {data,error}=await client.rpc('publish_season_schedule',{p_season_id:$('schedule-season').value,p_schedule:pendingSchedule});if(error)return showAdminMessage(error.message,true);pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');showAdminMessage(`Published ${data} matchups successfully.`);await loadPublic();};
+$('publish-schedule').onclick=async()=>{
+ if(!pendingSchedule?.length)return showAdminMessage('Generate a preview first.',true);
+ const btn=$('publish-schedule');btn.disabled=true;
+ try{
+  const {data:latestProfiles,error:rosterError}=await client.from('profiles').select('id,display_name,is_player,is_approved');
+  if(rosterError)throw rosterError;
+  const latestEligible=(latestProfiles||[]).filter(p=>p.is_player===true&&p.is_approved===true).map(p=>p.id).sort();
+  const previousEligible=profiles.filter(p=>p.is_player===true&&p.is_approved===true).map(p=>p.id).sort();
+  if(JSON.stringify(latestEligible)!==JSON.stringify(previousEligible)){
+   pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');
+   profiles=latestProfiles||[];
+   throw new Error('The approved-player roster has changed. Generate a fresh preview before publishing.');
+  }
+  if(!confirm(`Publish Week ${pendingSchedule[0].week_number} only? Existing published weeks will stay unchanged.`))return;
+  const {data,error}=await client.rpc('publish_season_schedule',{p_season_id:$('schedule-season').value,p_schedule:pendingSchedule});
+  if(error)throw error;
+  pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');
+  await loadPublic();showAdminMessage(`Published ${data} matchups successfully.`);
+ }catch(e){showAdminMessage(e.message||'Could not publish the schedule.',true);}finally{btn.disabled=false;}
+};
 // Public signup: Supabase trigger creates a non-participating, unapproved player profile.
 $('tsg-signup-form').addEventListener('submit',async(event)=>{
  event.preventDefault();
