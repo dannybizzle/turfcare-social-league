@@ -1050,10 +1050,25 @@ body:not(.display-mode) .tsg-auth-menu-close{padding:6px 10px;background:#e8e7db
 /* Ensure no hidden overflow prevents reaching the signup form on short screens. */
 body:not(.display-mode){overflow-x:hidden}
 </style>
+
+<style id="tsg-v47-rules-style">
+body:not(.display-mode) .home-sport-tile{cursor:pointer}
+body:not(.display-mode) .home-sport-tile:focus-visible{outline:3px solid #e4c071;outline-offset:4px}
+#tsg-rules-dialog[hidden]{display:none!important}
+#tsg-rules-dialog{position:fixed;z-index:99999;inset:0;display:grid;place-items:center;padding:16px;background:#061b15c9;backdrop-filter:blur(5px)}
+#tsg-rules-dialog .rules-card{background:#fffdf4;color:#173b2c;width:min(560px,100%);max-height:calc(100dvh - 32px);overflow:auto;border:2px solid #c19c50;border-radius:18px;box-shadow:0 24px 70px #0009;padding:clamp(20px,4vw,30px)}
+#tsg-rules-dialog .rules-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+#tsg-rules-dialog .rules-kicker{font-size:11px;letter-spacing:.16em;color:#8e6b31;font-weight:900}
+#tsg-rules-dialog h2{font:700 clamp(28px,5vw,38px)/1.12 'Cinzel',Georgia,serif;margin:8px 0 14px}
+#tsg-rules-dialog .rules-close{background:#0c422e;color:#fff9e3;border-radius:8px;padding:9px 13px;min-width:42px;min-height:42px}
+#tsg-rules-dialog ul{padding-left:22px;margin:12px 0 16px;line-height:1.65}
+#tsg-rules-dialog li{margin-bottom:7px}
+#tsg-rules-dialog .rules-note{background:#efe7d2;border-left:4px solid #bd9548;padding:11px 13px;border-radius:7px;font-size:13px;line-height:1.55}
+</style>
 </head>
 <body>
 <header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="home-nav-links"><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><a class="tsg-home-registration-cta" href="#tsg-registration" aria-controls="tsg-registration" aria-expanded="false">Register for the League</a></div><div class="home-hero-mark tsg-hero-crest" aria-label="The Glencoe crest"><img src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><i>FIVE SPORTS · ONE CREW</i></div></div></header>
-<main class="wrap home-body"><section class="home-launch-strip" aria-label="Season dates"><div><small>01 / REGISTRATION</small><strong>Closes Nov 19</strong></div><div><small>02 / PLAYER ACCESS</small><strong>Nov 20</strong></div><div><small>03 / SEASON KICKOFF</small><strong>Nov 23 · 7 AM</strong></div></section><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a href="#matchups-section" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a href="#matchups-section" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a href="#page-matchups" class="home-sport-tile tsg-beer-tile"><img src="assets/beer-pong.jpg" alt="Beer pong game with red cups and a ping-pong ball" loading="lazy"><span>05 <strong>BEER PONG</strong></span></a></div></section>
+<main class="wrap home-body"><section class="home-launch-strip" aria-label="Season dates"><div><small>01 / REGISTRATION</small><strong>Closes Nov 19</strong></div><div><small>02 / PLAYER ACCESS</small><strong>Nov 20</strong></div><div><small>03 / SEASON KICKOFF</small><strong>Nov 23 · 7 AM</strong></div></section><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a data-sport-rules="Ping Pong" aria-haspopup="dialog" aria-label="View Ping Pong rules" href="#sport-rules" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a data-sport-rules="Darts" aria-haspopup="dialog" aria-label="View Darts rules" href="#sport-rules" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a data-sport-rules="Pool" aria-haspopup="dialog" aria-label="View Pool rules" href="#sport-rules" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a data-sport-rules="Air Hockey" aria-haspopup="dialog" aria-label="View Air Hockey rules" href="#sport-rules" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a data-sport-rules="Beer Pong" aria-haspopup="dialog" aria-label="View Beer Pong rules" href="#sport-rules" class="home-sport-tile tsg-beer-tile"><img src="assets/beer-pong.jpg" alt="Beer pong game with red cups and a ping-pong ball" loading="lazy"><span>05 <strong>BEER PONG</strong></span></a></div></section>
 
 <section class="countdown" id="deadline-section"><div><h2>Time left to finish this week's matchup</h2><div id="deadline-label" class="muted">The weekly deadline will appear here once matchups are published.</div></div><div class="timer" id="timer"><div class="timebox"><strong>--</strong><span>Days</span></div><div class="timebox"><strong>--</strong><span>Hours</span></div><div class="timebox"><strong>--</strong><span>Minutes</span></div><div class="timebox"><strong>--</strong><span>Seconds</span></div></div></section>
 <div class="section-head" id="standings-section"><div><div class="eyebrow" style="color:var(--green2)">The leaderboard</div><h2>Overall standings</h2></div><span class="muted" id="season-label">Loading season…</span></div>
@@ -2617,6 +2632,43 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  window.addEventListener('resize',()=>{if(!menu.hidden)place();});
  new MutationObserver(update).observe(form,{attributes:true,attributeFilter:['class']});
  update();
+})();
+</script>
+
+<div id="tsg-rules-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="tsg-rules-title">
+ <section class="rules-card" tabindex="-1">
+  <div class="rules-top"><div><div class="rules-kicker">TURFCARE SOCIAL LEAGUE · SPORT RULES</div><h2 id="tsg-rules-title">Sport rules</h2></div><button type="button" class="rules-close" id="tsg-rules-close" aria-label="Close sport rules">✕</button></div>
+  <div id="tsg-rules-body"></div>
+  <div class="rules-note"><strong>Proposed house rules:</strong> These are suggested formats, not yet approved league rules. The league administrator will confirm the final format before competition begins. Each sport awards one game win; three different sports are played per weekly matchup.</div>
+ </section>
+</div>
+<script id="tsg-v47-rules-js">
+(()=>{
+ const rules={
+  'Ping Pong':['Play one game to 11 points; win by 2.','Serve alternates every 2 points, switching each point at 10–10.','A serve must bounce on your side and then your opponent’s side.','A rally is won when your opponent fails to return the ball legally.'],
+  'Darts':['Suggested format: one leg of 301, straight-out (exactly zero wins).','Players take turns throwing up to 3 darts.','Scores subtract from the remaining total; going below zero is a bust and the turn does not count.','Agree who throws first before beginning.'],
+  'Pool':['Suggested format: standard 8-ball, one rack.','Players aim to pocket their assigned solids or stripes before the 8-ball.','Call the intended pocket for the 8-ball.','Scratches and fouls give the opponent ball-in-hand; agree on the rack and break before play.'],
+  'Air Hockey':['Play one game: first player to 7 goals wins.','A goal counts when the puck completely enters the opponent’s goal.','Do not touch the puck with your hands or lift the mallet off the table to trap it.','Restart play fairly after each goal.'],
+  'Beer Pong':['Suggested format: 6 cups per side, arranged in a triangle.','Use water in the cups; drinking alcohol is not required to participate.','Players alternate throws. A ball landing in a cup removes that cup.','First player to clear the opponent’s cups wins; decide bounce shots and rebuttals before playing.']
+ };
+ const dialog=document.getElementById('tsg-rules-dialog'),title=document.getElementById('tsg-rules-title'),body=document.getElementById('tsg-rules-body'),close=document.getElementById('tsg-rules-close'),card=dialog?.querySelector('.rules-card');
+ if(!dialog||!title||!body||!close)return;
+ let previous=null;
+ function hide(){dialog.hidden=true;document.removeEventListener('keydown',keys);previous?.focus?.();}
+ function keys(e){if(e.key==='Escape'){e.preventDefault();hide();}else if(e.key==='Tab'){
+  const focusable=Array.from(card.querySelectorAll('button,[href],[tabindex]:not([tabindex="-1"])')).filter(el=>!el.disabled);
+  if(!focusable.length)return;
+  const first=focusable[0],last=focusable[focusable.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+ }}
+ document.querySelectorAll('[data-sport-rules]').forEach(link=>link.addEventListener('click',event=>{
+  event.preventDefault();const sport=link.getAttribute('data-sport-rules');const list=rules[sport];if(!list)return;
+  previous=link;title.textContent=sport;body.replaceChildren();const ul=document.createElement('ul');
+  list.forEach(line=>{const li=document.createElement('li');li.textContent=line;ul.append(li)});body.append(ul);
+  dialog.hidden=false;close.focus();document.addEventListener('keydown',keys);
+ }));
+ close.addEventListener('click',hide);dialog.addEventListener('click',event=>{if(event.target===dialog)hide()});
 })();
 </script>
 </body>
