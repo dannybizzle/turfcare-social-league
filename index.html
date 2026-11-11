@@ -936,6 +936,11 @@ const FALLBACK_HIGHLIGHTS=[
 const HIGHLIGHT_ICONS={'Ping Pong':'🏓','Darts':'🎯','Pool':'🎱','Air Hockey':'🏒'};
 let highlightCatalog=FALLBACK_HIGHLIGHTS.slice();
 let activeHighlight=null, highlightSoundOn=false,sideSlideIndex=0;
+// A provider may restrict embedding after a clip was originally listed.
+// Failed IDs are skipped for this page session; they are never shown as playable.
+const unavailableHighlightIds=new Set();
+let highlightErrorBurst=0, highlightLastErrorAt=0;
+
 let tvVideoPlaying=false,tvVideoInitialized=false,tvLastHighlightPage=false;
 const HIGHLIGHT_HISTORY_KEY='turfcare-highlight-history-by-sport-v1';
 const SIDE_SECTIONS=['Leaderboard','Today confirmed','Ping Pong','Leaderboard','Upcoming confirmed','Darts','Pool','Leaderboard','Air Hockey','Matchups','Overall leaders'];
@@ -956,10 +961,10 @@ function chooseRandom(list){
 // History is independent for each sport. Even after a page reload, every
 // available clip in that sport is selected before the sport's list repeats.
 function nextHighlight(sport=null){
- const availableSports=HIGHLIGHT_SPORTS.filter(s=>highlightCatalog.some(v=>v.sport===s));
+ const availableSports=HIGHLIGHT_SPORTS.filter(s=>highlightCatalog.some(v=>v.sport===s && !unavailableHighlightIds.has(v.id)));
  if(!availableSports.length)return null;
  const requested=availableSports.includes(sport)?sport:chooseRandom(availableSports);
- const candidates=highlightCatalog.filter(v=>v.sport===requested);
+ const candidates=highlightCatalog.filter(v=>v.sport===requested && !unavailableHighlightIds.has(v.id));
  const histories=readHighlightHistory();
  const record=histories[requested] && typeof histories[requested]==='object' ? histories[requested] : {};
  const ids=new Set(candidates.map(v=>v.id));
@@ -989,7 +994,7 @@ async function loadHighlightPlaylist(){
   if(!valid.length)throw new Error('Playlist has no valid entries');
   highlightCatalog=valid;
   // Keep per-sport play history; do not restart the current clip.
-  console.info('Loaded',valid.length,'unique highlight entries');
+  console.info('Loaded',valid.length,'unique highlight entries:',Object.fromEntries(HIGHLIGHT_SPORTS.map(s=>[s,valid.filter(v=>v.sport===s).length])));
  }catch(e){console.warn('Using bundled highlight fallback:',e);}
 }
 function youtubeSoundCommand(command){
@@ -1023,6 +1028,26 @@ window.addEventListener('message',event=>{
  if(!/^https:\/\/(www\.)?youtube(-nocookie)?\.com$/.test(event.origin))return;
  let message=event.data;
  try{if(typeof message==='string')message=JSON.parse(message);}catch(_e){return;}
+ if(message?.event==='onStateChange'&&Number(message.info)===1)highlightErrorBurst=0;
+ if(message?.event==='onError' && activeHighlight){
+  const errorCode=Number(message.info);
+  console.warn('Highlight playback unavailable:', activeHighlight.id, 'YouTube error', errorCode);
+  unavailableHighlightIds.add(activeHighlight.id);
+  const now=Date.now();
+  highlightErrorBurst=(now-highlightLastErrorAt>30000)?1:highlightErrorBurst+1;
+  highlightLastErrorAt=now;
+  const pane=document.getElementById('tv-highlight-pane');
+  // Pause automatic retries if all candidate clips are rejected in succession.
+  if(pane && tvLastHighlightPage && highlightErrorBurst<=5){
+   const sport=activeHighlight.sport;
+   const alternate=highlightCatalog.some(v=>v.sport===sport&&!unavailableHighlightIds.has(v.id));
+   pane.innerHTML=highlightMarkup(alternate?sport:null);
+   listenToHighlightIframe();
+  }else if(pane && highlightErrorBurst>5){
+   pane.insertAdjacentHTML('beforeend','<div class="lb-tv-empty" style="position:absolute;inset:auto 12px 15px;z-index:5;background:#102b24;padding:12px;border:1px solid #b69a5e;border-radius:9px">Video provider is temporarily unavailable. Use Next Clip to retry.</div>');
+  }
+  return;
+ }
  if(message?.event==='onStateChange'&&Number(message.info)===0&&activeHighlight){
   // Ended: select the next shuffled clip; weather rotation is unaffected.
   const pane=document.getElementById('tv-highlight-pane');
@@ -1040,7 +1065,7 @@ function setVideoPanelVisible(visible){
 function highlightMarkup(sport=null){
  activeHighlight=nextHighlight(sport);
  highlightSoundOn=false;
- if(!activeHighlight)return '<div class="lb-tv-empty">Highlights are being prepared.</div>';
+ if(!activeHighlight)return '<div class="lb-tv-empty">No playable clips available right now. Please try again later.</div>';
  const h=activeHighlight;
  const params=new URLSearchParams({autoplay:'1',mute:'1',playsinline:'1',controls:'0',rel:'0',iv_load_policy:'3',fs:'0',enablejsapi:'1',origin:location.origin});
  return `<div class="lb-highlight-shell"><div class="lb-highlight-header"><h2>${HIGHLIGHT_ICONS[h.sport]||'🏆'} ${esc(h.sport)} highlights</h2></div><div class="lb-highlight-screen" id="clubhouse-highlight-screen"><iframe id="clubhouse-highlight-iframe" title="${esc(h.sport)} highlight video" src="https://www.youtube-nocookie.com/embed/${h.id}?${params.toString()}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" loading="eager"></iframe><div class="lb-highlight-controls"><button type="button" id="highlight-sound-button" aria-pressed="false" onclick="toggleHighlightSound()">🔇 Turn sound on</button><button type="button" id="highlight-next-button" onclick="skipHighlight()">⏭ Next clip</button><button type="button" id="highlight-next-sport-button" onclick="skipHighlightSport()">🔀 Next sport</button></div></div><div class="lb-highlight-credit">${esc(h.title)} · ${esc(h.credit)}</div></div>`;
@@ -1065,14 +1090,16 @@ function installHighlightAutoHide(){
  screen.addEventListener('pointerleave',()=>setHighlightControlVisibility(false));
 }
 function skipHighlight(){
+ highlightErrorBurst=0;
  if(LB_TABS[lbSlideIndex%LB_TABS.length]!=='Highlights')return;
  // Re-render just this video; left/right weather and schedule rotation is unchanged.
  const pane=document.getElementById('tv-highlight-pane');
  if(pane){pane.innerHTML=highlightMarkup(activeHighlight?.sport);listenToHighlightIframe();}
 }
 function skipHighlightSport(){
+ highlightErrorBurst=0;
  if(LB_TABS[lbSlideIndex%LB_TABS.length]!=='Highlights')return;
- const available=HIGHLIGHT_SPORTS.filter(s=>s!==activeHighlight?.sport && highlightCatalog.some(v=>v.sport===s));
+ const available=HIGHLIGHT_SPORTS.filter(s=>s!==activeHighlight?.sport && highlightCatalog.some(v=>v.sport===s&&!unavailableHighlightIds.has(v.id)));
  if(!available.length)return;
  const pane=document.getElementById('tv-highlight-pane');
  if(pane){pane.innerHTML=highlightMarkup(chooseRandom(available));listenToHighlightIframe();}
