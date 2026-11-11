@@ -11,6 +11,34 @@
 .score-panel{margin-top:18px}.score-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(160px,1.25fr);align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.score-row:last-child{border-bottom:0}.score-row select{width:100%}.player-link{background:transparent;color:var(--green2);padding:0;border-radius:0;text-decoration:underline;text-underline-offset:3px;font:inherit;font-weight:700}.player-link:hover{color:#101e18}.match-card{border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0;background:#fff}.match-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.match-sports{font-size:.86rem;color:var(--muted);margin:7px 0}.match-result{font-weight:700;color:var(--green)}.tag{display:inline-block;border-radius:20px;background:#edf2e9;color:var(--green);padding:4px 10px;font-size:.75rem;font-weight:700}.warning{background:#f5e7cf;color:#76521a}.player-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat-tile{background:#eef3eb;border-radius:12px;padding:15px;text-align:center}.stat-tile strong{font-size:1.35rem;display:block;color:var(--green)}.player-tools{margin-top:18px}.display-link{display:inline-flex;align-items:center;gap:8px;text-decoration:none;background:var(--green);color:#fff;border-radius:9px;padding:11px 16px;font-weight:800}.display-link:hover{background:var(--green2)}.lb-screen{display:none}.lb-screen.visible{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;background:#102a23;color:#f5f3e9;padding:clamp(20px,3.2vw,60px);gap:2.5vh}.lb-top{display:flex;justify-content:space-between;align-items:center;gap:20px}.lb-logo{font-size:clamp(16px,2vw,32px);font-weight:900;letter-spacing:.14em;text-transform:uppercase}.lb-sub{color:#c8d98b;letter-spacing:.14em;text-transform:uppercase;font-size:clamp(11px,1.1vw,20px)}.lb-slide{display:flex;flex:1;flex-direction:column;justify-content:center;min-height:0}.lb-title{font-size:clamp(30px,4.8vw,84px);line-height:1.02;margin:0 0 3vh}.lb-row{display:grid;grid-template-columns:70px 1fr auto;gap:2vw;align-items:center;border-bottom:1px solid #ffffff2a;padding:1.6vh 0;font-size:clamp(20px,3vw,52px);font-weight:800}.lb-rank{color:#d7b56d}.lb-kpi{color:#c8d98b}.lb-match{border:1px solid #ffffff3a;border-radius:20px;padding:2vh 3vw;margin:1vh 0;display:flex;flex-direction:column;gap:.5vh}.lb-match-main{font-size:clamp(19px,2.7vw,44px);font-weight:800}.lb-match-sub{font-size:clamp(13px,1.45vw,25px);color:#c8d98b}.lb-bigclock{font-size:clamp(55px,12vw,200px);font-variant-numeric:tabular-nums;letter-spacing:.03em;font-weight:900;line-height:1.1;color:#c8d98b;text-align:center}.lb-foot{display:flex;justify-content:space-between;align-items:center;gap:20px;color:#d0e2d6;font-size:clamp(12px,1.2vw,21px)}.lb-pips{display:flex;gap:10px}.lb-pips span{width:12px;height:12px;border-radius:50%;background:#5c786a}.lb-pips span.on{background:#c8d98b}body.display-mode{background:#102a23;overflow:hidden}body.display-mode>header,body.display-mode>main,body.display-mode>#password-setup{display:none!important}body.display-mode .lb-screen{display:flex}.tool-status{min-height:24px}@media(max-width:760px){.score-row{grid-template-columns:1fr}.player-stats{grid-template-columns:repeat(2,1fr)}.lb-row{grid-template-columns:34px 1fr auto}}
 
 .weekly-list{display:grid;gap:10px}.weekly-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#f8faf6}.weekly-row strong{color:var(--green)}.weekly-row .notice{margin:1px 0}.weekly-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.weekly-actions button{white-space:nowrap}.weekly-off{background:#fff0ec;border-color:#e8baaf}.week-closed{background:#f1f1ef}.freebie{background:#f4e8cb;color:#674b0f}.bye-note{font-weight:700;color:var(--green2)}.admin-week-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.admin-week-grid .panel{background:#f8faf6}.admin-week-list{max-height:400px;overflow:auto}.admin-week-line{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:8px 0;padding:10px;border-bottom:1px solid var(--line)}.audit-row{padding:9px 0;border-bottom:1px solid var(--line);font-size:.88rem}.forfeit-choice{max-width:430px}.admin-note{font-size:.84rem;color:var(--muted)}@media(max-width:760px){.weekly-row,.admin-week-line{align-items:flex-start;flex-direction:column}.admin-week-grid{grid-template-columns:1fr}}
+
+/* Lunchroom display redesign — 16:9 TV-first dashboard */
+body.display-mode{background:#081e18;overflow:hidden}
+.lb-screen.visible{display:flex}
+body.display-mode .lb-screen{display:flex;position:fixed;inset:0;padding:0;gap:0;min-height:100dvh;background:radial-gradient(ellipse at 80% -30%,#225745 0%,#0a251d 48%,#081a16 100%);overflow:hidden;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+.lb-tv-header{padding:clamp(14px,2vw,30px) clamp(22px,3vw,52px);display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid #ffffff20;background:#091d17b8;flex-shrink:0}
+.lb-tv-brand{display:flex;align-items:center;gap:18px;min-width:0}
+.lb-tv-logo{width:clamp(44px,4.6vw,78px);height:clamp(44px,4.6vw,78px);display:grid;place-items:center;font-size:clamp(25px,2.7vw,44px);background:#c8d98b;color:#153b2a;border-radius:17px;box-shadow:0 10px 26px #0003}
+.lb-tv-title{font-size:clamp(22px,2.5vw,46px);font-weight:950;letter-spacing:.025em;line-height:1.05;color:#f8f9ee}
+.lb-tv-subtitle{font-size:clamp(10px,1.02vw,18px);font-weight:700;letter-spacing:.19em;color:#c8d98b;text-transform:uppercase;margin-top:6px}
+.lb-tv-meta{text-align:right;min-width:max-content}.lb-tv-date{font-size:clamp(15px,1.5vw,25px);font-weight:800;color:#f5f3e9}.lb-tv-time{font-size:clamp(24px,3.1vw,58px);font-weight:950;font-variant-numeric:tabular-nums;color:#c8d98b;line-height:1.08}
+.lb-tv-main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.75fr) minmax(290px,1fr);gap:clamp(14px,2vw,30px);padding:clamp(14px,1.8vw,28px) clamp(22px,3vw,52px)}
+.lb-tv-primary,.lb-tv-secondary{border:1px solid #ffffff27;border-radius:clamp(16px,1.6vw,26px);background:linear-gradient(145deg,#174033d6,#0d2b23e8);min-width:0;min-height:0;overflow:hidden;box-shadow:0 20px 50px #0003}
+.lb-tv-primary{display:flex;flex-direction:column;padding:clamp(18px,2.2vw,38px)}
+.lb-tv-eyebrow{font-size:clamp(11px,1.1vw,19px);font-weight:900;text-transform:uppercase;letter-spacing:.17em;color:#c8d98b}
+.lb-tv-section-title{font-size:clamp(31px,3.1vw,56px);font-weight:950;line-height:1.02;color:#fff;margin:10px 0 clamp(14px,1.8vh,25px)}
+.lb-tv-slide{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.lb-tv-leader{display:grid;grid-template-columns:clamp(35px,4vw,70px) minmax(0,1fr) auto;gap:clamp(8px,1vw,22px);align-items:center;padding:clamp(8px,1.1vh,17px) 0;border-bottom:1px solid #ffffff26}
+.lb-tv-rank{font-size:clamp(22px,2.25vw,42px);font-weight:950;color:#d7b56d}.lb-tv-name{font-size:clamp(17px,2.05vw,38px);font-weight:850;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lb-tv-record{font-size:clamp(18px,2vw,37px);font-weight:900;color:#c8d98b;white-space:nowrap}.lb-tv-minor{font-size:clamp(11px,1vw,18px);font-weight:650;color:#a9c8ba}
+.lb-tv-fixture{border:1px solid #ffffff28;background:#ffffff0b;border-radius:15px;padding:clamp(12px,1.2vw,22px);margin-bottom:clamp(8px,1.1vh,16px)}
+.lb-tv-fixture-top{display:flex;justify-content:space-between;gap:12px;color:#c8d98b;font-size:clamp(11px,1.1vw,18px);font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.lb-tv-fixture-names{font-size:clamp(19px,2vw,35px);font-weight:900;color:white;line-height:1.2;margin:7px 0}.lb-tv-versus{color:#d7b56d;margin:0 10px;font-size:.75em}.lb-tv-fixture-sports{font-size:clamp(13px,1.18vw,21px);color:#d2e3d7}
+.lb-tv-big-clock{text-align:center;color:#c8d98b;font-size:clamp(48px,8vw,146px);font-weight:950;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.055em;white-space:nowrap}.lb-tv-clock-caption{text-align:center;color:#c9dbd0;font-size:clamp(14px,1.5vw,26px);font-weight:750;letter-spacing:.14em;text-transform:uppercase}
+.lb-tv-secondary{padding:clamp(18px,1.8vw,32px);display:flex;flex-direction:column;gap:12px}.lb-tv-side-head{color:#d7b56d;font-weight:900;text-transform:uppercase;letter-spacing:.14em;font-size:clamp(11px,1.07vw,19px)}.lb-tv-side-title{font-size:clamp(22px,2.25vw,40px);font-weight:950;color:white;line-height:1.1}.lb-tv-side-match{padding:clamp(10px,1.25vw,20px) 0;border-bottom:1px solid #ffffff23}.lb-tv-side-match strong{font-size:clamp(16px,1.55vw,28px);color:white;line-height:1.15;display:block}.lb-tv-side-match small{display:block;font-size:clamp(11px,1vw,18px);color:#c8d98b;margin-top:6px}.lb-tv-side-metric{background:#c8d98b17;border:1px solid #c8d98b40;border-radius:15px;padding:clamp(14px,1.3vw,24px);margin-top:auto}.lb-tv-side-metric label{font-size:clamp(11px,1vw,17px);letter-spacing:.13em;color:#c8d98b;text-transform:uppercase;margin:0}.lb-tv-side-metric strong{font-size:clamp(25px,2.7vw,48px);color:white;display:block;line-height:1.08;margin-top:7px}.lb-tv-empty{font-size:clamp(16px,1.8vw,30px);font-weight:650;color:#bfdbca}
+.lb-tv-footer{height:clamp(25px,3.2vh,52px);padding:0 clamp(22px,3vw,52px);display:flex;align-items:center;gap:16px;flex-shrink:0;color:#c9dccd;font-weight:700;border-top:1px solid #ffffff1d;font-size:clamp(11px,.95vw,18px)}.lb-tv-dot{width:9px;height:9px;display:inline-block;border-radius:50%;background:#c8d98b}.lb-tv-progress{display:flex;gap:7px;margin-left:auto}.lb-tv-progress i{display:block;width:25px;height:5px;border-radius:10px;background:#ffffff43}.lb-tv-progress i.on{background:#c8d98b}
+.lb-nhl{min-height:clamp(80px,10.2vh,145px);display:flex;align-items:stretch;background:#f7f5e9;color:#152e26;border-top:5px solid #c8d98b;flex-shrink:0;max-width:100vw}.lb-nhl-label{background:#c8d98b;flex:0 0 auto;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:3px;padding:12px clamp(15px,1.8vw,34px);min-width:clamp(145px,15vw,260px)}.lb-nhl-label strong{font-size:clamp(17px,1.75vw,32px);font-weight:950;line-height:1}.lb-nhl-label span{font-size:clamp(10px,1.05vw,17px);font-weight:850;text-transform:uppercase;letter-spacing:.07em}.lb-nhl-track{position:relative;overflow:hidden;flex:1;display:flex;align-items:center;min-width:0}.lb-nhl-items{display:flex;align-items:center;gap:clamp(18px,2.6vw,55px);width:max-content;white-space:nowrap;padding-left:25px;animation:lb-ticker-scroll var(--nhl-duration,75s) linear infinite}.lb-nhl-track:hover .lb-nhl-items{animation-play-state:paused}.lb-nhl-item{display:flex;align-items:center;gap:clamp(9px,.9vw,18px);font-size:clamp(18px,1.6vw,29px);font-weight:900;white-space:nowrap}.lb-nhl-item em{font-style:normal;font-size:clamp(12px,1vw,18px);font-weight:800;color:#476258}.lb-nhl-score{color:#0d5038;font-variant-numeric:tabular-nums}.lb-nhl-divider{color:#b9c3b5;font-weight:400}.lb-nhl-fallback{padding:24px;font-size:clamp(16px,1.45vw,25px);font-weight:750;color:#486254}@keyframes lb-ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}@media(max-width:1000px){.lb-tv-main{grid-template-columns:minmax(0,1.6fr) minmax(220px,1fr)}.lb-tv-secondary{gap:6px}}@media(max-height:700px){.lb-tv-header{padding-top:9px;padding-bottom:9px}.lb-tv-main{padding-top:10px;padding-bottom:10px}.lb-tv-primary,.lb-tv-secondary{padding:14px}.lb-tv-section-title{margin-bottom:8px}.lb-tv-fixture{padding:8px;margin-bottom:7px}.lb-tv-leader{padding:4px 0}}@media(max-width:720px){body.display-mode{overflow:auto}body.display-mode .lb-screen{position:relative;min-height:100dvh;overflow:auto}.lb-tv-main{grid-template-columns:1fr}.lb-tv-secondary{display:none}.lb-tv-header{padding:15px}.lb-tv-meta{display:none}.lb-nhl-label{min-width:120px}.lb-tv-footer{padding:6px 15px}.lb-tv-leader{padding:10px 0}}
+@media(prefers-reduced-motion:reduce){.lb-nhl-items{animation:none}}
+
 </style>
 </head>
 <body>
@@ -103,10 +131,20 @@
 </section>
 <div class="foot">Turfcare Social Games League · Built for the crew</div>
 </main>
-<div class="lb-screen" id="lunchroom-screen" aria-label="Lunchroom scoreboard">
-<div class="lb-top"><div><div class="lb-logo">⛳ Turfcare Social Games League</div><div class="lb-sub">One crew · Four sports · Three per matchup</div></div><div class="lb-sub" id="lb-date"></div></div>
-<div class="lb-slide" id="lb-slide"></div>
-<div class="lb-foot"><div id="lb-update">Live league scoreboard</div><div class="lb-pips" id="lb-pips"></div><div>Press Esc to exit fullscreen · Auto-refreshes</div></div>
+<div class="lb-screen" id="lunchroom-screen" aria-label="Lunchroom league scoreboard">
+ <div class="lb-tv-header">
+  <div class="lb-tv-brand"><div class="lb-tv-logo">⛳</div><div><div class="lb-tv-title">TURFCARE SOCIAL LEAGUE</div><div class="lb-tv-subtitle">The clubhouse scoreboard · Three sports per matchup</div></div></div>
+  <div class="lb-tv-meta"><div class="lb-tv-date" id="lb-date"></div><div class="lb-tv-time" id="lb-local-time">--:--</div></div>
+ </div>
+ <div class="lb-tv-main">
+  <section class="lb-tv-primary"><div class="lb-tv-eyebrow" id="lb-eyebrow">LEAGUE LIVE</div><div id="lb-slide" class="lb-tv-slide"></div></section>
+  <aside class="lb-tv-secondary"><div class="lb-tv-side-head">UPCOMING</div><div class="lb-tv-side-title">Around the league</div><div id="lb-side-fixtures"></div><div class="lb-tv-side-metric"><label>Weekly deadline</label><strong id="lb-side-countdown">--:--:--</strong></div></aside>
+ </div>
+ <div class="lb-tv-footer"><div><span class="lb-tv-dot"></span> LIVE LEAGUE BOARD</div><div id="lb-update">Updating automatically</div><div class="lb-tv-progress" id="lb-pips"></div></div>
+ <div class="lb-nhl" aria-label="NHL scores and schedule">
+  <div class="lb-nhl-label"><strong>🏒 NHL</strong><span id="lb-nhl-heading">Yesterday's finals</span></div>
+  <div class="lb-nhl-track" id="lb-nhl-track"><div class="lb-nhl-fallback">Loading NHL scores…</div></div>
+ </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -359,39 +397,96 @@ $('save-display-name').onclick=async()=>{
 };
 function showDisplayNameMessage(msg,error=false){$('display-name-message').className=error?'status error':'status';$('display-name-message').textContent=msg;}
 const LB_TABS=['Standings','This week','Countdown','Coming up','Recent results'];
+const TV_TZ='America/Edmonton';
+function tvDateParts(date=new Date()){
+ const parts=new Intl.DateTimeFormat('en-CA',{timeZone:TV_TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date);
+ return Object.fromEntries(parts.map(p=>[p.type,p.value]));
+}
+function tvLocalISO(date=new Date()){const p=tvDateParts(date);return `${p.year}-${p.month}-${p.day}`;}
+function tvYesterday(date=new Date()){
+ const p=tvDateParts(date),day=new Date(Date.UTC(Number(p.year),Number(p.month)-1,Number(p.day)));day.setUTCDate(day.getUTCDate()-1);
+ return day.toISOString().slice(0,10);
+}
+function tvTime(date=new Date()){return new Intl.DateTimeFormat('en-CA',{timeZone:TV_TZ,hour:'numeric',minute:'2-digit',hour12:true}).format(date);}
+function tvLongDate(date=new Date()){return new Intl.DateTimeFormat('en-CA',{timeZone:TV_TZ,weekday:'long',month:'long',day:'numeric'}).format(date);}
 function lbClock(deadline){const ms=Math.max(0,new Date(deadline).getTime()-Date.now());const days=Math.floor(ms/86400000),h=Math.floor(ms%86400000/3600000),min=Math.floor(ms%3600000/60000),sec=Math.floor(ms%60000/1000);return `${String(days).padStart(2,'0')}:${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;}
+function tvScheduled(){return matchups.filter(m=>m.status==='scheduled' && m.deadline && new Date(m.deadline)>new Date()).sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));}
+function tvFixture(m){const sports=matchupGames(m).map(g=>`${sportIcon[g.discipline]||''} ${g.discipline}`).join(' · ');return `<div class="lb-tv-fixture"><div class="lb-tv-fixture-top"><span>WEEK ${m.week_number}</span><span>${new Date(m.deadline).toLocaleDateString('en-CA',{timeZone:TV_TZ,month:'short',day:'numeric'})}</span></div><div class="lb-tv-fixture-names">${esc(playerName(m.player1_id))}<span class="lb-tv-versus">VS</span>${esc(playerName(m.player2_id))}</div><div class="lb-tv-fixture-sports">${esc(sports||'Three sports assigned at publish')}</div></div>`;}
 function renderLunchroom(){
  if(!document.body.classList.contains('display-mode'))return;
- const page=LB_TABS[lbSlideIndex%LB_TABS.length],now=new Date();
- $('lb-date').textContent=now.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
- $('lb-pips').innerHTML=LB_TABS.map((x,i)=>`<span class="${i===lbSlideIndex?'on':''}"></span>`).join('');
- const scheduled=matchups.filter(m=>m.status==='scheduled');
- const deadlines=scheduled.filter(m=>m.deadline&&new Date(m.deadline)>now).map(m=>new Date(m.deadline));
- const nextDeadline=deadlines.length?new Date(Math.min(...deadlines)):null;
- const current=nextDeadline?scheduled.filter(m=>new Date(m.deadline).getTime()===nextDeadline.getTime()):[];
- const next=scheduled.filter(m=>!nextDeadline||new Date(m.deadline)>nextDeadline).sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));
- const card=m=>`<div class="lb-match"><div class="lb-match-main">${esc(playerName(m.player1_id))} <span style="color:#c8d98b">VS</span> ${esc(playerName(m.player2_id))}</div><div class="lb-match-sub">Week ${m.week_number} · ${esc(matchupGames(m).map(g=>`${sportIcon[g.discipline]||''} ${g.discipline}`).join('  ·  '))} · ${esc(matchStatus(m))}</div></div>`;
- let html=`<div class="lb-sub">${esc(page.toUpperCase())}</div>`;
+ const now=new Date(),page=LB_TABS[lbSlideIndex%LB_TABS.length],scheduled=tvScheduled();
+ const primaryDeadline=scheduled[0]?.deadline;
+ $('lb-date').textContent=tvLongDate(now);
+ $('lb-local-time').textContent=tvTime(now);
+ $('lb-eyebrow').textContent=page.toUpperCase();
+ $('lb-pips').innerHTML=LB_TABS.map((_,i)=>`<i class="${i===lbSlideIndex?'on':''}"></i>`).join('');
+ const current=primaryDeadline?scheduled.filter(m=>m.deadline===primaryDeadline):[];
+ const upcoming=scheduled.filter(m=>m.deadline!==primaryDeadline);
+ let html='';
  if(page==='Standings'){
-   const ranks=leaderboard().slice(0,7);html+=`<h1 class="lb-title">The leaderboard</h1>${ranks.length?ranks.map((p,i)=>`<div class="lb-row"><div class="lb-rank">${i+1}</div><div>${esc(p.display_name)}</div><div class="lb-kpi">${p.wins} W · ${p.freebies} FB · ${p.gameWins} GW</div></div>`).join(''):'<h2>No players yet</h2>'}`;
+  const rows=leaderboard().slice(0,6);
+  html=`<div class="lb-tv-section-title">League standings</div>${rows.length?rows.map((p,i)=>`<div class="lb-tv-leader"><div class="lb-tv-rank">${i+1}</div><div class="lb-tv-name">${esc(p.display_name)}${p.freebies?` <span class="lb-tv-minor">· ${p.freebies} freebie${p.freebies===1?'':'s'}</span>`:''}</div><div class="lb-tv-record">${p.wins} W <span class="lb-tv-minor">· ${p.losses} L · ${p.gameWins} GW</span></div></div>`).join(''):'<div class="lb-tv-empty">Standings will appear once the season begins.</div>'}`;
  }else if(page==='This week'){
-   html+=`<h1 class="lb-title">This week's matchups</h1>${current.length?current.slice(0,5).map(card).join(''):'<h2>No current scheduled matchups</h2>'}`;
+  html=`<div class="lb-tv-section-title">This week's matchups</div>${current.length?current.slice(0,4).map(tvFixture).join(''):'<div class="lb-tv-empty">No active matchups right now.</div>'}`;
  }else if(page==='Countdown'){
-   html+=`<h1 class="lb-title">Weekly deadline</h1>${nextDeadline?`<div class="lb-bigclock" id="lb-ticking-clock">${lbClock(nextDeadline)}</div><div style="text-align:center;font-size:clamp(18px,2vw,34px)">Days : Hours : Minutes : Seconds</div>`:'<h2>No upcoming deadline</h2>'}`;
+  html=`<div class="lb-tv-section-title">Time to play</div>${primaryDeadline?`<div class="lb-tv-big-clock" id="lb-ticking-clock">${lbClock(primaryDeadline)}</div><div class="lb-tv-clock-caption">Days : Hours : Minutes : Seconds</div>`:'<div class="lb-tv-empty">No upcoming weekly deadline.</div>'}`;
  }else if(page==='Coming up'){
-   html+=`<h1 class="lb-title">Coming up next</h1>${next.length?next.slice(0,5).map(card).join(''):'<h2>No upcoming matchups</h2>'}`;
+  html=`<div class="lb-tv-section-title">Coming up next</div>${upcoming.length?upcoming.slice(0,4).map(tvFixture).join(''):'<div class="lb-tv-empty">The next round will appear when published.</div>'}`;
  }else{
-   const finished=matchups.filter(m=>m.status==='completed'||m.status==='played_ahead'||m.resolution==='freebie'||m.resolution==='double_forfeit').sort((a,b)=>new Date(b.resolved_at||b.submitted_at||0)-new Date(a.resolved_at||a.submitted_at||0)).slice(0,5);
-   html+=`<h1 class="lb-title">Recent results</h1>${finished.length?finished.map(m=>`<div class="lb-match"><div class="lb-match-main">${m.resolution==='normal'?`${esc(playerName(m.player1_id))} ${matchupScore(m).a} – ${matchupScore(m).b} ${esc(playerName(m.player2_id))}`:`${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))} · ${esc(matchStatus(m))}`}</div><div class="lb-match-sub">Week ${m.week_number} · ${esc(matchStatus(m))}</div></div>`).join(''):'<h2>Results will appear here</h2>'}`;
+  const finished=matchups.filter(m=>m.status==='completed'||m.status==='played_ahead'||m.resolution==='freebie'||m.resolution==='double_forfeit').sort((a,b)=>new Date(b.resolved_at||b.submitted_at||0)-new Date(a.resolved_at||a.submitted_at||0)).slice(0,4);
+  html=`<div class="lb-tv-section-title">Recent results</div>${finished.length?finished.map(m=>`<div class="lb-tv-fixture"><div class="lb-tv-fixture-top"><span>WEEK ${m.week_number}</span><span>${esc(matchStatus(m))}</span></div><div class="lb-tv-fixture-names">${esc(playerName(m.player1_id))} <span class="lb-tv-versus">${m.resolution==='normal'?`${matchupScore(m).a} – ${matchupScore(m).b}`:'VS'}</span> ${esc(playerName(m.player2_id))}</div><div class="lb-tv-fixture-sports">${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' · '))}</div></div>`).join(''):'<div class="lb-tv-empty">Results will appear after the first matches.</div>'}`;
  }
  $('lb-slide').innerHTML=html;
- $('lb-update').textContent='Updated '+now.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+ $('lb-side-fixtures').innerHTML=(scheduled.length?scheduled.slice(0,3).map(m=>`<div class="lb-tv-side-match"><strong>${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}</strong><small>Week ${m.week_number} · ${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' '))}</small></div>`).join(''):'<div class="lb-tv-empty">No upcoming games scheduled.</div>');
+ $('lb-side-countdown').textContent=primaryDeadline?lbClock(primaryDeadline):'No deadline';
+ $('lb-update').textContent='Updated '+tvTime(now);
+}
+const NHL_REFRESH_MS=5*60*1000;
+let nhlLastKey='',nhlLastAttempt=0;
+function nhlMode(now=new Date()){
+ const p=tvDateParts(now),beforeNoon=Number(p.hour)<12;
+ return {date:beforeNoon?tvYesterday(now):tvLocalISO(now),mode:beforeNoon?'finals':'upcoming'};
+}
+async function refreshNhlTicker(force=false){
+ if(!document.body.classList.contains('display-mode'))return;
+ const {date,mode}=nhlMode();const key=mode+'-'+date,now=Date.now();
+ if(!force && key===nhlLastKey && now-nhlLastAttempt<NHL_REFRESH_MS)return;
+ nhlLastKey=key;nhlLastAttempt=now;
+ $('lb-nhl-heading').textContent=mode==='finals'?"Yesterday's results":"Today's schedule · MT";
+ const track=$('lb-nhl-track');
+ try{
+  const response=await fetch(`/api/nhl?date=${encodeURIComponent(date)}`,{cache:'no-store'});
+  if(!response.ok)throw new Error('NHL data request failed');
+  const data=await response.json();if(!Array.isArray(data.games))throw new Error('Unexpected NHL response');
+  let games=data.games;
+  if(mode==='finals')games=games.filter(g=>['FINAL','OFF'].includes(g.gameState));
+  else games=games.filter(g=>['FUT','PRE'].includes(g.gameState));
+  const rows=games.map(g=>{
+   const away=String(g.awayTeam?.abbrev||'AWAY'),home=String(g.homeTeam?.abbrev||'HOME');
+   if(mode==='finals'){
+    const a=Number.isFinite(g.awayTeam?.score)?g.awayTeam.score:'–',h=Number.isFinite(g.homeTeam?.score)?g.homeTeam.score:'–';
+    const overtime=['OT','SO'].includes(g.gameOutcome?.lastPeriodType)?g.gameOutcome.lastPeriodType:'';
+    return `<div class="lb-nhl-item"><span>${esc(away)}</span><span class="lb-nhl-score">${a} – ${h}</span><span>${esc(home)}</span><em>${overtime?esc(overtime):'FINAL'}</em></div>`;
+   }
+   return `<div class="lb-nhl-item"><span>${esc(away)} <em>at</em> ${esc(home)}</span><span class="lb-nhl-score">${tvTime(new Date(g.startTimeUTC))}</span><em>MT</em></div>`;
+  });
+  if(!rows.length){track.innerHTML=`<div class="lb-nhl-fallback">${mode==='finals'?'No final NHL games yesterday.':'No more NHL games scheduled to start today.'}</div>`;return;}
+  const items=rows.join('<span class="lb-nhl-divider">✦</span>');
+  track.innerHTML=`<div class="lb-nhl-items" style="--nhl-duration:${Math.max(30,rows.length*9)}s">${items}<span class="lb-nhl-divider">✦</span>${items}<span class="lb-nhl-divider">✦</span></div>`;
+ }catch(error){console.warn('NHL ticker:',error);track.innerHTML='<div class="lb-nhl-fallback">NHL updates unavailable — league scoreboard is still live.</div>';}
 }
 if(new URLSearchParams(location.search).get('display')==='1'){
  document.body.classList.add('display-mode');
- lbRotateTimer=setInterval(()=>{lbSlideIndex=(lbSlideIndex+1)%LB_TABS.length;renderLunchroom();},12000);
- lbClockTimer=setInterval(()=>{const node=$('lb-ticking-clock');if(node){const upcoming=matchups.filter(m=>m.status==='scheduled'&&m.deadline&&new Date(m.deadline)>new Date()).sort((a,b)=>new Date(a.deadline)-new Date(b.deadline))[0];if(upcoming)node.textContent=lbClock(upcoming.deadline);}},1000);
+ lbRotateTimer=setInterval(()=>{lbSlideIndex=(lbSlideIndex+1)%LB_TABS.length;renderLunchroom();},16000);
+ lbClockTimer=setInterval(()=>{
+  $('lb-local-time').textContent=tvTime();
+  const node=$('lb-ticking-clock'),next=tvScheduled()[0];if(node&&next)node.textContent=lbClock(next.deadline);
+  $('lb-side-countdown').textContent=next?lbClock(next.deadline):'No deadline';
+  const mode=nhlMode();if(mode.mode+'-'+mode.date!==nhlLastKey)refreshNhlTicker(true);
+ },1000);
  setInterval(()=>loadPublic().catch(console.error),60000);
+ setInterval(()=>refreshNhlTicker(),NHL_REFRESH_MS);
+ refreshNhlTicker(true);
 }
 // Version 4: weekly availability and adjudicated forfeits.
 function showWeeklyMessage(message,error=false){const n=$('weekly-availability-message');n.className=error?'status error':'status';n.textContent=message;}
