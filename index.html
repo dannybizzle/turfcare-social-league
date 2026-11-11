@@ -9,6 +9,8 @@
 
 /* Version 3: player profiles, score entry, lunchroom screen */
 .score-panel{margin-top:18px}.score-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(160px,1.25fr);align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.score-row:last-child{border-bottom:0}.score-row select{width:100%}.player-link{background:transparent;color:var(--green2);padding:0;border-radius:0;text-decoration:underline;text-underline-offset:3px;font:inherit;font-weight:700}.player-link:hover{color:#101e18}.match-card{border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0;background:#fff}.match-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.match-sports{font-size:.86rem;color:var(--muted);margin:7px 0}.match-result{font-weight:700;color:var(--green)}.tag{display:inline-block;border-radius:20px;background:#edf2e9;color:var(--green);padding:4px 10px;font-size:.75rem;font-weight:700}.warning{background:#f5e7cf;color:#76521a}.player-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat-tile{background:#eef3eb;border-radius:12px;padding:15px;text-align:center}.stat-tile strong{font-size:1.35rem;display:block;color:var(--green)}.player-tools{margin-top:18px}.display-link{display:inline-flex;align-items:center;gap:8px;text-decoration:none;background:var(--green);color:#fff;border-radius:9px;padding:11px 16px;font-weight:800}.display-link:hover{background:var(--green2)}.lb-screen{display:none}.lb-screen.visible{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;background:#102a23;color:#f5f3e9;padding:clamp(20px,3.2vw,60px);gap:2.5vh}.lb-top{display:flex;justify-content:space-between;align-items:center;gap:20px}.lb-logo{font-size:clamp(16px,2vw,32px);font-weight:900;letter-spacing:.14em;text-transform:uppercase}.lb-sub{color:#c8d98b;letter-spacing:.14em;text-transform:uppercase;font-size:clamp(11px,1.1vw,20px)}.lb-slide{display:flex;flex:1;flex-direction:column;justify-content:center;min-height:0}.lb-title{font-size:clamp(30px,4.8vw,84px);line-height:1.02;margin:0 0 3vh}.lb-row{display:grid;grid-template-columns:70px 1fr auto;gap:2vw;align-items:center;border-bottom:1px solid #ffffff2a;padding:1.6vh 0;font-size:clamp(20px,3vw,52px);font-weight:800}.lb-rank{color:#d7b56d}.lb-kpi{color:#c8d98b}.lb-match{border:1px solid #ffffff3a;border-radius:20px;padding:2vh 3vw;margin:1vh 0;display:flex;flex-direction:column;gap:.5vh}.lb-match-main{font-size:clamp(19px,2.7vw,44px);font-weight:800}.lb-match-sub{font-size:clamp(13px,1.45vw,25px);color:#c8d98b}.lb-bigclock{font-size:clamp(55px,12vw,200px);font-variant-numeric:tabular-nums;letter-spacing:.03em;font-weight:900;line-height:1.1;color:#c8d98b;text-align:center}.lb-foot{display:flex;justify-content:space-between;align-items:center;gap:20px;color:#d0e2d6;font-size:clamp(12px,1.2vw,21px)}.lb-pips{display:flex;gap:10px}.lb-pips span{width:12px;height:12px;border-radius:50%;background:#5c786a}.lb-pips span.on{background:#c8d98b}body.display-mode{background:#102a23;overflow:hidden}body.display-mode>header,body.display-mode>main,body.display-mode>#password-setup{display:none!important}body.display-mode .lb-screen{display:flex}.tool-status{min-height:24px}@media(max-width:760px){.score-row{grid-template-columns:1fr}.player-stats{grid-template-columns:repeat(2,1fr)}.lb-row{grid-template-columns:34px 1fr auto}}
+
+.weekly-list{display:grid;gap:10px}.weekly-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#f8faf6}.weekly-row strong{color:var(--green)}.weekly-row .notice{margin:1px 0}.weekly-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.weekly-actions button{white-space:nowrap}.weekly-off{background:#fff0ec;border-color:#e8baaf}.week-closed{background:#f1f1ef}.freebie{background:#f4e8cb;color:#674b0f}.bye-note{font-weight:700;color:var(--green2)}.admin-week-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.admin-week-grid .panel{background:#f8faf6}.admin-week-list{max-height:400px;overflow:auto}.admin-week-line{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:8px 0;padding:10px;border-bottom:1px solid var(--line)}.audit-row{padding:9px 0;border-bottom:1px solid var(--line);font-size:.88rem}.forfeit-choice{max-width:430px}.admin-note{font-size:.84rem;color:var(--muted)}@media(max-width:760px){.weekly-row,.admin-week-line{align-items:flex-start;flex-direction:column}.admin-week-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -29,6 +31,12 @@
 <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><input id="my-display-name" maxlength="40" placeholder="Your league display name" style="flex:1;min-width:180px"><button id="save-display-name" type="button">Save name</button></div>
 <div id="display-name-message" role="status" class="tool-status"></div>
 </section>
+<section class="panel player-tools" id="weekly-availability-panel">
+<h3>📅 Weekly availability</h3>
+<p class="muted">Everyone starts available. Mark a whole week unavailable before its Monday 11:59 PM Calgary-time cutoff. You arrange the actual day and time directly with your opponent. A completed matchup cannot be withdrawn.</p>
+<div id="weekly-availability-list" class="weekly-list"><div class="empty">Loading weeks…</div></div>
+<div id="weekly-availability-message" role="status" class="notice"></div>
+</section>
 <section class="panel score-panel">
 <h3>Submit my match results</h3><p class="muted">Either opponent may submit once. All three assigned sports must be entered. After submission both players are locked out; an admin can correct mistakes.</p>
 <div id="my-matchups"><div class="empty">Sign in to view your matchups.</div></div>
@@ -39,7 +47,7 @@
 <div class="section-head"><div><div class="eyebrow" style="color:var(--green2)">Organizer tools</div><h2>Administrator dashboard</h2></div><span class="muted">Admin access</span></div>
 <div class="admin-grid">
 <section class="panel admin-form"><h3>Create a season</h3><label for="season-name">Season name</label><input id="season-name" placeholder="Season 1 – Fall 2026"><label for="season-start">Start date</label><input id="season-start" type="date"><label for="season-end">End date</label><input id="season-end" type="date"><button id="create-season">Create season</button><div id="create-season-message" class="notice" role="status"></div><div class="notice">This creates the season record only. It does not publish any matchups.</div></section>
-<section class="panel admin-form"><h3>Random schedule generator</h3><label for="schedule-season">Choose season</label><select id="schedule-season" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit"></select><label for="deadline-time">Weekly deadline time</label><input id="deadline-time" type="time" value="23:59"><button id="preview-schedule">Generate schedule preview</button><div class="notice">The draw uses all registered player accounts, avoids repeat opponents until unique pairings are exhausted, and rotates byes fairly when the roster is odd. Each matchup gets three different disciplines.</div></section>
+<section class="panel admin-form"><h3>Random schedule generator</h3><label for="schedule-season">Choose season</label><select id="schedule-season" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit"></select><label for="deadline-time">Weekly deadline time</label><input id="deadline-time" type="time" value="23:59"><button id="preview-schedule">Generate schedule preview</button><div class="notice">The draw respects weekly opt-outs and blackout weeks, tries to avoid repeat opponents, and shares byes fairly. Opponents arrange their own playing day. Every matchup receives three randomly selected sports.</div></section>
 </div>
 <section class="panel admin-form" style="margin-top:16px">
 <h3>Season Management</h3>
@@ -76,6 +84,20 @@
 
   <div id="player-management-message" class="notice" role="status"></div>
 </section>
+<section class="panel score-panel" id="weekly-admin-panel">
+<h3>🗓 Weekly schedule controls</h3>
+<p class="muted">Close an entire future week before its games are published, view availability and repair history. Players arrange the actual date themselves. Existing published matchups cannot be blacked out automatically.</p>
+<div class="admin-week-grid"><div class="panel"><h4>Blackout weeks</h4><label for="blackout-season">Season</label><select id="blackout-season"></select><div class="admin-week-list" id="admin-blackout-weeks"></div><div id="blackout-week-message" class="notice" role="status"></div></div>
+<div class="panel"><h4>Recent schedule changes</h4><div id="schedule-change-log" class="admin-week-list"></div></div></div>
+</section>
+<section class="panel score-panel" id="forfeit-panel">
+<h3>🏅 Resolve missed matchups</h3>
+<p class="muted">After the deadline, award a freebie win to the player who was available, or record a double forfeit. Freebie wins count toward matchup standings but never create game wins.</p>
+<label for="forfeit-matchup">Matchup to resolve</label><select id="forfeit-matchup"></select>
+<label for="forfeit-resolution">Decision</label><select id="forfeit-resolution" class="forfeit-choice"></select>
+<button id="resolve-forfeit" type="button" style="margin-top:12px">Record decision</button>
+<div id="forfeit-message" class="notice" role="status"></div>
+</section>
 <section class="panel score-panel"><h3>Correct a matchup result</h3><p class="muted">Admin only. Select a published matchup, choose the winners of its three assigned sports, and save the corrected result. All changes replace the previous result.</p><label for="correction-matchup">Choose matchup</label><select id="correction-matchup"></select><div id="correction-games"></div><button id="save-correction" type="button" style="margin-top:12px">Save corrected result</button><div id="correction-message" class="notice" role="status"></div></section>
 <section id="schedule-preview-panel" class="panel hidden" style="margin-top:16px"><h3>Schedule preview</h3><div id="schedule-preview" class="preview"></div><div class="notice" id="schedule-summary"></div><button id="publish-schedule">Approve and publish schedule</button> <button id="cancel-preview" class="secondary">Discard preview</button><div id="admin-message" role="status"></div></section>
 </section>
@@ -97,6 +119,16 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;',
 let profiles=[], matchups=[], games=[], seasons=[];
 let isAdmin=false, isOwner=false, pendingSchedule=null, countdownInterval=null;
 let currentUserId=null, selectedProfileId=null, lbSlideIndex=0, lbRotateTimer=null, lbClockTimer=null;
+let weeklyUnavailable=[],blackoutWeeks=[],scheduleChanges=[],currentWeekSeasonId=null;
+const calDate=d=>{const f=new Intl.DateTimeFormat('en-US',{timeZone:'America/Edmonton',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d);const x=Object.fromEntries(f.map(v=>[v.type,v.value]));return `${x.year}-${x.month}-${x.day}`;};
+const calMonday=d=>{const date=new Date(d+'T12:00:00Z');date.setUTCDate(date.getUTCDate()-((date.getUTCDay()+6)%7));return date.toISOString().slice(0,10);};
+const seasonWeekStart=(s,w)=>{const d=new Date(s.starts_on+'T12:00:00');d.setDate(d.getDate()+7*(w-1));return d;};
+const weekCount=s=>Math.floor((Date.parse(s.ends_on+'T12:00:00Z')-Date.parse(s.starts_on+'T12:00:00Z'))/604800000)+1;
+const isUnavail=(sid,w,pid)=>weeklyUnavailable.some(x=>x.season_id===sid&&x.week_number===w&&x.player_id===pid);
+const isBlackout=(sid,w)=>blackoutWeeks.some(x=>x.season_id===sid&&x.week_number===w);
+function weekDates(s,w){const start=seasonWeekStart(s,w),end=new Date(start);end.setDate(end.getDate()+6);const last=new Date(s.ends_on+'T12:00:00');if(end>last)end.setTime(last.getTime());return `${start.toLocaleDateString(undefined,{month:'short',day:'numeric'})} – ${end.toLocaleDateString(undefined,{month:'short',day:'numeric'})}`;}
+function weekLocked(s,w){const date=new Date(s.starts_on+'T12:00:00Z');date.setUTCDate(date.getUTCDate()+7*(w-1));return calDate(new Date())>calMonday(date.toISOString().slice(0,10));}
+
 function showMessage(msg,error=false){$('auth-message').className=error?'status error':'status';$('auth-message').textContent=msg;}
 const SPORTS=['Ping Pong','Darts','Pool','Air Hockey'];
 const sportIcon={'Ping Pong':'🏓','Darts':'🎯','Pool':'🎱','Air Hockey':'🏒'};
@@ -106,13 +138,13 @@ const matchupGames=m=>games.filter(g=>g.matchup_id===m.id);
 function seasonWeekStarts(m){const s=seasons.find(s=>s.id===m.season_id);if(!s)return null;const d=new Date(s.starts_on+'T00:00:00');d.setDate(d.getDate()+(m.week_number-1)*7);return d;}
 function countsInStandings(m){return m.status==='completed'||(m.status==='played_ahead'&&seasonWeekStarts(m)&&Date.now()>=seasonWeekStarts(m).getTime());}
 function matchupScore(m){const gs=matchupGames(m);return {a:gs.filter(g=>g.winner_id===m.player1_id).length,b:gs.filter(g=>g.winner_id===m.player2_id).length};}
-function leaderboard(){return profiles.map(p=>{const mine=matchups.filter(m=>countsInStandings(m)&&(m.player1_id===p.id||m.player2_id===p.id));let wins=0,losses=0,gameWins=0;mine.forEach(m=>{const gs=matchupGames(m),a=gs.filter(g=>g.winner_id===m.player1_id).length,b=gs.filter(g=>g.winner_id===m.player2_id).length;gameWins+=gs.filter(g=>g.winner_id===p.id).length;if((m.player1_id===p.id&&a>b)||(m.player2_id===p.id&&b>a))wins++;else if(a!==b)losses++;});return {...p,wins,losses,gameWins};}).sort((a,b)=>b.wins-a.wins||b.gameWins-a.gameWins||a.display_name.localeCompare(b.display_name));}
-function renderStandings(){const rows=leaderboard();$('standings').innerHTML=rows.length?`<div class="table-scroll"><table><thead><tr><th>#</th><th>Player</th><th class="num">W</th><th class="num">L</th><th class="num">Game wins</th></tr></thead><tbody>${rows.map((p,i)=>`<tr><td>${i+1}</td><td>${playerLink(p.id)}</td><td class="num">${p.wins}</td><td class="num">${p.losses}</td><td class="num">${p.gameWins}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Players will appear here once they have registered.</div>';}
-function matchStatus(m){if(m.status==='played_ahead'&&!countsInStandings(m))return 'Played ahead · counts in week '+m.week_number;if(countsInStandings(m))return 'Completed';return m.status==='scheduled'?'Scheduled':m.status==='missed'?'Missed':m.status;}
-function renderMatchups(){const list=matchups.slice().sort((a,b)=>a.week_number-b.week_number||new Date(a.deadline)-new Date(b.deadline));$('matchups').innerHTML=list.length?`<div class="table-scroll"><table><thead><tr><th>Week</th><th>Matchup</th><th>3 sports</th><th>Deadline</th><th>Status</th></tr></thead><tbody>${list.map(m=>`<tr><td>${m.week_number}</td><td>${playerLink(m.player1_id)} vs ${playerLink(m.player2_id)}</td><td>${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' '))}</td><td>${m.deadline?new Date(m.deadline).toLocaleString():'—'}</td><td>${esc(matchStatus(m))}${countsInStandings(m)?` · ${matchupScore(m).a}–${matchupScore(m).b}`:''}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No matchups have been published yet.</div>';}
+function leaderboard(){return profiles.map(p=>{const mine=matchups.filter(m=>(countsInStandings(m)||m.resolution==='freebie'||m.resolution==='double_forfeit')&&(m.player1_id===p.id||m.player2_id===p.id));let wins=0,losses=0,gameWins=0,freebies=0;mine.forEach(m=>{if(m.resolution==='freebie'){if(m.forfeit_winner_id===p.id){wins++;freebies++;}else losses++;return;}if(m.resolution==='double_forfeit'){losses++;return;}const gs=matchupGames(m),a=gs.filter(g=>g.winner_id===m.player1_id).length,b=gs.filter(g=>g.winner_id===m.player2_id).length;gameWins+=gs.filter(g=>g.winner_id===p.id).length;if((m.player1_id===p.id&&a>b)||(m.player2_id===p.id&&b>a))wins++;else if(a!==b)losses++;});return {...p,wins,losses,gameWins,freebies};}).sort((a,b)=>b.wins-a.wins||b.gameWins-a.gameWins||a.display_name.localeCompare(b.display_name));}
+function renderStandings(){const rows=leaderboard();$('standings').innerHTML=rows.length?`<div class="table-scroll"><table><thead><tr><th>#</th><th>Player</th><th class="num">W</th><th class="num">L</th><th class="num">Game wins</th><th class="num">Freebies</th></tr></thead><tbody>${rows.map((p,i)=>`<tr><td>${i+1}</td><td>${playerLink(p.id)}</td><td class="num">${p.wins}</td><td class="num">${p.losses}</td><td class="num">${p.gameWins}</td><td class="num">${p.freebies}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Players will appear here once they have registered.</div>';}
+function matchStatus(m){if(m.resolution==='freebie')return `Freebie win — ${playerName(m.forfeit_winner_id)}`;if(m.resolution==='double_forfeit')return 'Double forfeit';if(m.status==='played_ahead'&&!countsInStandings(m))return 'Played ahead · counts in week '+m.week_number;if(countsInStandings(m))return 'Completed';return m.status==='scheduled'?'Scheduled':m.status==='missed'?'Awaiting admin decision':m.status;}
+function renderMatchups(){const list=matchups.slice().sort((a,b)=>a.week_number-b.week_number||new Date(a.deadline)-new Date(b.deadline));$('matchups').innerHTML=list.length?`<div class="table-scroll"><table><thead><tr><th>Week</th><th>Matchup</th><th>3 sports</th><th>Deadline</th><th>Status</th></tr></thead><tbody>${list.map(m=>`<tr><td>${m.week_number}</td><td>${playerLink(m.player1_id)} vs ${playerLink(m.player2_id)}</td><td>${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' '))}</td><td>${m.deadline?new Date(m.deadline).toLocaleString():'—'}</td><td>${esc(matchStatus(m))}${m.resolution==='normal'&&countsInStandings(m)?` · ${matchupScore(m).a}–${matchupScore(m).b}`:''}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No matchups have been published yet.</div>';}
 function renderProfile(){if(!selectedProfileId)return;const p=profiles.find(p=>p.id===selectedProfileId);if(!p){$('profile-content').textContent='Player is no longer registered.';return;}
   const mine=matchups.filter(m=>countsInStandings(m)&&(m.player1_id===p.id||m.player2_id===p.id));const stats=SPORTS.map(s=>{const gs=mine.flatMap(m=>matchupGames(m)).filter(g=>g.discipline===s);return {sport:s,w:gs.filter(g=>g.winner_id===p.id).length,l:gs.filter(g=>g.winner_id&&g.winner_id!==p.id).length};});
-  const row=leaderboard().find(x=>x.id===p.id);$('profile-content').innerHTML=`<h3>${esc(p.display_name)}</h3><p class="muted">${row.wins} matchup wins · ${row.losses} losses · ${row.gameWins} game wins</p><div class="player-stats">${stats.map(st=>`<div class="stat-tile"><div>${sportIcon[st.sport]} ${esc(st.sport)}</div><strong>${st.w}–${st.l}</strong><small>Wins – losses</small></div>`).join('')}</div>`;}
+  const row=leaderboard().find(x=>x.id===p.id);$('profile-content').innerHTML=`<h3>${esc(p.display_name)}</h3><p class="muted">${row.wins} matchup wins (${row.freebies} freebies) · ${row.losses} losses · ${row.gameWins} game wins</p><div class="player-stats">${stats.map(st=>`<div class="stat-tile"><div>${sportIcon[st.sport]} ${esc(st.sport)}</div><strong>${st.w}–${st.l}</strong><small>Wins – losses</small></div>`).join('')}</div>`;}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-profile-id]');if(!b)return;selectedProfileId=b.dataset.profileId;renderProfile();$('profile-panel').scrollIntoView({behavior:'smooth',block:'center'});});
 function renderCountdown(){
   if(countdownInterval){clearInterval(countdownInterval);countdownInterval=null;}
@@ -124,12 +156,12 @@ function renderCountdown(){
   tick();if(countdownInterval===null && d>Date.now())countdownInterval=setInterval(tick,1000);
 }
 async function loadPublic(){
- const [p,m,g,s]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status,submitted_by,submitted_at'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status')]);
- for(const r of [p,m,g,s])if(r.error)throw r.error;
- profiles=p.data||[];matchups=m.data||[];games=g.data||[];seasons=s.data||[];
+ const [p,m,g,s,u,b]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status,submitted_by,submitted_at,resolution,forfeit_winner_id,resolved_at'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status'),client.from('league_weekly_unavailability').select('season_id,week_number,player_id'),client.from('league_blackout_weeks').select('season_id,week_number,reason')]);
+ for(const r of [p,m,g,s,b])if(r.error)throw r.error;
+ profiles=p.data||[];matchups=m.data||[];games=g.data||[];seasons=s.data||[];blackoutWeeks=b.data||[];weeklyUnavailable=u.error?[]:(u.data||[]);
  const active=seasons.find(x=>x.status==='active')||seasons[0];$('season-label').textContent=active?.name||'Season not yet published';
- renderStandings();renderMatchups();renderCountdown();renderProfile();renderMyMatchups();renderAdminCorrections();
- if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();}else $('player-management-list').innerHTML='Administrator access required.';
+ renderStandings();renderMatchups();renderCountdown();renderProfile();renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
+ if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();await loadScheduleLog();}else $('player-management-list').innerHTML='Administrator access required.';
  if(document.body.classList.contains('display-mode'))renderLunchroom();
 }
 async function refreshAuth(){
@@ -140,13 +172,37 @@ async function refreshAuth(){
  if(session){const {data:profile}=await client.from('profiles').select('role,is_owner,display_name').eq('id',session.user.id).maybeSingle();isAdmin=profile?.role==='admin';isOwner=profile?.is_owner===true;if(profile&&document.activeElement!==$('my-display-name'))$('my-display-name').value=profile.display_name||'';}
  $('player-area').classList.toggle('hidden',!session);
  $('admin-area').classList.toggle('hidden',!isAdmin);
- if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();}
- renderMyMatchups();renderAdminCorrections();
+ if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();}
+ renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
+ if(session)await loadPublic();
 }
 function localDatePlus(dateString, days){const d=new Date(dateString+'T12:00:00');d.setDate(d.getDate()+days);return d;}
 function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function roundRobin(players){const list=shuffle(players);if(list.length%2)list.push(null);const rounds=[];for(let r=0;r<list.length-1;r++){const pairs=[];let bye=null;for(let i=0;i<list.length/2;i++){const a=list[i],b=list[list.length-1-i];if(a&&b)pairs.push([a,b]);else bye=a||b;}rounds.push({pairs,bye});list.splice(1,0,list.pop());}return rounds;}
-function makeSchedule(seasonId){const season=seasons.find(x=>x.id===seasonId);if(!season)throw new Error('Choose a season first.');if(matchups.some(m=>m.season_id===seasonId))throw new Error('This season already has matchups. The existing schedule will not be overwritten.');const players=profiles.filter(p=>p.is_player);if(players.length<2)throw new Error('At least two registered player accounts are required.');const start=new Date(season.starts_on+'T12:00:00'),end=new Date(season.ends_on+'T12:00:00');if(end<start)throw new Error('Season end date must be on or after the start date.');const weeks=Math.floor((end-start)/604800000)+1;const rounds=roundRobin(players);const omissions=shuffle(['Ping Pong','Darts','Pool','Air Hockey']);const time=$('deadline-time').value||'23:59';const out=[],byes=[];for(let w=0;w<weeks;w++){const round=rounds[w%rounds.length];if(round.bye)byes.push({week_number:w+1,player_id:round.bye.id});const weekEnd=localDatePlus(season.starts_on,Math.min(w*7+6,Math.round((end-start)/86400000)));const [hh,mm]=time.split(':').map(Number);weekEnd.setHours(hh,mm,0,0);for(let k=0;k<round.pairs.length;k++){const omit=omissions[(w*round.pairs.length+k)%4];out.push({week_number:w+1,player1_id:round.pairs[k][0].id,player2_id:round.pairs[k][1].id,deadline:weekEnd.toISOString(),disciplines:shuffle(['Ping Pong','Darts','Pool','Air Hockey'].filter(x=>x!==omit))});}}return {payload:out,byes,players,weeks,season};}
+function makeSchedule(seasonId){
+ const season=seasons.find(x=>x.id===seasonId);if(!season)throw new Error('Choose a season first.');
+ if(matchups.some(m=>m.season_id===seasonId))throw new Error('This season already has matchups. The existing schedule will not be overwritten.');
+ const players=profiles.filter(p=>p.is_player);if(players.length<2)throw new Error('At least two registered player accounts are required.');
+ const weeks=weekCount(season),out=[],byes=[],blacks=[];const times=$('deadline-time').value||'23:59',pairHistory={},byeHistory={};
+ const pairKey=(a,b)=>[a,b].sort().join(':');
+ for(let w=1;w<=weeks;w++){
+  if(isBlackout(seasonId,w)){blacks.push(w);continue;}
+  const active=shuffle(players.filter(p=>!isUnavail(seasonId,w,p.id)));const excluded=players.filter(p=>isUnavail(seasonId,w,p.id));
+  // When odd, give the bye to someone with the fewest previous byes.
+  if(active.length%2){active.sort((a,b)=>(byeHistory[b.id]||0)-(byeHistory[a.id]||0));const bye=active.pop();byeHistory[bye.id]=(byeHistory[bye.id]||0)+1;byes.push({week_number:w,player_id:bye.id});}
+  const pairs=[];
+  while(active.length>=2){
+   const a=active.shift();let best=0;
+   for(let i=1;i<active.length;i++)if((pairHistory[pairKey(a.id,active[i].id)]||0)<(pairHistory[pairKey(a.id,active[best].id)]||0))best=i;
+   const b=active.splice(best,1)[0];pairs.push([a,b]);pairHistory[pairKey(a.id,b.id)]=(pairHistory[pairKey(a.id,b.id)]||0)+1;
+  }
+  const start=seasonWeekStart(season,w),last=new Date(season.ends_on+'T12:00:00');const deadline=new Date(start);deadline.setDate(deadline.getDate()+6);if(deadline>last)deadline.setTime(last.getTime());
+  const [hh,mm]=times.split(':').map(Number);deadline.setHours(hh,mm,0,0);
+  for(const [a,b] of pairs){const three=shuffle(SPORTS).slice(0,3);out.push({week_number:w,player1_id:a.id,player2_id:b.id,deadline:deadline.toISOString(),disciplines:three});}
+ }
+ if(!out.length)throw new Error('No matchups could be generated. Check blackout weeks and player availability.');
+ return {payload:out,byes,blacks,players,weeks,season};
+}
 function populateSeasonSelect(){
   const sel=$('schedule-season');if(!sel)return;
   const previous=sel.value;
@@ -317,7 +373,7 @@ function renderLunchroom(){
  const card=m=>`<div class="lb-match"><div class="lb-match-main">${esc(playerName(m.player1_id))} <span style="color:#c8d98b">VS</span> ${esc(playerName(m.player2_id))}</div><div class="lb-match-sub">Week ${m.week_number} · ${esc(matchupGames(m).map(g=>`${sportIcon[g.discipline]||''} ${g.discipline}`).join('  ·  '))} · ${esc(matchStatus(m))}</div></div>`;
  let html=`<div class="lb-sub">${esc(page.toUpperCase())}</div>`;
  if(page==='Standings'){
-   const ranks=leaderboard().slice(0,7);html+=`<h1 class="lb-title">The leaderboard</h1>${ranks.length?ranks.map((p,i)=>`<div class="lb-row"><div class="lb-rank">${i+1}</div><div>${esc(p.display_name)}</div><div class="lb-kpi">${p.wins} W · ${p.gameWins} GW</div></div>`).join(''):'<h2>No players yet</h2>'}`;
+   const ranks=leaderboard().slice(0,7);html+=`<h1 class="lb-title">The leaderboard</h1>${ranks.length?ranks.map((p,i)=>`<div class="lb-row"><div class="lb-rank">${i+1}</div><div>${esc(p.display_name)}</div><div class="lb-kpi">${p.wins} W · ${p.freebies} FB · ${p.gameWins} GW</div></div>`).join(''):'<h2>No players yet</h2>'}`;
  }else if(page==='This week'){
    html+=`<h1 class="lb-title">This week's matchups</h1>${current.length?current.slice(0,5).map(card).join(''):'<h2>No current scheduled matchups</h2>'}`;
  }else if(page==='Countdown'){
@@ -325,8 +381,8 @@ function renderLunchroom(){
  }else if(page==='Coming up'){
    html+=`<h1 class="lb-title">Coming up next</h1>${next.length?next.slice(0,5).map(card).join(''):'<h2>No upcoming matchups</h2>'}`;
  }else{
-   const finished=matchups.filter(m=>m.status==='completed'||m.status==='played_ahead').sort((a,b)=>new Date(b.submitted_at||0)-new Date(a.submitted_at||0)).slice(0,5);
-   html+=`<h1 class="lb-title">Recent results</h1>${finished.length?finished.map(m=>`<div class="lb-match"><div class="lb-match-main">${esc(playerName(m.player1_id))} ${matchupScore(m).a} – ${matchupScore(m).b} ${esc(playerName(m.player2_id))}</div><div class="lb-match-sub">Week ${m.week_number} · ${esc(matchStatus(m))}</div></div>`).join(''):'<h2>Results will appear here</h2>'}`;
+   const finished=matchups.filter(m=>m.status==='completed'||m.status==='played_ahead'||m.resolution==='freebie'||m.resolution==='double_forfeit').sort((a,b)=>new Date(b.resolved_at||b.submitted_at||0)-new Date(a.resolved_at||a.submitted_at||0)).slice(0,5);
+   html+=`<h1 class="lb-title">Recent results</h1>${finished.length?finished.map(m=>`<div class="lb-match"><div class="lb-match-main">${m.resolution==='normal'?`${esc(playerName(m.player1_id))} ${matchupScore(m).a} – ${matchupScore(m).b} ${esc(playerName(m.player2_id))}`:`${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))} · ${esc(matchStatus(m))}`}</div><div class="lb-match-sub">Week ${m.week_number} · ${esc(matchStatus(m))}</div></div>`).join(''):'<h2>Results will appear here</h2>'}`;
  }
  $('lb-slide').innerHTML=html;
  $('lb-update').textContent='Updated '+now.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
@@ -337,6 +393,57 @@ if(new URLSearchParams(location.search).get('display')==='1'){
  lbClockTimer=setInterval(()=>{const node=$('lb-ticking-clock');if(node){const upcoming=matchups.filter(m=>m.status==='scheduled'&&m.deadline&&new Date(m.deadline)>new Date()).sort((a,b)=>new Date(a.deadline)-new Date(b.deadline))[0];if(upcoming)node.textContent=lbClock(upcoming.deadline);}},1000);
  setInterval(()=>loadPublic().catch(console.error),60000);
 }
+// Version 4: weekly availability and adjudicated forfeits.
+function showWeeklyMessage(message,error=false){const n=$('weekly-availability-message');n.className=error?'status error':'status';n.textContent=message;}
+function renderWeeklyAvailability(){const n=$('weekly-availability-list');if(!n)return;
+ if(!currentUserId){n.innerHTML='<p class="muted">Sign in to manage weekly availability.</p>';return;}
+ const active=seasons.filter(s=>s.status==='active'||s.status==='upcoming').sort((a,b)=>a.starts_on.localeCompare(b.starts_on));
+ if(!active.length){n.innerHTML='<p class="muted">No active or upcoming season yet.</p>';return;}
+ n.innerHTML=active.map(s=>`<h4>${esc(s.name)}</h4>`+Array.from({length:weekCount(s)},(_,i)=>{const w=i+1,off=isUnavail(s.id,w,currentUserId),black=isBlackout(s.id,w),locked=weekLocked(s,w),played=matchups.some(m=>m.season_id===s.id&&m.week_number===w&&(m.player1_id===currentUserId||m.player2_id===currentUserId)&&(m.status!=='scheduled'||!!m.submitted_at));
+ const disabled=locked||black||played;return `<div class="weekly-row ${off?'weekly-off':''} ${disabled?'week-closed':''}"><div><strong>Week ${w} · ${esc(weekDates(s,w))}</strong><div class="notice">${black?'League blackout':played?'Matchup already played/closed':locked?'Monday cutoff passed':off?'Unavailable · No penalty':'Available by default'}</div></div><div class="weekly-actions"><button type="button" class="${off?'':'secondary'}" data-week-season="${esc(s.id)}" data-week-number="${w}" data-week-off="${off?'0':'1'}" ${disabled?'disabled':''}>${off?'Mark available':'Withdraw this week'}</button></div></div>`;}).join('')).join('');
+}
+$('weekly-availability-list').addEventListener('click',async e=>{const b=e.target.closest('button[data-week-season]');if(!b)return;const s=seasons.find(x=>x.id===b.dataset.weekSeason),week=Number(b.dataset.weekNumber),off=b.dataset.weekOff==='1';
+ if(!s)return;const message=off?`Mark Week ${week} unavailable? Any unplayed matchup may be replaced automatically. This is penalty-free until Monday night.`:`Mark Week ${week} available? This does not automatically restore an earlier pairing.`;
+ if(!confirm(message))return;b.disabled=true;
+ try{const {data,error}=await client.rpc('set_league_week_availability',{p_season_id:s.id,p_week_number:week,p_unavailable:off});if(error)throw error;await loadPublic();showWeeklyMessage(data||'Availability updated.');}
+ catch(err){showWeeklyMessage(err.message||'Unable to update availability.',true);}finally{b.disabled=false;}
+});
+function populateBlackoutControl(){const n=$('blackout-season');if(!n)return;const old=n.value;
+ n.innerHTML=seasons.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');
+ if(seasons.some(s=>s.id===old))n.value=old;renderBlackoutControl();
+}
+function renderBlackoutControl(){const sid=$('blackout-season')?.value,n=$('admin-blackout-weeks');if(!n)return;const s=seasons.find(x=>x.id===sid);if(!s){n.innerHTML='<p class="muted">Create a season first.</p>';return;}
+ n.innerHTML=Array.from({length:weekCount(s)},(_,i)=>{const w=i+1,black=isBlackout(s.id,w),published=matchups.some(m=>m.season_id===s.id&&m.week_number===w),past=weekLocked(s,w);
+ return `<div class="admin-week-line"><div><strong>Week ${w}</strong><div class="notice">${esc(weekDates(s,w))} · ${black?'Blackout':published?'Published':'Open'}</div></div><button type="button" data-blackout-season="${esc(s.id)}" data-blackout-week="${w}" data-blackout-value="${black?'0':'1'}" class="${black?'':'secondary'}" ${(!black&&(published||past))?'disabled':''}>${black?'Unblock':'Blackout'}</button></div>`;}).join('');
+}
+$('blackout-season').addEventListener('change',renderBlackoutControl);
+$('admin-blackout-weeks').addEventListener('click',async e=>{const b=e.target.closest('button[data-blackout-season]');if(!b)return;const sid=b.dataset.blackoutSeason,w=Number(b.dataset.blackoutWeek),block=b.dataset.blackoutValue==='1';
+ if(!confirm(`${block?'Black out':'Reopen'} Week ${w}? Blackout weeks must not contain published matches.`))return;b.disabled=true;
+ const {error}=await client.rpc('set_league_blackout_week',{p_season_id:sid,p_week_number:w,p_blackout:block});
+ if(error){$('blackout-week-message').textContent=error.message;}else{await loadPublic();$('blackout-week-message').textContent=`Week ${w} updated.`;}
+ b.disabled=false;
+});
+async function loadScheduleLog(){const node=$('schedule-change-log');if(!node)return;
+ const {data,error}=await client.from('league_schedule_changes').select('week_number,changed_at,change_type,description').order('changed_at',{ascending:false}).limit(30);
+ node.innerHTML=error?`<p class="muted">${esc(error.message)}</p>`:(data?.length?data.map(x=>`<div class="audit-row"><strong>Week ${x.week_number} · ${esc(x.change_type)}</strong><div>${esc(x.description)}</div><small>${new Date(x.changed_at).toLocaleString()}</small></div>`).join(''):'<p class="muted">No schedule changes yet.</p>');
+}
+function renderForfeitControl(){const select=$('forfeit-matchup');if(!select)return;const old=select.value;
+ const eligible=matchups.filter(m=>(m.status==='scheduled'||m.status==='missed')&&!m.submitted_at&&m.deadline&&new Date(m.deadline)<new Date()&&m.resolution==='normal');
+ select.innerHTML=eligible.length?eligible.map(m=>`<option value="${esc(m.id)}">Week ${m.week_number}: ${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}</option>`).join(''):'<option value="">No overdue unresolved matchups</option>';
+ if(eligible.some(m=>m.id===old))select.value=old;
+ renderForfeitChoices();
+}
+function renderForfeitChoices(){const m=matchups.find(x=>x.id===$('forfeit-matchup')?.value),select=$('forfeit-resolution');if(!select)return;
+ select.innerHTML=m?`<option value="player1">Freebie win — ${esc(playerName(m.player1_id))}</option><option value="player2">Freebie win — ${esc(playerName(m.player2_id))}</option><option value="both">Both players forfeited</option>`:'<option value="">Select overdue matchup first</option>';
+}
+$('forfeit-matchup').addEventListener('change',renderForfeitChoices);
+$('resolve-forfeit').onclick=async()=>{const mid=$('forfeit-matchup').value,resolution=$('forfeit-resolution').value,match=matchups.find(m=>m.id===mid);
+ if(!match)return $('forfeit-message').textContent='Select an overdue matchup first.';
+ if(!confirm(`Record ${resolution==='both'?'double forfeit':`freebie win for ${playerName(resolution==='player1'?match.player1_id:match.player2_id)}`}? This affects standings and cannot be submitted again by players.`))return;
+ const b=$('resolve-forfeit');b.disabled=true;
+ try{const {error}=await client.rpc('resolve_league_forfeit',{p_matchup_id:mid,p_resolution:resolution});if(error)throw error;await loadPublic();$('forfeit-message').textContent='Decision recorded and standings updated.';}
+ catch(err){$('forfeit-message').textContent=err.message||'Unable to save forfeit decision.';}finally{b.disabled=false;}
+};
 $('invite-player-button').onclick = async () => {
   const name = $('invite-player-name').value.trim();
   const email = $('invite-player-email').value.trim();
@@ -411,7 +518,15 @@ $('delete-season-button').onclick=async()=>{
   }catch(error){showSeasonMessage(error.message||'Could not delete season.',true);}
   finally{button.disabled=false;}
 };
-$('preview-schedule').onclick=()=>{try{const result=makeSchedule($('schedule-season').value);pendingSchedule=result.payload;const names=Object.fromEntries(result.players.map(p=>[p.id,p.display_name]));$('schedule-preview').innerHTML=Array.from({length:result.weeks},(_,i)=>{const rows=pendingSchedule.filter(x=>x.week_number===i+1),bye=result.byes.find(x=>x.week_number===i+1);return `<h4>Week ${i+1}</h4>${rows.length?`<table><thead><tr><th>Matchup</th><th>Three disciplines</th><th>Deadline</th></tr></thead><tbody>${rows.map(m=>`<tr><td>${esc(names[m.player1_id])} vs ${esc(names[m.player2_id])}</td><td>${m.disciplines.map(esc).join(', ')}</td><td>${new Date(m.deadline).toLocaleDateString()} ${new Date(m.deadline).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</td></tr>`).join('')}</tbody></table>`:''}${bye?`<div class="notice">Bye this week: <strong>${esc(names[bye.player_id])}</strong></div>`:''}`}).join('');$('schedule-summary').textContent=`${result.players.length} players · ${result.weeks} weeks · ${pendingSchedule.length} matchups · ${result.players.length%2?'Rotating bye weeks included and shown in the preview.':'No bye weeks.'} Preview only — nothing has been saved yet.`;$('schedule-preview-panel').classList.remove('hidden');showAdminMessage('');}catch(e){showAdminMessage(e.message,true);}};
+$('preview-schedule').onclick=()=>{try{
+ const result=makeSchedule($('schedule-season').value);pendingSchedule=result.payload;
+ const names=Object.fromEntries(result.players.map(p=>[p.id,p.display_name]));
+ $('schedule-preview').innerHTML=Array.from({length:result.weeks},(_,i)=>{const wk=i+1,rows=pendingSchedule.filter(x=>x.week_number===wk),byes=result.byes.filter(x=>x.week_number===wk);
+  return `<h4>Week ${wk}</h4>${result.blacks.includes(wk)?'<div class="notice">Blackout week — no matchups</div>':''}${rows.length?`<table><thead><tr><th>Matchup</th><th>Three sports</th><th>Deadline</th></tr></thead><tbody>${rows.map(m=>`<tr><td>${esc(names[m.player1_id])} vs ${esc(names[m.player2_id])}</td><td>${m.disciplines.map(esc).join(', ')}</td><td>${new Date(m.deadline).toLocaleString()}</td></tr>`).join('')}</tbody></table>`:''}${byes.map(b=>`<div class="notice">Bye: ${esc(names[b.player_id])}</div>`).join('')}`;
+ }).join('');
+ $('schedule-summary').textContent=`${result.players.length} players · ${result.weeks} weeks · ${pendingSchedule.length} matchups · ${result.blacks.length} blackout weeks. Preview only.`;
+ $('schedule-preview-panel').classList.remove('hidden');showAdminMessage('');
+ }catch(e){showAdminMessage(e.message,true);}};
 $('cancel-preview').onclick=()=>{pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');};
 $('publish-schedule').onclick=async()=>{if(!pendingSchedule?.length)return showAdminMessage('Generate a preview first.',true);if(!confirm('Publish this schedule? This cannot be automatically undone.'))return;const {data,error}=await client.rpc('publish_season_schedule',{p_season_id:$('schedule-season').value,p_schedule:pendingSchedule});if(error)return showAdminMessage(error.message,true);pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');showAdminMessage(`Published ${data} matchups successfully.`);await loadPublic();};
 $('signin').onclick=async()=>{const {error}=await client.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)showMessage(error.message,true);else{showMessage('Signed in.');await refreshAuth();}};
