@@ -569,9 +569,14 @@ $('save-display-name').onclick=async()=>{
  catch(err){showDisplayNameMessage(err.message||'Could not update your name.',true);}finally{btn.disabled=false;}
 };
 function showDisplayNameMessage(msg,error=false){$('display-name-message').className=error?'status error':'status';$('display-name-message').textContent=msg;}
-const LB_TABS=['Highlights','Weather 48h','Highlights','Weather 7d'];
-const MAIN_PANEL_DURATION_MS=64000; // Equal, slower time for video and weather
-const WEATHER_PAGE_DURATION_MS=16000; // Four readable 12-hour panels per 48-hour forecast
+// Five highlight/weather cycles, followed by one full leaderboard screen.
+// Weather alternates between the 48-hour hourly and seven-day forecasts.
+const LB_TABS=Array.from({length:5},(_,i)=>['Highlights',i%2===0?'Weather 48h':'Weather 7d']).flat().concat('Standings');
+const HIGHLIGHT_DURATION_MS=2*60*1000;
+const WEATHER_DURATION_MS=60*1000;
+const LEADERBOARD_DURATION_MS=60*1000;
+const WEATHER_PAGE_DURATION_MS=15*1000; // Four 12-hour panels during each 60-second 48h forecast
+const tvSlideDuration=page=>page==='Highlights'?HIGHLIGHT_DURATION_MS:page==='Standings'?LEADERBOARD_DURATION_MS:WEATHER_DURATION_MS;
 let lastRenderedMainPage=null;
 const TV_TZ='America/Edmonton';
 function tvDateParts(date=new Date()){
@@ -900,21 +905,28 @@ document.addEventListener('keydown',event=>{
 loadHighlightPlaylist();
 if(new URLSearchParams(location.search).get('display')==='1'){
  document.body.classList.add('display-mode');
- // Highlights and weather each stay onscreen for 64 seconds.
- // Hourly weather advances through four 12-hour pages at 16-second intervals.
+ // Highlights stay for two minutes; weather for one. After five pairs,
+ // show the overall leaderboard for one minute, then repeat.
+ // The highlight iframe remains mounted, so playback resumes after each interruption.
+ let weatherPageTimer=null;
+ const startWeatherPages=()=>{
+  if(weatherPageTimer!==null){clearInterval(weatherPageTimer);weatherPageTimer=null;}
+  if(LB_TABS[lbSlideIndex]==='Weather 48h'){
+   weatherPageTimer=setInterval(()=>{
+    weatherPanel=(weatherPanel+1)%4;
+    renderLunchroom();
+   },WEATHER_PAGE_DURATION_MS);
+  }
+ };
  const rotateTV=()=>{
   lbSlideIndex=(lbSlideIndex+1)%LB_TABS.length;
   weatherPanel=0;
+  startWeatherPages();
   renderLunchroom();
-  lbRotateTimer=setTimeout(rotateTV,MAIN_PANEL_DURATION_MS);
+  lbRotateTimer=setTimeout(rotateTV,tvSlideDuration(LB_TABS[lbSlideIndex]));
  };
- lbRotateTimer=setTimeout(rotateTV,MAIN_PANEL_DURATION_MS);
- setInterval(()=>{
-  if(document.body.classList.contains('display-mode')&&LB_TABS[lbSlideIndex]==='Weather 48h'){
-   weatherPanel=(weatherPanel+1)%4;
-   renderLunchroom();
-  }
- },WEATHER_PAGE_DURATION_MS);
+ startWeatherPages();
+ lbRotateTimer=setTimeout(rotateTV,tvSlideDuration(LB_TABS[lbSlideIndex]));
  fetchTVWeather();
  setInterval(fetchTVWeather,WEATHER_REFRESH_MS);
  setInterval(()=>{sideSlideIndex=(sideSlideIndex+1)%SIDE_SECTIONS.length;renderLeagueSidebar();},10500);
