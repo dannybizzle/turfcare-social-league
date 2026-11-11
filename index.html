@@ -790,6 +790,151 @@ body.display-mode .lb-sports-wire {flex-basis:clamp(68px,9vh,99px)}
   body.display-mode .lb-sports-wire{flex-basis:68px}
 }
 </style>
+
+<style id="tsg-v33-aligned-tv-header">
+/* V33: fixed rhythm for the TV header. No changes to ticker speed, content or JS. */
+@media (min-width:721px) {
+ body.display-mode .lb-tv-header {
+  display:grid;
+  grid-template-columns:minmax(220px,1fr) minmax(0,1.65fr) minmax(174px,.67fr);
+  align-items:center;
+  column-gap:clamp(10px,1.1vw,22px);
+  min-height:clamp(76px,8.5vh,104px);
+  padding:clamp(8px,1.05vh,14px) clamp(17px,2vw,34px);
+ }
+ body.display-mode .lb-tv-brand {width:100%;min-width:0;justify-self:start;align-self:center}
+ body.display-mode .clubhouse-header-live {
+  width:100%;min-width:0;margin:0;display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.27fr);
+  gap:clamp(8px,.75vw,14px);align-items:stretch;
+ }
+ body.display-mode .clubhouse-current-weather,
+ body.display-mode .clubhouse-deadline,
+ body.display-mode .tsg-display-actions {
+  height:clamp(58px,6.5vh,74px);
+  min-height:0;
+  box-sizing:border-box;
+  margin:0;
+  align-self:center;
+  border:1px solid #c6a96b68;
+  border-radius:10px;
+  background:linear-gradient(145deg,#183d2eae,#071e17aa);
+  box-shadow:inset 0 1px #fff3cc10;
+ }
+ body.display-mode .clubhouse-current-weather {
+  width:100%;min-width:0;padding:7px clamp(8px,.9vw,14px);
+  display:flex;align-items:center;justify-content:center;gap:clamp(7px,.7vw,13px);
+ }
+ body.display-mode .clubhouse-current-weather .wx-symbol {font-size:clamp(25px,2.15vw,37px);line-height:1;flex-shrink:0}
+ body.display-mode .clubhouse-current-weather .wx-detail {min-width:0;line-height:1.12;gap:5px}
+ body.display-mode .clubhouse-current-weather strong {font-size:clamp(11px,.85vw,15px);line-height:1.1;white-space:nowrap}
+ body.display-mode .clubhouse-current-weather small {font-size:clamp(11px,.9vw,16px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+ body.display-mode .clubhouse-deadline {
+  width:100%;min-width:0;display:flex;align-items:center;justify-content:center;
+  gap:5px;padding:6px 8px;text-align:center;
+ }
+ body.display-mode .clubhouse-micro {line-height:1.1;font-size:clamp(9px,.72vw,12px);letter-spacing:.10em}
+ body.display-mode .clubhouse-deadline strong {
+  display:block;max-width:100%;line-height:1;
+  font-size:clamp(18px,1.88vw,31px);letter-spacing:.025em;
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+ }
+ body.display-mode .tsg-display-actions {width:100%;min-width:0;position:relative;isolation:isolate}
+ body.display-mode .tsg-clock-trigger {
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:5px;text-align:center;padding:5px;
+ }
+ body.display-mode .tsg-clock-trigger .lb-tv-date {font-size:clamp(10px,.8vw,13px);letter-spacing:.08em;line-height:1.1}
+ body.display-mode .tsg-clock-trigger .lb-tv-time {font-size:clamp(25px,2.3vw,39px);line-height:1}
+ body.display-mode .tsg-header-controls {
+  justify-content:center;padding-inline:3px;gap:3px;
+ }
+ body.display-mode .tsg-header-controls .tsg-slide-nav {gap:3px}
+ body.display-mode .tsg-header-controls .tsg-slide-nav button,
+ body.display-mode .tsg-header-controls .tsg-fullscreen {font-size:clamp(10px,.73vw,13px)!important;padding:6px 7px!important}
+}
+@media (min-width:721px) and (max-width:1330px) {
+ body.display-mode .lb-tv-header {grid-template-columns:minmax(188px,1fr) minmax(245px,1.15fr) minmax(166px,.72fr)}
+ body.display-mode .clubhouse-header-live {grid-template-columns:minmax(0,1fr)}
+ body.display-mode .clubhouse-current-weather {display:none!important}
+}
+@media (min-width:721px) and (max-width:910px) {
+ body.display-mode .lb-tv-header {column-gap:8px;grid-template-columns:minmax(150px,1fr) minmax(200px,1.08fr) minmax(144px,.8fr);padding-inline:12px}
+ body.display-mode .lb-tv-logo.tsg-crest {width:46px;height:46px}
+ body.display-mode .lb-tv-title {font-size:17px}
+ body.display-mode .tsg-submark {font-size:11px}
+ body.display-mode .clubhouse-deadline strong {font-size:19px}
+}
+@media (max-width:720px) {
+ body.display-mode .lb-tv-header{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+ body.display-mode .clubhouse-current-weather{display:none}
+ body.display-mode .clubhouse-header-live{margin-left:auto}
+ body.display-mode .clubhouse-deadline{padding:5px 8px}
+ body.display-mode .tsg-display-actions{min-height:44px}
+}
+</style>
+
+<style id="tsg-v34-launch-crest">
+/* The same official crest asset used in the header, sized for the large countdown slide. */
+body.display-mode .lb-launch-with-crest{gap:clamp(6px,1.3vh,18px);padding-block:clamp(10px,1.7vh,26px)}
+body.display-mode .lb-launch-crest-wrap{display:flex;justify-content:center;align-items:center;width:100%;flex:0 1 auto;min-height:0}
+body.display-mode .lb-launch-crest{
+  display:block;width:auto;height:clamp(72px,13vh,170px);max-width:clamp(72px,13vh,170px);
+  aspect-ratio:1;object-fit:contain;border-radius:50%;
+  border:2px solid #d9bb77;box-shadow:0 0 0 6px #d7b56d12,0 13px 35px #000a;
+  background:#10372a;
+}
+body.display-mode .lb-launch-with-crest .lb-launch-title{font-size:clamp(27px,3.7vw,67px)}
+body.display-mode .lb-launch-with-crest .lb-launch-countdown{font-size:clamp(33px,5.2vw,93px)}
+@media(max-height:750px){
+  body.display-mode .lb-launch-crest{height:clamp(64px,10vh,100px);max-width:clamp(64px,10vh,100px)}
+  body.display-mode .lb-launch-with-crest{gap:clamp(4px,.7vh,10px)}
+  body.display-mode .lb-launch-with-crest .lb-launch-title{font-size:clamp(25px,3.1vw,50px)}
+  body.display-mode .lb-launch-with-crest .lb-launch-countdown{font-size:clamp(29px,4.6vw,75px)}
+}
+</style>
+
+<style id="tsg-v35-own-league-logo">
+/* Use the actual league lockup, assembled from the existing crest and branded type.
+   No baked-in LIVE badge, and no new assets required. */
+body.display-mode .lb-launch-league-lockup{
+  display:flex;align-items:center;justify-content:center;gap:clamp(12px,2vw,34px);
+  max-width:94%;margin:0 auto;min-height:0;flex:0 1 auto;
+}
+body.display-mode .lb-launch-league-lockup .lb-launch-crest{
+  width:clamp(76px,10.2vh,148px);height:clamp(76px,10.2vh,148px);
+  max-width:none;flex:none;border-radius:50%;
+}
+body.display-mode .lb-launch-league-wordmark{
+  display:flex;flex-direction:column;align-items:flex-start;text-align:left;
+  padding-left:clamp(12px,1.8vw,28px);border-left:2px solid #dfbd77;
+  min-width:0;line-height:1.06;
+}
+body.display-mode .lb-launch-glencoe{
+  font:700 clamp(10px,1.02vw,18px) 'Cinzel',Georgia,serif;
+  letter-spacing:.25em;color:#f0d99e;margin-bottom:clamp(4px,.7vh,10px);
+}
+body.display-mode .lb-launch-league-wordmark strong{
+  font:900 italic clamp(25px,3.6vw,65px)/1 'Barlow Condensed','Arial Narrow',sans-serif;
+  letter-spacing:.065em;color:#fff8e8;text-shadow:0 3px 18px #0009;
+}
+body.display-mode .lb-launch-social{
+  margin-top:clamp(4px,.7vh,9px);
+  font:700 clamp(13px,1.8vw,30px) 'Cinzel',Georgia,serif;
+  letter-spacing:.13em;color:#dfbd77;
+}
+@media (max-height:750px){
+ body.display-mode .lb-launch-league-lockup .lb-launch-crest{width:clamp(62px,8vh,94px);height:clamp(62px,8vh,94px)}
+ body.display-mode .lb-launch-league-wordmark strong{font-size:clamp(23px,2.7vw,44px)}
+ body.display-mode .lb-launch-social{font-size:clamp(12px,1.35vw,21px)}
+}
+@media (max-width:640px){
+ body.display-mode .lb-launch-league-lockup{gap:10px}
+ body.display-mode .lb-launch-league-wordmark{padding-left:10px}
+ body.display-mode .lb-launch-league-wordmark strong{font-size:clamp(22px,5.5vw,35px)}
+ body.display-mode .lb-launch-social{font-size:clamp(10px,2.9vw,18px)}
+}
+</style>
 </head>
 <body>
 <header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="home-nav-links"><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div></nav><div class="hero home-hero"><div class="home-hero-content"><div class="eyebrow">✦ &nbsp; 2026–2027 INAUGURAL SEASON</div><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p></div><div class="home-hero-mark"><span>THE GLENCOE</span><strong>TURFCARE<br>SOCIAL LEAGUE</strong><i>FIVE SPORTS · ONE CREW</i></div></div></header>
@@ -1655,7 +1800,7 @@ function renderLunchroom(){
   const date=Date.now()<ACCESS_UNLOCK_AT?ACCESS_UNLOCK_AT:SEASON_KICKOFF_AT;
   const headline=date===ACCESS_UNLOCK_AT?'WEEK 1 SCHEDULE RELEASE · NOV 20':'SEASON KICKOFF · NOV 23';
   const next=date===ACCESS_UNLOCK_AT?'Week 1 schedule released November 20 · Season begins November 23':'Week 1 schedule released · The competition starts Monday, November 23 at 7:00 AM MST';
-  html=`<div class="lb-launch-slide"><div class="lb-launch-eyebrow">The Glencoe · Turfcare Social League</div><h2 class="lb-launch-title">${headline}</h2><div class="lb-launch-countdown" id="lb-launch-countdown" data-target="${date}">${lbClock(date)}</div><div class="lb-launch-desc">${esc(leagueTagline())}</div><div class="lb-launch-secondary">${next}</div><div class="tsg-registration-deadline">${registrationNotice()}</div></div>`;
+  html=`<div class="lb-launch-slide lb-launch-with-crest"><div class="lb-launch-league-lockup" aria-label="The Glencoe Turfcare Social League"><img class="lb-launch-crest" src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><div class="lb-launch-league-wordmark"><span class="lb-launch-glencoe">THE GLENCOE</span><strong>TURFCARE</strong><span class="lb-launch-social">SOCIAL LEAGUE</span></div></div><h2 class="lb-launch-title">${headline}</h2><div class="lb-launch-countdown" id="lb-launch-countdown" data-target="${date}">${lbClock(date)}</div><div class="lb-launch-desc">${esc(leagueTagline())}</div><div class="lb-launch-secondary">${next}</div><div class="tsg-registration-deadline">${registrationNotice()}</div></div>`;
  }else if(page==='Crew mottos'){
   html=`<div class="lb-launch-slide lb-crew-slide"><div class="lb-launch-eyebrow">THE GLENCOE PRESENTS · 2026–2027 INAUGURAL SEASON</div><div class="tsg-sport-strip"><div style="background-image:url('assets/ping-pong.jpg')"><span>PING PONG</span></div><div style="background-image:url('assets/darts.jpg')"><span>DARTS</span></div><div style="background-image:url('assets/pool.jpg')"><span>POOL</span></div><div style="background-image:url('assets/air-hockey.jpg')"><span>AIR HOCKEY</span></div></div><h2 class="tsg-crew-quote">${esc(leagueTagline())}</h2><div class="lb-launch-secondary">Four disciplines. One legendary season.</div><div class="tsg-registration-deadline">${registrationNotice()}</div></div>`;
  }else if(page==='League QR'){
