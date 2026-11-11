@@ -413,6 +413,18 @@ body.display-mode .lb-launch-qr .lb-launch-desc{margin-top:12px}
 body.display-mode .lb-launch-qr code{font-family:'Manrope',sans-serif;color:#ebd0a0;font-size:clamp(12px,1vw,18px);word-break:break-all}
 @media(max-width:740px){body.display-mode .lb-launch-qr{grid-template-columns:1fr;text-align:center;justify-items:center}body.display-mode .lb-launch-qr img{max-width:150px}}
 
+
+/* V16 — Quiet, remote-friendly slide navigation. Buttons fade after inactivity. */
+body.display-mode .tsg-display-actions{display:flex;gap:clamp(6px,.6vw,12px);align-items:center;flex-shrink:0}
+body.display-mode .tsg-slide-nav{display:flex;gap:5px;opacity:0;pointer-events:none;transform:translateY(-3px);transition:opacity .24s ease,transform .24s ease}
+body.display-mode .tsg-display-actions:hover .tsg-slide-nav,
+body.display-mode .tsg-slide-nav:focus-within,
+body.display-mode .tsg-slide-nav.nav-awake{opacity:1;pointer-events:auto;transform:none}
+body.display-mode .tsg-slide-nav button{background:linear-gradient(160deg,#123b2a,#09271c);border:1px solid #b89a5c99;color:#f3dfb4;border-radius:8px;padding:clamp(7px,.6vw,11px) clamp(9px,.8vw,15px);font:700 clamp(12px,.9vw,15px) 'Barlow Condensed',sans-serif;text-transform:uppercase;white-space:nowrap;cursor:pointer}
+body.display-mode .tsg-slide-nav button:hover,body.display-mode .tsg-slide-nav button:focus-visible{background:#285941;outline:2px solid #dfb968;outline-offset:2px}
+@media(max-width:1200px){body.display-mode .tsg-slide-nav button span{display:none}}
+@media(max-width:850px){body.display-mode .tsg-slide-nav{opacity:1;pointer-events:auto}}
+body.display-mode .wire-odds-unavailable{opacity:.78;font-size:clamp(11px,.8vw,14px);font-weight:700;color:#5c6558}
 </style>
 </head>
 <body>
@@ -513,7 +525,13 @@ body.display-mode .lb-launch-qr code{font-family:'Manrope',sans-serif;color:#ebd
    <div class="clubhouse-deadline" aria-label="Weekly matchup deadline"><span class="clubhouse-micro">WEEKLY DEADLINE</span><strong id="lb-header-deadline">--:--:--:--</strong></div>
    <div class="lb-tv-meta"><div class="lb-tv-date" id="lb-date"></div><div class="lb-tv-time" id="lb-local-time">--:--</div></div>
   </div>
-  <button type="button" id="tv-fullscreen" class="tsg-fullscreen" aria-pressed="false">⛶ Full display</button>
+  <div class="tsg-display-actions" id="tv-display-actions">
+   <div class="tsg-slide-nav" aria-label="Navigate TV slides">
+    <button type="button" id="tv-prev-slide" title="Previous slide (Left Arrow)" aria-label="Previous slide">❮ <span>Previous</span></button>
+    <button type="button" id="tv-next-slide" title="Next slide (Right Arrow)" aria-label="Next slide"><span>Next</span> ❯</button>
+   </div>
+   <button type="button" id="tv-fullscreen" class="tsg-fullscreen" aria-pressed="false">⛶ Full display</button>
+  </div>
   
  </div>
  <div class="lb-tv-main">
@@ -1170,8 +1188,8 @@ const SPORTS_LEAGUES=[
 ];
 let sportsLastKey='',sportsLastAttempt=0,sportsLoading=false;
 function sportsMode(now=new Date()){
- const p=tvDateParts(now),early=Number(p.hour)<12;
- return {date:early?tvYesterday(now):tvLocalISO(now),mode:early?'finals':'upcoming'};
+ // Always show today's games so upcoming odds are not hidden all morning.
+ return {date:tvLocalISO(now),mode:'upcoming'};
 }
 function sportsScoreText(v){return v===null||v===undefined||v===''?'–':String(v);}
 function gameOddsHtml(g){
@@ -1199,7 +1217,7 @@ function sportsGameItem(g,mode){
  if(g.state==='live'){
   return `<span class="wire-game">${away} <strong>${esc(sportsScoreText(g.awayScore))}–${esc(sportsScoreText(g.homeScore))}</strong> ${home} <small class="wire-live">${esc(g.detail||'LIVE')}</small>${gameOddsHtml(g)}</span>`;
  }
- return `<span class="wire-game">${away} <span class="wire-at">vs</span> ${home} <strong>${tvTime(new Date(g.date))}</strong><small>MT</small>${gameOddsHtml(g)}</span>`;
+ return `<span class="wire-game">${away} <span class="wire-at">vs</span> ${home} <strong>${tvTime(new Date(g.date))}</strong><small>MT</small>${gameOddsHtml(g)||'<small class="wire-odds-unavailable">Odds unavailable</small>'}</span>`;
 }
 function sportsCurlingItem(){
  return `<span class="wire-game wire-curling"><strong>WORLD CURLING</strong><span>Official draws, live scores &amp; results</span><a class="wire-curling-link" href="https://livescores.worldcurling.org/" target="_blank" rel="noopener noreferrer">View results ↗</a></span>`;
@@ -1226,7 +1244,7 @@ async function refreshSportsWire(force=false){
   const sections=SPORTS_LEAGUES.map(league=>{
    const entry=data.leagues[league.id]||{},games=Array.isArray(entry.games)?entry.games:[];
    const usable=league.id==='pga'?games:games.filter(g=>
-    mode==='finals'?g.state==='final':g.state==='upcoming'||g.state==='live');
+    mode==='finals'?g.state==='final':true);
    const values=league.id==='curling'?[sportsCurlingItem()]:usable.slice(0,league.id==='pga'?1:18).map(g=>league.id==='pga'?sportsPgaItem(g):sportsGameItem(g,mode));
    const content=entry.error?'Scores unavailable':league.id==='pga'? 'No current PGA event':mode==='finals'?'No final games yesterday':'No games scheduled';
    return `<span class="wire-league"><span class="wire-icon">${league.icon}</span>${league.label}</span>${values.length?values.join('<span class="wire-sep">◆</span>'):`<span class="wire-empty">${content}</span>`}`;
@@ -1292,13 +1310,34 @@ if(new URLSearchParams(location.search).get('display')==='1'){
    },WEATHER_PAGE_DURATION_MS);
   }
  };
- const rotateTV=()=>{
-  lbSlideIndex=(lbSlideIndex+1)%LB_TABS.length;
+ const showTVSlide=(direction=1)=>{
+  clearTimeout(lbRotateTimer);
+  lbSlideIndex=(lbSlideIndex+direction+LB_TABS.length)%LB_TABS.length;
   weatherPanel=0;
   startWeatherPages();
   renderLunchroom();
-  lbRotateTimer=setTimeout(rotateTV,tvSlideDuration(LB_TABS[lbSlideIndex]));
+  lbRotateTimer=setTimeout(()=>showTVSlide(1),tvSlideDuration(LB_TABS[lbSlideIndex]));
  };
+ const rotateTV=()=>showTVSlide(1);
+ const tvPrevious=document.getElementById('tv-prev-slide');
+ const tvNext=document.getElementById('tv-next-slide');
+ tvPrevious?.addEventListener('click',()=>showTVSlide(-1));
+ tvNext?.addEventListener('click',()=>showTVSlide(1));
+ let navHideTimer=null;
+ const wakeSlideNavigation=()=>{
+  const nav=document.querySelector('.tsg-slide-nav');if(!nav)return;
+  nav.classList.add('nav-awake');clearTimeout(navHideTimer);
+  navHideTimer=setTimeout(()=>{if(!nav.matches(':focus-within'))nav.classList.remove('nav-awake');},3600);
+ };
+ document.getElementById('lunchroom-screen')?.addEventListener('pointermove',wakeSlideNavigation,{passive:true});
+ document.getElementById('lunchroom-screen')?.addEventListener('focusin',wakeSlideNavigation);
+ // Arrow keys work with a TV remote / keyboard except in editable controls.
+ document.addEventListener('keydown',e=>{
+  if(!document.body.classList.contains('display-mode'))return;
+  if(e.altKey||e.ctrlKey||e.metaKey||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName))return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();showTVSlide(1);wakeSlideNavigation();}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();showTVSlide(-1);wakeSlideNavigation();}
+ });
  startWeatherPages();
  lbRotateTimer=setTimeout(rotateTV,tvSlideDuration(LB_TABS[lbSlideIndex]));
  fetchTVWeather();
@@ -1308,7 +1347,7 @@ if(new URLSearchParams(location.search).get('display')==='1'){
   $('lb-local-time').textContent=tvTime();
   const node=$('lb-ticking-clock'),next=tvScheduled()[0];if(node&&next)node.textContent=lbClock(next.deadline);
   const launchNode=$('lb-launch-countdown');if(launchNode)launchNode.textContent=lbClock(Number(launchNode.dataset.target));
-  if(Date.now()>=SEASON_KICKOFF_AT&&LB_TABS.some(t=>t==='League QR')){LB_TABS=tvSequence();lbSlideIndex=0;clearTimeout(lbRotateTimer);rotateTV();}
+  if(Date.now()>=SEASON_KICKOFF_AT&&LB_TABS.some(t=>t==='League QR')){LB_TABS=tvSequence();lbSlideIndex=LB_TABS.length-1;rotateTV();}
   updateClubhouseHeader(next?.deadline);
   const mode=sportsMode();if(mode.mode+'-'+mode.date!==sportsLastKey)refreshSportsWire(true);
  },1000);
