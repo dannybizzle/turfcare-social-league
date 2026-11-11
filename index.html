@@ -129,6 +129,44 @@ body.display-mode .lb-sports-wire .lb-nhl-track{flex:1;min-width:0;overflow:hidd
  body.display-mode .lb-sports-wire{flex-basis:70px}
 }
 
+
+/* Clubhouse Live 3 — silent highlight video and dedicated rotating Turfcare analytics */
+body.display-mode .lb-tv-main{grid-template-columns:minmax(0,2.05fr) minmax(300px,.85fr);gap:clamp(10px,1vw,19px)}
+body.display-mode .lb-tv-primary{justify-content:flex-start}
+body.display-mode .lb-tv-slide{justify-content:flex-start;overflow:hidden}
+.lb-highlight-shell{display:flex;flex-direction:column;min-height:0;flex:1;gap:clamp(8px,1vh,14px)}
+.lb-highlight-header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.lb-highlight-header h2{color:white;margin:0;font-size:clamp(23px,2.4vw,44px);line-height:1.07;font-weight:950}
+.lb-highlight-header span{color:#c8d98b;font-size:clamp(12px,1vw,18px);font-weight:800;letter-spacing:.08em}
+.lb-highlight-screen{position:relative;flex:1;min-height:0;background:#061b17;border:1px solid #94b18c55;border-radius:16px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.lb-highlight-screen iframe,.lb-highlight-screen video{width:100%;height:100%;position:absolute;inset:0;border:0;object-fit:contain;background:#061b17}
+.lb-highlight-screen iframe{pointer-events:none}
+.lb-highlight-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#0d3025,#041c17);color:#c8d98b;gap:12px;font-size:clamp(20px,2.4vw,42px)}
+.lb-highlight-credit{font-size:clamp(10px,.95vw,16px);color:#bdd3c4;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-tv-secondary{position:relative}
+body.display-mode .lb-tv-secondary .lb-tv-side-title{font-size:clamp(22px,2vw,38px)}
+.lb-side-kicker{font-weight:900;color:#d7b56d;font-size:clamp(12px,1.1vw,20px);text-transform:uppercase;letter-spacing:.11em}
+.lb-side-focus{font-size:clamp(23px,2.5vw,48px);font-weight:950;color:white;line-height:1.06;margin:4px 0 6px}
+.lb-side-detail{font-size:clamp(13px,1.25vw,23px);font-weight:700;color:#c8d98b;line-height:1.35}
+.lb-side-metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.lb-side-stat{background:#ffffff0b;border:1px solid #ffffff21;border-radius:12px;padding:clamp(10px,1vw,18px);min-width:0}
+.lb-side-stat b{display:block;color:#fff;font-size:clamp(24px,2.5vw,48px);line-height:1.05;font-variant-numeric:tabular-nums}
+.lb-side-stat small{display:block;color:#b5d3bf;font-size:clamp(11px,.9vw,17px);margin-top:5px}
+.lb-side-bar{height:12px;background:#ffffff2b;border-radius:20px;overflow:hidden;margin:12px 0}
+.lb-side-bar i{display:block;height:100%;background:linear-gradient(90deg,#c8d98b,#d7b56d);border-radius:20px;transition:width .7s ease}
+.lb-side-upcoming{font-size:clamp(14px,1.2vw,22px);font-weight:750;color:white;padding:12px 0;border-bottom:1px solid #ffffff22}
+.lb-side-upcoming small{display:block;color:#c8d98b;margin-top:6px}
+.lb-side-pips{display:flex;gap:8px;margin-top:auto}
+.lb-side-pips span{width:22px;height:4px;border-radius:8px;background:#ffffff3f}
+.lb-side-pips span.on{background:#c8d98b}
+.lb-side-empty{font-size:clamp(14px,1.3vw,22px);font-weight:650;color:#b9d3c6;line-height:1.45}
+@media(max-width:950px){body.display-mode .lb-tv-main{grid-template-columns:minmax(0,1.7fr) minmax(230px,.9fr)}}
+@media(max-height:650px){.lb-side-metric-grid{margin-top:5px}.lb-side-stat{padding:8px}.lb-side-focus{font-size:clamp(19px,2vw,32px)}}
+
+/* Small fallback for TVs that intercept the Escape key. */
+body.display-mode .lb-exit-button{flex:0 0 auto;border:1px solid #ffffff45;background:#ffffff12;color:#e4f0e8;font-size:clamp(10px,.8vw,14px);padding:7px 10px;border-radius:8px;font-weight:650;cursor:pointer;opacity:.65}
+body.display-mode .lb-exit-button:hover,body.display-mode .lb-exit-button:focus-visible{opacity:1;background:#ffffff28;outline:2px solid #c8d98b;outline-offset:2px}
+@media(max-width:720px){body.display-mode .lb-exit-button{padding:7px 9px;font-size:12px}}
 </style>
 </head>
 <body>
@@ -225,10 +263,11 @@ body.display-mode .lb-sports-wire .lb-nhl-track{flex:1;min-width:0;overflow:hidd
  <div class="lb-tv-header">
   <div class="lb-tv-brand"><div class="lb-tv-logo">⛳</div><div><div class="lb-tv-title">TURFCARE SOCIAL LEAGUE</div></div></div>
   <div class="lb-tv-meta"><div class="lb-tv-date" id="lb-date"></div><div class="lb-tv-time" id="lb-local-time">--:--</div></div>
+  <button type="button" id="exit-display" class="lb-exit-button" aria-label="Exit TV display and return to league website" title="Exit display (Esc)">Exit display</button>
  </div>
  <div class="lb-tv-main">
   <section class="lb-tv-primary"><div class="lb-tv-eyebrow" id="lb-eyebrow">LEAGUE LIVE</div><div id="lb-slide" class="lb-tv-slide"></div></section>
-  <aside class="lb-tv-secondary"><div class="lb-tv-side-head">UPCOMING</div><div class="lb-tv-side-title">Around the league</div><div id="lb-side-fixtures"></div><div class="lb-tv-side-metric"><label>Weekly deadline</label><strong id="lb-side-countdown">--:--:--</strong></div></aside>
+  <aside class="lb-tv-secondary"><div class="lb-tv-side-head">TURFCARE LEAGUE ONLY</div><div class="lb-tv-side-title">League insights</div><div id="lb-side-fixtures" aria-live="off"></div><div class="lb-side-pips" id="lb-side-pips"></div><div class="lb-tv-side-metric"><label>Weekly deadline</label><strong id="lb-side-countdown">--:--:--</strong></div></aside>
  </div>
  <div class="lb-tv-footer"><div><span class="lb-tv-dot"></span> LIVE LEAGUE BOARD</div><div id="lb-update">Updating automatically</div><div class="lb-tv-progress" id="lb-pips"></div></div>
  <div class="lb-nhl lb-sports-wire" aria-label="Major league scores and PGA Tour updates">
@@ -486,7 +525,7 @@ $('save-display-name').onclick=async()=>{
  catch(err){showDisplayNameMessage(err.message||'Could not update your name.',true);}finally{btn.disabled=false;}
 };
 function showDisplayNameMessage(msg,error=false){$('display-name-message').className=error?'status error':'status';$('display-name-message').textContent=msg;}
-const LB_TABS=['Standings','This week','Countdown','Coming up','Recent results'];
+const LB_TABS=['Highlights','Standings','Highlights','This week','Highlights','Recent results','Highlights','Countdown','Coming up'];
 const TV_TZ='America/Edmonton';
 function tvDateParts(date=new Date()){
  const parts=new Intl.DateTimeFormat('en-CA',{timeZone:TV_TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date);
@@ -502,6 +541,49 @@ function tvLongDate(date=new Date()){return new Intl.DateTimeFormat('en-CA',{tim
 function lbClock(deadline){const ms=Math.max(0,new Date(deadline).getTime()-Date.now());const days=Math.floor(ms/86400000),h=Math.floor(ms%86400000/3600000),min=Math.floor(ms%3600000/60000),sec=Math.floor(ms%60000/1000);return `${String(days).padStart(2,'0')}:${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;}
 function tvScheduled(){return matchups.filter(m=>m.status==='scheduled' && m.deadline && new Date(m.deadline)>new Date()).sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));}
 function tvFixture(m){const sports=matchupGames(m).map(g=>`${sportIcon[g.discipline]||''} ${g.discipline}`).join(' · ');return `<div class="lb-tv-fixture"><div class="lb-tv-fixture-top"><span>WEEK ${m.week_number}</span><span>${new Date(m.deadline).toLocaleDateString('en-CA',{timeZone:TV_TZ,month:'short',day:'numeric'})}</span></div><div class="lb-tv-fixture-names">${esc(playerName(m.player1_id))}<span class="lb-tv-versus">VS</span>${esc(playerName(m.player2_id))}</div><div class="lb-tv-fixture-sports">${esc(sports||'Three sports assigned at publish')}</div></div>`;}
+// Curated embeds from sports channels. Playback is requested muted; browsers can still block it.
+const LEAGUE_HIGHLIGHTS=[
+ {sport:'Ping Pong',icon:'🏓',id:'7x0SO0o8lps',title:'Top table tennis rallies',credit:'ITTFWorld'},
+ {sport:'Darts',icon:'🎯',id:'wceKkSwrSn4',title:'World Championship best moments',credit:'Professional Darts Corporation'},
+ {sport:'Pool',icon:'🎱',id:'WdwpBJ2TlYE',title:'European Open top shots',credit:'Matchroom Pool'},
+ {sport:'Air Hockey',icon:'🏒',id:'U_m09J-m4Nc',title:'Carter Cup air hockey highlights',credit:'Centerline Pro Air Hockey'}
+];
+let highlightCursor=0,activeHighlightIndex=-1,sideSlideIndex=0;
+const SIDE_SECTIONS=['Overall leaders','Ping Pong','Darts','Pool','Air Hockey','Matchups'];
+function highlightMarkup(){
+ const idx=highlightCursor++ % LEAGUE_HIGHLIGHTS.length;
+ activeHighlightIndex=idx;
+ const h=LEAGUE_HIGHLIGHTS[idx];
+ // Youtube's muted autoplay is best-effort on Fire TV/Silk; no sound is requested.
+ const params=new URLSearchParams({autoplay:'1',mute:'1',playsinline:'1',controls:'0',rel:'0',iv_load_policy:'3',fs:'0',loop:'1',playlist:h.id});
+ return `<div class="lb-highlight-shell"><div class="lb-highlight-header"><h2>${h.icon} ${esc(h.sport)} highlights</h2><span>ON THE BIG SCREEN · MUTED</span></div><div class="lb-highlight-screen"><iframe title="${esc(h.sport)} highlights, silent autoplay" src="https://www.youtube-nocookie.com/embed/${h.id}?${params.toString()}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" loading="eager"></iframe></div><div class="lb-highlight-credit">${esc(h.title)} · ${esc(h.credit)} · YouTube video (playback subject to provider/browser permissions)</div></div>`;
+}
+function tvSportStats(sport){
+ const relevant=matchups.filter(m=>countsInStandings(m) && m.resolution!=='freebie' && m.resolution!=='double_forfeit');
+ const tallies=profiles.map(p=>{
+  const gs=relevant.filter(m=>m.player1_id===p.id||m.player2_id===p.id).flatMap(matchupGames).filter(g=>g.discipline===sport&&g.winner_id);
+  const wins=gs.filter(g=>g.winner_id===p.id).length;
+  return {name:p.display_name,wins,losses:gs.length-wins,played:gs.length,pct:gs.length?Math.round(100*wins/gs.length):0};
+ }).filter(p=>p.played>0).sort((a,b)=>b.pct-a.pct||b.played-a.played||b.wins-a.wins);
+ return tallies;
+}
+function renderLeagueSidebar(){
+ if(!document.body.classList.contains('display-mode'))return;
+ const n=$('lb-side-fixtures');if(!n)return;
+ const index=sideSlideIndex%SIDE_SECTIONS.length,section=SIDE_SECTIONS[index];
+ $('lb-side-pips').innerHTML=SIDE_SECTIONS.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join('');
+ if(index===0){
+  const ranked=leaderboard().filter(p=>p.wins+p.losses>0).sort((a,b)=>b.wins/(b.wins+b.losses)-a.wins/(a.wins+a.losses)||b.wins-a.wins);
+  const top=ranked[0];
+  n.innerHTML=top?`<div class="lb-side-kicker">OVERALL WIN PERCENTAGE</div><div class="lb-side-focus">${esc(top.display_name)}</div><div class="lb-side-detail">${Math.round(100*top.wins/(top.wins+top.losses))}% win rate · ${top.wins}W–${top.losses}L</div><div class="lb-side-bar"><i style="width:${Math.round(100*top.wins/(top.wins+top.losses))}%"></i></div><div class="lb-side-metric-grid"><div class="lb-side-stat"><b>${top.gameWins}</b><small>Sport wins</small></div><div class="lb-side-stat"><b>${top.freebies}</b><small>Freebie wins</small></div></div>`:`<div class="lb-side-kicker">OVERALL WIN PERCENTAGE</div><div class="lb-side-empty">Win percentages will appear when results are submitted.</div><div class="lb-side-metric-grid"><div class="lb-side-stat"><b>${profiles.filter(p=>p.is_player).length}</b><small>Active players</small></div><div class="lb-side-stat"><b>${matchups.length}</b><small>Matchups published</small></div></div>`;
+ }else if(index<=4){
+  const icon=sportIcon[section]||'🏆',rows=tvSportStats(section),leader=rows[0];
+  n.innerHTML=leader?`<div class="lb-side-kicker">${icon} ${esc(section.toUpperCase())} LEADER</div><div class="lb-side-focus">${esc(leader.name)}</div><div class="lb-side-detail">${leader.pct}% win rate · ${leader.wins}W–${leader.losses}L</div><div class="lb-side-bar"><i style="width:${leader.pct}%"></i></div>${rows.slice(1,3).map(r=>`<div class="lb-side-upcoming">${esc(r.name)} · ${r.pct}% <small>${r.wins} wins · ${r.played} games played</small></div>`).join('')}`:`<div class="lb-side-kicker">${icon} ${esc(section.toUpperCase())}</div><div class="lb-side-focus">Stats coming soon</div><div class="lb-side-empty">Once ${esc(section)} games are recorded, this panel will show leaders and win percentages.</div>`;
+ }else{
+  const upcoming=tvScheduled().slice(0,3);
+  n.innerHTML=`<div class="lb-side-kicker">UPCOMING MATCHUPS</div>${upcoming.length?upcoming.map(m=>`<div class="lb-side-upcoming">${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}<small>Week ${m.week_number} · ${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||'').join(' '))}</small></div>`).join(''):'<div class="lb-side-empty">No upcoming matches yet. The draw will show here once it is published.</div>'}`;
+ }
+}
 function renderLunchroom(){
  if(!document.body.classList.contains('display-mode'))return;
  const now=new Date(),page=LB_TABS[lbSlideIndex%LB_TABS.length],scheduled=tvScheduled();
@@ -513,7 +595,9 @@ function renderLunchroom(){
  const current=primaryDeadline?scheduled.filter(m=>m.deadline===primaryDeadline):[];
  const upcoming=scheduled.filter(m=>m.deadline!==primaryDeadline);
  let html='';
- if(page==='Standings'){
+ if(page==='Highlights'){
+  html=highlightMarkup();
+ }else if(page==='Standings'){
   const rows=leaderboard().slice(0,6);
   html=`<div class="lb-tv-section-title">League standings</div>${rows.length?rows.map((p,i)=>`<div class="lb-tv-leader"><div class="lb-tv-rank">${i+1}</div><div class="lb-tv-name">${esc(p.display_name)}${p.freebies?` <span class="lb-tv-minor">· ${p.freebies} freebie${p.freebies===1?'':'s'}</span>`:''}</div><div class="lb-tv-record">${p.wins} W <span class="lb-tv-minor">· ${p.losses} L · ${p.gameWins} GW</span></div></div>`).join(''):'<div class="lb-tv-empty">Standings will appear once the season begins.</div>'}`;
  }else if(page==='This week'){
@@ -527,7 +611,7 @@ function renderLunchroom(){
   html=`<div class="lb-tv-section-title">Recent results</div>${finished.length?finished.map(m=>`<div class="lb-tv-fixture"><div class="lb-tv-fixture-top"><span>WEEK ${m.week_number}</span><span>${esc(matchStatus(m))}</span></div><div class="lb-tv-fixture-names">${esc(playerName(m.player1_id))} <span class="lb-tv-versus">${m.resolution==='normal'?`${matchupScore(m).a} – ${matchupScore(m).b}`:'VS'}</span> ${esc(playerName(m.player2_id))}</div><div class="lb-tv-fixture-sports">${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' · '))}</div></div>`).join(''):'<div class="lb-tv-empty">Results will appear after the first matches.</div>'}`;
  }
  $('lb-slide').innerHTML=html;
- $('lb-side-fixtures').innerHTML=(scheduled.length?scheduled.slice(0,3).map(m=>`<div class="lb-tv-side-match"><strong>${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}</strong><small>Week ${m.week_number} · ${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' '))}</small></div>`).join(''):'<div class="lb-tv-empty">No upcoming games scheduled.</div>');
+ renderLeagueSidebar();
  $('lb-side-countdown').textContent=primaryDeadline?lbClock(primaryDeadline):'No deadline';
  $('lb-update').textContent='Updated '+tvTime(now);
 }
@@ -592,9 +676,30 @@ async function refreshSportsWire(force=false){
   track.innerHTML='<div class="lb-nhl-fallback">Sports wire temporarily unavailable · Turfcare league display continues</div>';
  }finally{sportsLoading=false;}
 }
+// Return to the normal league page without closing the browser window.
+function exitClubhouseDisplay(){
+  const url=new URL(window.location.href);
+  url.searchParams.delete('display');
+  // Keep any other non-display query parameters intact.
+  window.location.assign(url.pathname+url.search+url.hash);
+}
+$('exit-display').addEventListener('click',exitClubhouseDisplay);
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&document.body.classList.contains('display-mode')){
+    event.preventDefault();
+    exitClubhouseDisplay();
+  }
+});
 if(new URLSearchParams(location.search).get('display')==='1'){
  document.body.classList.add('display-mode');
- lbRotateTimer=setInterval(()=>{lbSlideIndex=(lbSlideIndex+1)%LB_TABS.length;renderLunchroom();},11000);
+ // A highlight has time to play; league information rotates faster between videos.
+ const rotateTV=()=>{
+  lbSlideIndex=(lbSlideIndex+1)%LB_TABS.length;
+  renderLunchroom();
+  lbRotateTimer=setTimeout(rotateTV,LB_TABS[lbSlideIndex]==='Highlights'?32000:13000);
+ };
+ lbRotateTimer=setTimeout(rotateTV,LB_TABS[0]==='Highlights'?32000:13000);
+ setInterval(()=>{sideSlideIndex=(sideSlideIndex+1)%SIDE_SECTIONS.length;renderLeagueSidebar();},10500);
  lbClockTimer=setInterval(()=>{
   $('lb-local-time').textContent=tvTime();
   const node=$('lb-ticking-clock'),next=tvScheduled()[0];if(node&&next)node.textContent=lbClock(next.deadline);
