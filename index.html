@@ -373,6 +373,24 @@ body.display-mode .lb-tv-header .clubhouse-header-live{gap:clamp(9px,1vw,18px)}
 @media(max-width:850px){body.display-mode .lb-tv-brand .tsg-live{display:none}body.display-mode .tsg-fullscreen{font-size:12px;padding:7px}}
 @media(max-height:700px){body.display-mode .lb-tv-logo.tsg-crest{height:48px;width:48px}}
 
+
+/* V12 sports wire — displayed bookmaker odds and official curling link */
+body.display-mode .wire-odds{display:inline-flex;align-items:center;max-width:none;background:#f0dfad;border:1px solid #c6a45a;color:#174632;border-radius:8px;padding:5px 8px;font-size:clamp(11px,.91vw,16px);font-weight:850;letter-spacing:.015em}
+body.display-mode .wire-curling{gap:12px}
+body.display-mode .wire-curling-link{color:#135f46;text-decoration:underline;text-underline-offset:3px;font-size:clamp(12px,1vw,18px);font-weight:800}
+body.display-mode .wire-curling-link:focus-visible{outline:3px solid #b48a31;outline-offset:3px}
+
+/* V13 published match times: readable during TV rotation */
+.meetup-tools{margin:13px 0;padding:14px;border:1px solid #b38f48;border-radius:12px;background:linear-gradient(135deg,#eaf0dc,#f9f5e9);color:#163b2c}
+.meetup-tools>strong{display:block;margin-bottom:8px;font-size:1.05em}
+.meetup-tools form{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.meetup-tools label{font-weight:700}.meetup-tools input{max-width:300px;padding:10px;border-radius:7px}
+.meetup-tools button{width:max-content;max-width:100%}
+.meetup-status{display:flex;flex-direction:column;gap:3px;padding:9px 11px;border-left:4px solid #b7893d;background:#fff8e6;font-weight:750}
+.meetup-status.confirmed{background:#e5f5e9;border-left-color:#2b875a}
+.meetup-status small{font-weight:500}
+body.display-mode .lb-side-upcoming small{display:block;margin-top:5px;color:#cfdecb;font-size:clamp(11px,.9vw,16px);font-weight:650}
+body.display-mode .gold-vs{color:#e8c170;font-weight:1000;margin:0 3px}
 </style>
 </head>
 <body>
@@ -474,15 +492,15 @@ body.display-mode .lb-tv-header .clubhouse-header-live{gap:clamp(9px,1vw,18px)}
    <div class="lb-tv-meta"><div class="lb-tv-date" id="lb-date"></div><div class="lb-tv-time" id="lb-local-time">--:--</div></div>
   </div>
   <button type="button" id="tv-fullscreen" class="tsg-fullscreen" aria-pressed="false">⛶ Full display</button>
-  <button type="button" id="exit-display" class="lb-exit-button" aria-label="Exit TV display and return to league website" title="Exit display (Esc)">Exit display</button>
+  
  </div>
  <div class="lb-tv-main">
   <section class="lb-tv-primary"><div class="lb-tv-eyebrow" id="lb-eyebrow">LEAGUE LIVE</div><div id="lb-slide" class="lb-tv-slide"></div></section>
   <aside class="lb-tv-secondary"><div class="lb-tv-side-head">TURFCARE LEAGUE ONLY</div><div class="lb-tv-side-title">League insights</div><div id="lb-side-fixtures" aria-live="off"></div><div class="lb-side-pips" id="lb-side-pips"></div><div class="clubhouse-stats-footer" id="lb-side-summary"><div><small>PLAYERS</small><strong id="lb-side-players">—</strong></div><div><small>MATCHUPS</small><strong id="lb-side-matchups">—</strong></div><div><small>RESULTS</small><strong id="lb-side-results">—</strong></div></div></aside>
  </div>
  <div class="lb-tv-footer"><div><span class="lb-tv-dot"></span> LIVE LEAGUE BOARD</div><div id="lb-update">Updating automatically</div><div class="lb-tv-progress" id="lb-pips"></div></div>
- <div class="lb-nhl lb-sports-wire" aria-label="Major league scores and PGA Tour updates">
-  <div class="lb-nhl-label"><strong>SPORTS WIRE</strong><span id="lb-nhl-heading">NHL · NBA · NFL · MLB · PGA</span></div>
+ <div class="lb-nhl lb-sports-wire" aria-label="Major league scores, published betting odds, PGA Tour and World Curling updates">
+  <div class="lb-nhl-label"><strong>SPORTS WIRE</strong><span id="lb-nhl-heading">NHL · NBA · NFL · PGA · CURLING</span></div>
   <div class="lb-nhl-track" id="lb-nhl-track"><div class="lb-nhl-fallback">Loading the sports wire…</div></div>
  </div>
 </div>
@@ -494,7 +512,7 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_FykX_e9jJtcI63tyQXytxQ_FiCyIiyM
 const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let profiles=[], matchups=[], games=[], seasons=[];
+let profiles=[], matchups=[], games=[], seasons=[],meetups=[];
 let isAdmin=false, isOwner=false, pendingSchedule=null, countdownInterval=null;
 let currentUserId=null, selectedProfileId=null, lbSlideIndex=0, lbRotateTimer=null, lbClockTimer=null;
 let weeklyUnavailable=[],blackoutWeeks=[],scheduleChanges=[],currentWeekSeasonId=null;
@@ -519,7 +537,7 @@ function matchupScore(m){const gs=matchupGames(m);return {a:gs.filter(g=>g.winne
 function leaderboard(){return profiles.map(p=>{const mine=matchups.filter(m=>(countsInStandings(m)||m.resolution==='freebie'||m.resolution==='double_forfeit')&&(m.player1_id===p.id||m.player2_id===p.id));let wins=0,losses=0,gameWins=0,freebies=0;mine.forEach(m=>{if(m.resolution==='freebie'){if(m.forfeit_winner_id===p.id){wins++;freebies++;}else losses++;return;}if(m.resolution==='double_forfeit'){losses++;return;}const gs=matchupGames(m),a=gs.filter(g=>g.winner_id===m.player1_id).length,b=gs.filter(g=>g.winner_id===m.player2_id).length;gameWins+=gs.filter(g=>g.winner_id===p.id).length;if((m.player1_id===p.id&&a>b)||(m.player2_id===p.id&&b>a))wins++;else if(a!==b)losses++;});return {...p,wins,losses,gameWins,freebies};}).sort((a,b)=>b.wins-a.wins||b.gameWins-a.gameWins||a.display_name.localeCompare(b.display_name));}
 function renderStandings(){const rows=leaderboard();$('standings').innerHTML=rows.length?`<div class="table-scroll"><table><thead><tr><th>#</th><th>Player</th><th class="num">W</th><th class="num">L</th><th class="num">Game wins</th><th class="num">Freebies</th></tr></thead><tbody>${rows.map((p,i)=>`<tr><td>${i+1}</td><td>${playerLink(p.id)}</td><td class="num">${p.wins}</td><td class="num">${p.losses}</td><td class="num">${p.gameWins}</td><td class="num">${p.freebies}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Players will appear here once they have registered.</div>';}
 function matchStatus(m){if(m.resolution==='freebie')return `Freebie win — ${playerName(m.forfeit_winner_id)}`;if(m.resolution==='double_forfeit')return 'Double forfeit';if(m.status==='played_ahead'&&!countsInStandings(m))return 'Played ahead · counts in week '+m.week_number;if(countsInStandings(m))return 'Completed';return m.status==='scheduled'?'Scheduled':m.status==='missed'?'Awaiting admin decision':m.status;}
-function renderMatchups(){const list=matchups.slice().sort((a,b)=>a.week_number-b.week_number||new Date(a.deadline)-new Date(b.deadline));$('matchups').innerHTML=list.length?`<div class="table-scroll"><table><thead><tr><th>Week</th><th>Matchup</th><th>3 sports</th><th>Deadline</th><th>Status</th></tr></thead><tbody>${list.map(m=>`<tr><td>${m.week_number}</td><td>${playerLink(m.player1_id)} vs ${playerLink(m.player2_id)}</td><td>${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' '))}</td><td>${m.deadline?new Date(m.deadline).toLocaleString():'—'}</td><td>${esc(matchStatus(m))}${m.resolution==='normal'&&countsInStandings(m)?` · ${matchupScore(m).a}–${matchupScore(m).b}`:''}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No matchups have been published yet.</div>';}
+function renderMatchups(){const list=matchups.slice().sort((a,b)=>a.week_number-b.week_number||new Date(a.deadline)-new Date(b.deadline));$('matchups').innerHTML=list.length?`<div class="table-scroll"><table><thead><tr><th>Week</th><th>Matchup</th><th>3 sports</th><th>Deadline</th><th>Status</th></tr></thead><tbody>${list.map(m=>`<tr><td>${m.week_number}</td><td>${playerLink(m.player1_id)} vs ${playerLink(m.player2_id)}</td><td>${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' '))}</td><td>${m.deadline?new Date(m.deadline).toLocaleString():'—'}</td><td>${appointmentFor(m.id)?.confirmed_at?`<span class="tag">📅 ${esc(meetupWhen(appointmentFor(m.id).starts_at))}</span> · `:''}${esc(matchStatus(m))}${m.resolution==='normal'&&countsInStandings(m)?` · ${matchupScore(m).a}–${matchupScore(m).b}`:''}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No matchups have been published yet.</div>';}
 function renderProfile(){if(!selectedProfileId)return;const p=profiles.find(p=>p.id===selectedProfileId);if(!p){$('profile-content').textContent='Player is no longer registered.';return;}
   const mine=matchups.filter(m=>countsInStandings(m)&&(m.player1_id===p.id||m.player2_id===p.id));const stats=SPORTS.map(s=>{const gs=mine.flatMap(m=>matchupGames(m)).filter(g=>g.discipline===s);return {sport:s,w:gs.filter(g=>g.winner_id===p.id).length,l:gs.filter(g=>g.winner_id&&g.winner_id!==p.id).length};});
   const row=leaderboard().find(x=>x.id===p.id);$('profile-content').innerHTML=`<h3>${esc(p.display_name)}</h3><p class="muted">${row.wins} matchup wins (${row.freebies} freebies) · ${row.losses} losses · ${row.gameWins} game wins</p><div class="player-stats">${stats.map(st=>`<div class="stat-tile"><div>${sportIcon[st.sport]} ${esc(st.sport)}</div><strong>${st.w}–${st.l}</strong><small>Wins – losses</small></div>`).join('')}</div>`;}
@@ -534,9 +552,9 @@ function renderCountdown(){
   tick();if(countdownInterval===null && d>Date.now())countdownInterval=setInterval(tick,1000);
 }
 async function loadPublic(){
- const [p,m,g,s,u,b]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status,submitted_by,submitted_at,resolution,forfeit_winner_id,resolved_at'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status'),client.from('league_weekly_unavailability').select('season_id,week_number,player_id'),client.from('league_blackout_weeks').select('season_id,week_number,reason')]);
+ const [p,m,g,s,u,b,meet]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status,submitted_by,submitted_at,resolution,forfeit_winner_id,resolved_at'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status'),client.from('league_weekly_unavailability').select('season_id,week_number,player_id'),client.from('league_blackout_weeks').select('season_id,week_number,reason'),client.from('league_matchup_meetups').select('matchup_id,starts_at,proposed_by,confirmed_by,confirmed_at')]);
  for(const r of [p,m,g,s,b])if(r.error)throw r.error;
- profiles=p.data||[];matchups=m.data||[];games=g.data||[];seasons=s.data||[];blackoutWeeks=b.data||[];weeklyUnavailable=u.error?[]:(u.data||[]);
+ profiles=p.data||[];matchups=m.data||[];games=g.data||[];seasons=s.data||[];blackoutWeeks=b.data||[];weeklyUnavailable=u.error?[]:(u.data||[]);meetups=meet.error?[]:(meet.data||[]);if(meet.error&&meet.error.code!=='42P01')console.warn('Meetup schedule loading:',meet.error.message);
  const active=seasons.find(x=>x.status==='active')||seasons[0];$('season-label').textContent=active?.name||'Season not yet published';
  renderStandings();renderMatchups();renderCountdown();renderProfile();renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
  if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();await loadScheduleLog();}else $('player-management-list').innerHTML='Administrator access required.';
@@ -702,6 +720,16 @@ $('save-correction').onclick=async()=>{
 };
 function showCorrectionMessage(msg,error=false){$('correction-message').className=error?'status error':'status';$('correction-message').textContent=msg;}
 function showScoreMessage(msg,error=false){$('score-message').className=error?'status error':'status';$('score-message').textContent=msg;}
+function appointmentFor(id){return meetups.find(x=>x.matchup_id===id);}
+function meetupWhen(timestamp){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Edmonton',weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true,timeZoneName:'short'}).format(new Date(timestamp));}
+function meetupInputDate(timestamp){if(!timestamp)return '';const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Edmonton',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(timestamp));const v=Object.fromEntries(parts.map(x=>[x.type,x.value]));return `${v.year}-${v.month}-${v.day}T${v.hour}:${v.minute}`;}
+function meetupControls(m){
+ if(m.status!=='scheduled')return '';
+ const a=appointmentFor(m.id),confirmed=!!a?.confirmed_at;
+ const label=a?`<div class="meetup-status ${confirmed?'confirmed':''}">${confirmed?'✓ CONFIRMED MATCH TIME':'⏳ TIME PROPOSED — AWAITING OPPONENT'}<strong>${esc(meetupWhen(a.starts_at))}</strong>${!confirmed?`<small>Proposed by ${esc(playerName(a.proposed_by))}</small>`:''}</div>`:'<div class="notice">Set a match time so the crew can watch. Both players must agree before it appears on TV.</div>';
+ const approve=a&&!confirmed&&a.proposed_by!==currentUserId?`<button type="button" data-meetup-confirm="${esc(m.id)}">Confirm this time</button>`:'';
+ return `<div class="meetup-tools"><strong>📅 Schedule your matchup</strong>${label}<form data-meetup-propose="${esc(m.id)}"><label for="meetup-${esc(m.id)}">Propose a date and time (Calgary / Mountain time)</label><input id="meetup-${esc(m.id)}" type="datetime-local" required value="${esc(meetupInputDate(a?.starts_at))}"><button type="submit" class="secondary">${a?'Propose a different time':'Propose match time'}</button></form>${approve}</div>`;
+}
 function renderMyMatchups(){
  const box=$('my-matchups');if(!box)return;
  if(!currentUserId){box.innerHTML='<div class="empty">Sign in to submit results.</div>';return;}
@@ -714,11 +742,30 @@ function renderMyMatchups(){
    const summary=finished?`<div class="match-result">Final: ${playerName(m.player1_id)} ${matchupScore(m).a} – ${matchupScore(m).b} ${playerName(m.player2_id)}</div>`:'';
    return `<div class="match-card" data-match-id="${esc(m.id)}"><div class="match-head"><strong>Week ${m.week_number}: ${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}</strong><span class="tag ${future?'warning':''}">${esc(matchStatus(m))}</span></div>
    <div class="match-sports">${esc(gs.map(g=>`${sportIcon[g.discipline]||''} ${g.discipline}`).join(' · '))}</div>${summary}
+   ${meetupControls(m)}
    ${m.submitted_at?`<div class="notice">Submitted ${new Date(m.submitted_at).toLocaleString()} by ${esc(playerName(m.submitted_by))}</div>`:''}
    ${canSubmit?`<div class="notice">${future?'Playing early? You can submit now. The result will count when Week '+m.week_number+' starts.':'Enter the winner of each assigned game.'}</div><form class="score-form" data-match-id="${esc(m.id)}">${gs.map(g=>`<div class="score-row"><label for="winner-${esc(g.id)}">${sportIcon[g.discipline]||''} ${esc(g.discipline)}</label><select required id="winner-${esc(g.id)}" data-game-id="${esc(g.id)}"><option value="">Choose winner</option><option value="${esc(m.player1_id)}">${esc(playerName(m.player1_id))}</option><option value="${esc(m.player2_id)}">${esc(playerName(m.player2_id))}</option></select></div>`).join('')}<button type="submit" style="margin-top:12px">Submit all 3 games</button></form>`:!finished?`<div class="notice">${expired?'Deadline passed. Contact an administrator.':gs.length!==3?'Matchup is missing its three assigned games. Contact an administrator.':'Score entry is closed.'}</div>`:''}</div>`;
  }).join('');
 }
+$('my-matchups').addEventListener('click',async e=>{
+ const b=e.target.closest('[data-meetup-confirm]');if(!b)return;
+ if(!confirm('Confirm this date and time? It will be shown publicly on the league website and TV display.'))return;
+ b.disabled=true;
+ try{const {error}=await client.rpc('confirm_league_meetup',{p_matchup_id:b.dataset.meetupConfirm});if(error)throw error;await loadPublic();showScoreMessage('Matchup confirmed and now visible on the league TV schedule.');}
+ catch(err){showScoreMessage(err.message||'Unable to confirm this time.',true);b.disabled=false;}
+});
 $('my-matchups').addEventListener('submit',async e=>{
+ const proposal=e.target.closest('form[data-meetup-propose]');if(proposal){
+  e.preventDefault();const matchId=proposal.dataset.meetupPropose,input=proposal.querySelector('input[type="datetime-local"]');
+  if(!input.value)return showScoreMessage('Choose a date and time.',true);
+  const when=new Date(input.value);if(!Number.isFinite(when.getTime()))return showScoreMessage('Invalid date/time.',true);
+  // Browser local time is used for datetime-local; explain to Calgary users if browser in a different zone.
+  const b=proposal.querySelector('button');b.disabled=true;
+  try{const {error}=await client.rpc('propose_league_meetup',{p_matchup_id:matchId,p_starts_at:when.toISOString()});if(error)throw error;await loadPublic();showScoreMessage('Time proposed. Your opponent can confirm it from their player dashboard.');}
+  catch(err){showScoreMessage(err.message||'Could not propose the time.',true);b.disabled=false;}
+  return;
+ }
+
  const form=e.target.closest('form.score-form');if(!form)return;e.preventDefault();
  const m=matchups.find(x=>x.id===form.dataset.matchId);if(!m)return;
  const selections=Array.from(form.querySelectorAll('select[data-game-id]'));
@@ -757,6 +804,9 @@ function tvYesterday(date=new Date()){
 function tvTime(date=new Date()){return new Intl.DateTimeFormat('en-CA',{timeZone:TV_TZ,hour:'numeric',minute:'2-digit',hour12:true}).format(date);}
 function tvLongDate(date=new Date()){return new Intl.DateTimeFormat('en-CA',{timeZone:TV_TZ,weekday:'long',month:'long',day:'numeric'}).format(date);}
 function lbClock(deadline){const ms=Math.max(0,new Date(deadline).getTime()-Date.now());const days=Math.floor(ms/86400000),h=Math.floor(ms%86400000/3600000),min=Math.floor(ms%3600000/60000),sec=Math.floor(ms%60000/1000);return `${String(days).padStart(2,'0')}:${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;}
+function confirmedSchedule(){return matchups.filter(m=>m.status==='scheduled').map(m=>({m,a:appointmentFor(m.id)})).filter(x=>x.a?.confirmed_at&&new Date(x.a.starts_at).getTime()>Date.now()).sort((x,y)=>new Date(x.a.starts_at)-new Date(y.a.starts_at));}
+function sameCalgaryDay(iso){const f=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Edmonton',year:'numeric',month:'2-digit',day:'2-digit'});return f.format(new Date(iso))===f.format(new Date());}
+function confirmedMatchupCard(x){return `<div class="lb-side-upcoming"><strong>${esc(playerName(x.m.player1_id))}</strong> <span class="gold-vs">VS</span> <strong>${esc(playerName(x.m.player2_id))}</strong><small>📅 ${esc(meetupWhen(x.a.starts_at))} · Week ${x.m.week_number}</small><small>${esc(matchupGames(x.m).map(g=>sportIcon[g.discipline]||'').join(' '))}</small></div>`;}
 function tvScheduled(){return matchups.filter(m=>m.status==='scheduled' && m.deadline && new Date(m.deadline)>new Date()).sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));}
 function tvFixture(m){const sports=matchupGames(m).map(g=>`${sportIcon[g.discipline]||''} ${g.discipline}`).join(' · ');return `<div class="lb-tv-fixture"><div class="lb-tv-fixture-top"><span>WEEK ${m.week_number}</span><span>${new Date(m.deadline).toLocaleDateString('en-CA',{timeZone:TV_TZ,month:'short',day:'numeric'})}</span></div><div class="lb-tv-fixture-names">${esc(playerName(m.player1_id))}<span class="lb-tv-versus">VS</span>${esc(playerName(m.player2_id))}</div><div class="lb-tv-fixture-sports">${esc(sports||'Three sports assigned at publish')}</div></div>`;}
 // Curated playlist is loaded from /highlights.json so it can grow without editing index.html.
@@ -772,7 +822,7 @@ let highlightCatalog=FALLBACK_HIGHLIGHTS.slice();
 let activeHighlight=null, highlightSoundOn=false,sideSlideIndex=0;
 let tvVideoPlaying=false,tvVideoInitialized=false,tvLastHighlightPage=false;
 const HIGHLIGHT_HISTORY_KEY='turfcare-highlight-history-by-sport-v1';
-const SIDE_SECTIONS=['Leaderboard','Ping Pong','Leaderboard','Darts','Pool','Leaderboard','Air Hockey','Matchups','Overall leaders'];
+const SIDE_SECTIONS=['Leaderboard','Today confirmed','Ping Pong','Leaderboard','Upcoming confirmed','Darts','Pool','Leaderboard','Air Hockey','Matchups','Overall leaders'];
 const HIGHLIGHT_SPORTS=['Ping Pong','Darts','Pool','Air Hockey'];
 function readHighlightHistory(){
  try {
@@ -908,6 +958,9 @@ function renderLeagueSidebar(){
  if(section==='Leaderboard'){
   const ranked=leaderboard().slice(0,5);
   n.innerHTML=`<div class="lb-side-kicker">LEAGUE STANDINGS</div>${ranked.length?ranked.map((p,i)=>`<div class="lb-side-upcoming" style="display:flex;gap:10px;justify-content:space-between;align-items:baseline"><span><span style="color:#d7b56d">${i+1}.</span> ${esc(p.display_name)}</span><small style="white-space:nowrap">${p.wins}W · ${p.losses}L</small></div>`).join(''):'<div class="lb-side-empty">Players will appear here soon.</div>'}`;
+ }else if(section==='Today confirmed'||section==='Upcoming confirmed'){
+  const rows=confirmedSchedule().filter(x=>section==='Today confirmed'?sameCalgaryDay(x.a.starts_at):!sameCalgaryDay(x.a.starts_at)).slice(0,3);
+  n.innerHTML=`<div class="lb-side-kicker">${section==='Today confirmed'?"TODAY'S CONFIRMED MATCHUPS":'UPCOMING CONFIRMED MATCHUPS'}</div>${rows.length?rows.map(confirmedMatchupCard).join(''):`<div class="lb-side-empty">${section==='Today confirmed'?'No confirmed matchups today.':'No future times confirmed yet.'}</div>`}`;
  }else if(section==='Overall leaders'){
   const ranked=leaderboard().filter(p=>p.wins+p.losses>0).sort((a,b)=>b.wins/(b.wins+b.losses)-a.wins/(a.wins+a.losses)||b.wins-a.wins);
   const top=ranked[0];
@@ -1048,8 +1101,8 @@ const SPORTS_LEAGUES=[
  {id:'nhl',label:'NHL',icon:'🏒'},
  {id:'nba',label:'NBA',icon:'🏀'},
  {id:'nfl',label:'NFL',icon:'🏈'},
- {id:'mlb',label:'MLB',icon:'⚾'},
- {id:'pga',label:'PGA TOUR',icon:'⛳'}
+ {id:'pga',label:'PGA TOUR',icon:'⛳'},
+ {id:'curling',label:'CURLING',icon:'🥌'}
 ];
 let sportsLastKey='',sportsLastAttempt=0,sportsLoading=false;
 function sportsMode(now=new Date()){
@@ -1057,15 +1110,35 @@ function sportsMode(now=new Date()){
  return {date:early?tvYesterday(now):tvLocalISO(now),mode:early?'finals':'upcoming'};
 }
 function sportsScoreText(v){return v===null||v===undefined||v===''?'–':String(v);}
+function gameOddsHtml(g){
+ const o=g.odds;
+ if(!o||typeof o!=='object')return '';
+ const prices=[];
+ const american=value=>{
+  if(value===undefined||value===null||value==='')return null;
+  const n=Number(value);
+  return Number.isFinite(n)?(n>0?'+'+n:String(n)):null;
+ };
+ const away=american(o.awayMoneyline),home=american(o.homeMoneyline);
+ if(away!==null&&home!==null)prices.push(`ML ${esc(g.away||'Away')} ${esc(away)} / ${esc(g.home||'Home')} ${esc(home)}`);
+ else if(o.details)prices.push(esc(String(o.details).slice(0,36)));
+ if(!prices.length&&o.overUnder!=null&&Number.isFinite(Number(o.overUnder)))prices.push(`O/U ${esc(String(o.overUnder))}`);
+ if(!prices.length)return '';
+ const provider=o.provider?` · ${esc(String(o.provider).slice(0,35))}`:'';
+ return `<small class="wire-odds" title="Published sportsbook lines; may change">${prices.join(' · ')}${provider}</small>`;
+}
 function sportsGameItem(g,mode){
  const away=esc(g.away||'Away'),home=esc(g.home||'Home');
  if(g.state==='final'){
   return `<span class="wire-game">${away} <strong>${esc(sportsScoreText(g.awayScore))}–${esc(sportsScoreText(g.homeScore))}</strong> ${home} <small>FINAL</small></span>`;
  }
  if(g.state==='live'){
-  return `<span class="wire-game">${away} <strong>${esc(sportsScoreText(g.awayScore))}–${esc(sportsScoreText(g.homeScore))}</strong> ${home} <small class="wire-live">${esc(g.detail||'LIVE')}</small></span>`;
+  return `<span class="wire-game">${away} <strong>${esc(sportsScoreText(g.awayScore))}–${esc(sportsScoreText(g.homeScore))}</strong> ${home} <small class="wire-live">${esc(g.detail||'LIVE')}</small>${gameOddsHtml(g)}</span>`;
  }
- return `<span class="wire-game">${away} <span class="wire-at">vs</span> ${home} <strong>${tvTime(new Date(g.date))}</strong><small>MT</small></span>`;
+ return `<span class="wire-game">${away} <span class="wire-at">vs</span> ${home} <strong>${tvTime(new Date(g.date))}</strong><small>MT</small>${gameOddsHtml(g)}</span>`;
+}
+function sportsCurlingItem(){
+ return `<span class="wire-game wire-curling"><strong>WORLD CURLING</strong><span>Official draws, live scores &amp; results</span><a class="wire-curling-link" href="https://livescores.worldcurling.org/" target="_blank" rel="noopener noreferrer">View results ↗</a></span>`;
 }
 function sportsPgaItem(g){
  const title=esc(g.name||'PGA Tour');
@@ -1080,7 +1153,7 @@ async function refreshSportsWire(force=false){
  if(!force&&sportsLastKey===key&&now-sportsLastAttempt<SPORTS_REFRESH_MS)return;
  sportsLastKey=key;sportsLastAttempt=now;sportsLoading=true;
  const track=$('lb-nhl-track');
- $('lb-nhl-heading').textContent=mode==='finals'?"YESTERDAY'S FINALS · PGA UPDATE":"TODAY'S GAMES · MOUNTAIN TIME";
+ $('lb-nhl-heading').textContent=mode==='finals'?"YESTERDAY'S FINALS · CURLING":"TODAY'S GAMES · ODDS WHERE AVAILABLE";
  try{
   const resp=await fetch(`/api/sports?date=${encodeURIComponent(date)}`,{cache:'no-store'});
   if(!resp.ok)throw new Error('Sports data temporarily unavailable');
@@ -1090,7 +1163,7 @@ async function refreshSportsWire(force=false){
    const entry=data.leagues[league.id]||{},games=Array.isArray(entry.games)?entry.games:[];
    const usable=league.id==='pga'?games:games.filter(g=>
     mode==='finals'?g.state==='final':g.state==='upcoming'||g.state==='live');
-   const values=usable.slice(0,league.id==='pga'?1:18).map(g=>league.id==='pga'?sportsPgaItem(g):sportsGameItem(g,mode));
+   const values=league.id==='curling'?[sportsCurlingItem()]:usable.slice(0,league.id==='pga'?1:18).map(g=>league.id==='pga'?sportsPgaItem(g):sportsGameItem(g,mode));
    const content=entry.error?'Scores unavailable':league.id==='pga'? 'No current PGA event':mode==='finals'?'No final games yesterday':'No games scheduled';
    return `<span class="wire-league"><span class="wire-icon">${league.icon}</span>${league.label}</span>${values.length?values.join('<span class="wire-sep">◆</span>'):`<span class="wire-empty">${content}</span>`}`;
   });
@@ -1132,7 +1205,7 @@ tvFullscreenButton.addEventListener('click',async()=>{
 document.addEventListener('fullscreenchange',syncTVFullscreenButton);
 syncTVFullscreenButton();
 
-$('exit-display').addEventListener('click',exitClubhouseDisplay);
+
 document.addEventListener('keydown',event=>{
   if(event.key==='Escape'&&!document.fullscreenElement&&document.body.classList.contains('display-mode')){
     event.preventDefault();

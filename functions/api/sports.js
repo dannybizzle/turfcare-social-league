@@ -1,8 +1,8 @@
 // Cloudflare Pages Function: /api/sports?date=YYYY-MM-DD
-// NHL / NBA / NFL / MLB / PGA Tour. Public ESPN scoreboard endpoints.
+// NHL / NBA / NFL / PGA Tour. Public ESPN scoreboard endpoints.
 // This function is read-only and does not touch your Supabase database.
 const FEEDS={
- nhl:'hockey/nhl',nba:'basketball/nba',nfl:'football/nfl',mlb:'baseball/mlb',pga:'golf/pga'
+ nhl:'hockey/nhl',nba:'basketball/nba',nfl:'football/nfl',pga:'golf/pga'
 };
 const ALLOWED=/^20\d{2}-(0[1-9]|1[0-2])-([0-2]\d|3[01])$/;
 const localDay=(iso)=>{
@@ -24,7 +24,19 @@ function normalizeGame(event){
  const type=comp.status?.type||event.status?.type||{};
  const state=type.completed?'final':type.state==='in'?'live':'upcoming';
  const date=event.date||comp.date||'';
- return {date,state,away:away.team?.abbreviation||away.team?.shortDisplayName||'Away',
+ const rawOdds=Array.isArray(comp.odds)?comp.odds[0]:null;
+ const ml=rawOdds?.awayTeamOdds?.moneyLine??rawOdds?.awayTeamOdds?.moneyline??null;
+ const mh=rawOdds?.homeTeamOdds?.moneyLine??rawOdds?.homeTeamOdds?.moneyline??null;
+ const cleanMoney=x=>{
+  const candidate=typeof x==='object'&&x!==null?(x.value??x.displayValue??null):x;
+  return candidate!=null&&candidate!==''&&Number.isFinite(Number(candidate))?Number(candidate):null;
+ };
+ const odds=rawOdds?{
+  awayMoneyline:cleanMoney(ml),homeMoneyline:cleanMoney(mh),
+  details:rawOdds.details||'',overUnder:rawOdds.overUnder??null,
+  provider:rawOdds.provider?.name||rawOdds.provider?.displayName||''
+ }:null;
+ return {odds,date,state,away:away.team?.abbreviation||away.team?.shortDisplayName||'Away',
    home:home.team?.abbreviation||home.team?.shortDisplayName||'Home',
    awayScore:scoreOf(away),homeScore:scoreOf(home),detail:type.shortDetail||type.detail||''};
 }
