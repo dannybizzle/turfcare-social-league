@@ -472,6 +472,12 @@ body.display-mode .tsg-crew-quote{font:800 clamp(21px,2.85vw,49px)/1.15 'Cinzel'
 /* V20: registration deadline notice that matches the broadcast presentation */
 body.display-mode .tsg-registration-deadline{margin-top:clamp(8px,1.1vh,18px);padding:8px 16px;border-top:1px solid #c9a55b7a;border-bottom:1px solid #c9a55b7a;color:#f2d188;font:800 clamp(13px,1.35vw,25px)/1.2 'Barlow Condensed',sans-serif;letter-spacing:.13em;text-transform:uppercase;text-align:center}
 body.display-mode .tsg-registration-footnote{color:#aebfaf;font:600 clamp(10px,.9vw,15px)/1.35 'Manrope',sans-serif;text-align:center;max-width:720px}
+
+/* Turfcare preseason preview is clearly labelled and automatically ends at kickoff. */
+body.display-mode .tsg-demo-flag{display:inline-block;vertical-align:middle;margin-left:7px;padding:2px 7px;border:1px solid #d7b56d80;border-radius:5px;background:#d7b56d1b;color:#ffda93;font:800 clamp(9px,.7vw,12px)/1.3 'Barlow Condensed',sans-serif;letter-spacing:.1em;white-space:nowrap}
+body.display-mode .tsg-demo-row{display:flex;gap:10px;justify-content:space-between;align-items:baseline}
+body.display-mode .tsg-demo-row small{white-space:nowrap}
+body.display-mode .tsg-demo-rank{color:#d7b56d}
 </style>
 </head>
 <body>
@@ -1113,10 +1119,54 @@ function tvSportStats(sport){
  }).filter(p=>p.played>0).sort((a,b)=>b.pct-a.pct||b.played-a.played||b.wins-a.wins);
  return tallies;
 }
+// DISPLAY-ONLY INAUGURAL SEASON PREVIEW.
+// Fictional scores and match times with famous golfer names; NEVER written to Supabase.
+// Automatically switches back to authentic league data at 7:00 AM MST, Nov 23, 2026.
+const GOLF_DEMO_PLAYERS=[
+ {name:'Scottie Scheffler',wins:8,losses:1,gameWins:22},
+ {name:'Rory McIlroy',wins:7,losses:2,gameWins:20},
+ {name:'Tiger Woods',wins:6,losses:3,gameWins:18},
+ {name:'Nelly Korda',wins:5,losses:4,gameWins:16},
+ {name:'Brooks Koepka',wins:4,losses:5,gameWins:14},
+ {name:'Lydia Ko',wins:4,losses:5,gameWins:13},
+ {name:'Jordan Spieth',wins:3,losses:6,gameWins:11},
+ {name:'Jon Rahm',wins:2,losses:7,gameWins:9}
+];
+const GOLF_DEMO_MATCHUPS=[
+ {a:'Scottie Scheffler',b:'Rory McIlroy',when:'Mon · Nov 23 · 12:30 PM',sports:'🏓 🎯 🎱'},
+ {a:'Tiger Woods',b:'Brooks Koepka',when:'Tue · Nov 24 · 10:00 AM',sports:'🎯 🎱 🏒'},
+ {a:'Nelly Korda',b:'Lydia Ko',when:'Wed · Nov 25 · 1:00 PM',sports:'🏓 🎱 🏒'},
+ {a:'Jordan Spieth',b:'Jon Rahm',when:'Thu · Nov 26 · 11:30 AM',sports:'🏓 🎯 🏒'}
+];
+function golferPreviewActive(){return Date.now()<SEASON_KICKOFF_AT;}
+function demoKicker(text){return `<div class="lb-side-kicker">${text} <span class="tsg-demo-flag">SAMPLE DATA</span></div>`;}
+function demoLeagueSidebar(section){
+ const n=$('lb-side-fixtures');if(!n)return;
+ const player=GOLF_DEMO_PLAYERS,fixtures=GOLF_DEMO_MATCHUPS;
+ if(section==='Leaderboard'){
+  n.innerHTML=demoKicker('LEAGUE STANDINGS')+player.slice(0,5).map((p,i)=>`<div class="lb-side-upcoming tsg-demo-row"><span><span class="tsg-demo-rank">${i+1}.</span> ${esc(p.name)}</span><small>${p.wins}W · ${p.losses}L</small></div>`).join('');
+ }else if(section==='Today confirmed'||section==='Upcoming confirmed'){
+  const selected=section==='Today confirmed'?fixtures.slice(0,2):fixtures.slice(1,4);
+  n.innerHTML=demoKicker(section==='Today confirmed'?'CONFIRMED MATCH TIMES':'UPCOMING CONFIRMED MATCHUPS')+selected.map(f=>`<div class="lb-side-upcoming"><strong>${esc(f.a)}</strong> <span class="gold-vs">VS</span> <strong>${esc(f.b)}</strong><small>📅 ${esc(f.when)} · Example</small><small>${f.sports}</small></div>`).join('');
+ }else if(section==='Overall leaders'){
+  const p=player[0],pct=Math.round(p.wins/(p.wins+p.losses)*100);
+  n.innerHTML=demoKicker('OVERALL WIN PERCENTAGE')+`<div class="lb-side-focus">${esc(p.name)}</div><div class="lb-side-detail">${pct}% win rate · ${p.wins}W–${p.losses}L</div><div class="lb-side-bar"><i style="width:${pct}%"></i></div><div class="lb-side-metric-grid"><div class="lb-side-stat"><b>${p.gameWins}</b><small>Sport wins</small></div><div class="lb-side-stat"><b>9</b><small>Matchups played</small></div></div>`;
+ }else if(SPORTS.includes(section)){
+  const leaders={'Ping Pong':[player[1],7,8],Darts:[player[2],8,9],Pool:[player[3],6,7],'Air Hockey':[player[4],7,9]};
+  const [p,w,total]=leaders[section],pct=Math.round(w/total*100);
+  n.innerHTML=demoKicker(`${sportIcon[section]||'🏆'} ${esc(section.toUpperCase())} LEADER`)+`<div class="lb-side-focus">${esc(p.name)}</div><div class="lb-side-detail">${pct}% win rate · ${w}W–${total-w}L</div><div class="lb-side-bar"><i style="width:${pct}%"></i></div><div class="lb-side-upcoming">${esc(player[5].name)} · 71%<small>5 wins · 7 games played</small></div>`;
+ }else{
+  n.innerHTML=demoKicker('UPCOMING MATCHUPS')+fixtures.slice(0,3).map(f=>`<div class="lb-side-upcoming"><strong>${esc(f.a)}</strong> <span class="gold-vs">VS</span> <strong>${esc(f.b)}</strong><small>${esc(f.when)} · ${f.sports}</small></div>`).join('');
+ }
+}
 function renderLeagueSidebar(){
  if(!document.body.classList.contains('display-mode'))return;
  const n=$('lb-side-fixtures');if(!n)return;
  const index=sideSlideIndex%SIDE_SECTIONS.length,section=SIDE_SECTIONS[index];
+ if(golferPreviewActive()){
+  $('lb-side-pips').innerHTML=SIDE_SECTIONS.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join('');
+  demoLeagueSidebar(section);return;
+ }
  $('lb-side-pips').innerHTML=SIDE_SECTIONS.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join('');
  if(section==='Leaderboard'){
   const ranked=leaderboard().slice(0,5);
@@ -1205,11 +1255,12 @@ function tvDeadlineColor(deadline){
 }
 function updateClubhouseHeader(deadline){
  const n=$('lb-header-deadline');if(n){n.textContent=deadline?lbClock(deadline):'NO ACTIVE WEEK';n.style.color=deadline?tvDeadlineColor(deadline):'#c8d98b';n.style.textShadow=deadline&&new Date(deadline).getTime()-Date.now()<24*3600000?'0 0 18px #d93c3977':'0 0 12px #d7b56d22';}
- const active=profiles.filter(p=>p.is_player).length;
+ const demo=golferPreviewActive();
+ const active=demo?GOLF_DEMO_PLAYERS.length:profiles.filter(p=>p.is_player).length;
  const finished=matchups.filter(m=>m.status==='completed'||m.status==='played_ahead'||m.resolution==='freebie'||m.resolution==='double_forfeit').length;
  if($('lb-side-players'))$('lb-side-players').textContent=active;
- if($('lb-side-matchups'))$('lb-side-matchups').textContent=matchups.length;
- if($('lb-side-results'))$('lb-side-results').textContent=finished;
+ if($('lb-side-matchups'))$('lb-side-matchups').textContent=demo?GOLF_DEMO_MATCHUPS.length:matchups.length;
+ if($('lb-side-results'))$('lb-side-results').textContent=demo?27:finished;
  updateCurrentWeatherBadge();
 }
 function renderLunchroom(){
