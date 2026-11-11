@@ -304,6 +304,10 @@ body.display-mode .lb-weather-hour{border-color:#d7b56d55;background:linear-grad
 body.display-mode .clubhouse-deadline strong{transition:color 1.2s linear,text-shadow 1.2s linear}
 body.display-mode .lb-tv-footer{border-top:1px solid #d7b56d33}
 @media(prefers-reduced-motion:reduce){body.display-mode .clubhouse-deadline strong{transition:none}}
+
+/* Independent clip and sport navigation in the highlight player */
+body.display-mode .lb-highlight-controls{flex-wrap:wrap;justify-content:flex-end;max-width:min(95%,650px)}
+body.display-mode .lb-highlight-controls button{white-space:nowrap;font-size:clamp(12px,.94vw,17px);padding:10px 13px}
 </style>
 </head>
 <body>
@@ -698,38 +702,46 @@ const FALLBACK_HIGHLIGHTS=[
  {sport:'Air Hockey',id:'U_m09J-m4Nc',title:'Carter Cup highlights',credit:'Centerline Pro Air Hockey'}
 ];
 const HIGHLIGHT_ICONS={'Ping Pong':'🏓','Darts':'🎯','Pool':'🎱','Air Hockey':'🏒'};
-let highlightCatalog=FALLBACK_HIGHLIGHTS.slice(), highlightQueue=[], highlightLastId=null;
+let highlightCatalog=FALLBACK_HIGHLIGHTS.slice();
 let activeHighlight=null, highlightSoundOn=false,sideSlideIndex=0;
 let tvVideoPlaying=false,tvVideoInitialized=false,tvLastHighlightPage=false;
-const HIGHLIGHT_HISTORY_KEY='turfcare-highlight-history-v2';
+const HIGHLIGHT_HISTORY_KEY='turfcare-highlight-history-by-sport-v1';
 const SIDE_SECTIONS=['Leaderboard','Ping Pong','Leaderboard','Darts','Pool','Leaderboard','Air Hockey','Matchups','Overall leaders'];
+const HIGHLIGHT_SPORTS=['Ping Pong','Darts','Pool','Air Hockey'];
 function readHighlightHistory(){
- try{const state=JSON.parse(localStorage.getItem(HIGHLIGHT_HISTORY_KEY)||'{}');return {used:Array.isArray(state.used)?state.used:[],last:typeof state.last==='string'?state.last:null};}
- catch{return {used:[],last:null};}
+ try {
+  const state=JSON.parse(localStorage.getItem(HIGHLIGHT_HISTORY_KEY)||'{}');
+  return state && typeof state==='object' ? state : {};
+ } catch { return {}; }
 }
-function saveHighlightHistory(state){try{localStorage.setItem(HIGHLIGHT_HISTORY_KEY,JSON.stringify(state));}catch{}}
-function shuffleHighlightQueue(){
- const history=readHighlightHistory();
- const availableIds=new Set(highlightCatalog.map(v=>v.id));
- let used=history.used.filter(id=>availableIds.has(id));
- let unseen=highlightCatalog.filter(v=>!used.includes(v.id));
- if(!unseen.length){used=[];unseen=highlightCatalog.slice();}
- // Fisher-Yates shuffle; the last item is the first played.
- for(let i=unseen.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[unseen[i],unseen[j]]=[unseen[j],unseen[i]];}
- const last=highlightLastId||history.last;
- if(unseen.length>1&&unseen[unseen.length-1].id===last){const j=unseen.findIndex(x=>x.id!==last);[unseen[j],unseen[unseen.length-1]]=[unseen[unseen.length-1],unseen[j]];}
- highlightQueue=unseen;
+function saveHighlightHistory(state){
+ try {localStorage.setItem(HIGHLIGHT_HISTORY_KEY,JSON.stringify(state));}catch{}
 }
-function nextHighlight(){
- if(!highlightQueue.length)shuffleHighlightQueue();
- const h=highlightQueue.pop();if(!h)return null;
- const history=readHighlightHistory();
- const allIds=new Set(highlightCatalog.map(v=>v.id));
- let used=history.used.filter(id=>allIds.has(id));
- if(used.length>=allIds.size)used=[];
- if(!used.includes(h.id))used.push(h.id);
- saveHighlightHistory({used,last:h.id});highlightLastId=h.id;
- return h;
+function chooseRandom(list){
+ if(!list.length)return null;
+ return list[Math.floor(Math.random()*list.length)];
+}
+// History is independent for each sport. Even after a page reload, every
+// available clip in that sport is selected before the sport's list repeats.
+function nextHighlight(sport=null){
+ const availableSports=HIGHLIGHT_SPORTS.filter(s=>highlightCatalog.some(v=>v.sport===s));
+ if(!availableSports.length)return null;
+ const requested=availableSports.includes(sport)?sport:chooseRandom(availableSports);
+ const candidates=highlightCatalog.filter(v=>v.sport===requested);
+ const histories=readHighlightHistory();
+ const record=histories[requested] && typeof histories[requested]==='object' ? histories[requested] : {};
+ const ids=new Set(candidates.map(v=>v.id));
+ let used=Array.isArray(record.used)?record.used.filter(id=>ids.has(id)):[];
+ let unseen=candidates.filter(v=>!used.includes(v.id));
+ if(!unseen.length){used=[];unseen=candidates.slice();}
+ const last=activeHighlight?.sport===requested?activeHighlight.id:record.last;
+ if(unseen.length>1 && unseen.some(v=>v.id!==last))unseen=unseen.filter(v=>v.id!==last);
+ const chosen=chooseRandom(unseen);
+ if(!chosen)return null;
+ if(!used.includes(chosen.id))used.push(chosen.id);
+ histories[requested]={used,last:chosen.id};
+ saveHighlightHistory(histories);
+ return chosen;
 }
 async function loadHighlightPlaylist(){
  try{
@@ -744,7 +756,7 @@ async function loadHighlightPlaylist(){
   }).map(v=>({sport:v.sport,id:v.id,title:String(v.title||'Sports highlight'),credit:String(v.credit||'YouTube')}));
   if(!valid.length)throw new Error('Playlist has no valid entries');
   highlightCatalog=valid;
-  highlightQueue=[]; // Rebuild using saved play history without restarting the active clip.
+  // Keep per-sport play history; do not restart the current clip.
   console.info('Loaded',valid.length,'unique highlight entries');
  }catch(e){console.warn('Using bundled highlight fallback:',e);}
 }
@@ -792,19 +804,26 @@ function setVideoPanelVisible(visible){
   else{youtubeSoundCommand('pauseVideo');}
  }
 }
-function highlightMarkup(){
- activeHighlight=nextHighlight();
+function highlightMarkup(sport=null){
+ activeHighlight=nextHighlight(sport);
  highlightSoundOn=false;
  if(!activeHighlight)return '<div class="lb-tv-empty">Highlights are being prepared.</div>';
  const h=activeHighlight;
  const params=new URLSearchParams({autoplay:'1',mute:'1',playsinline:'1',controls:'0',rel:'0',iv_load_policy:'3',fs:'0',enablejsapi:'1',origin:location.origin});
- return `<div class="lb-highlight-shell"><div class="lb-highlight-header"><h2>${HIGHLIGHT_ICONS[h.sport]||'🏆'} ${esc(h.sport)} highlights</h2><span>SHUFFLED PLAYLIST · MUTED BY DEFAULT</span></div><div class="lb-highlight-screen" id="clubhouse-highlight-screen"><iframe id="clubhouse-highlight-iframe" title="${esc(h.sport)} highlight video" src="https://www.youtube-nocookie.com/embed/${h.id}?${params.toString()}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" loading="eager"></iframe><div class="lb-highlight-controls"><button type="button" id="highlight-sound-button" aria-pressed="false" onclick="toggleHighlightSound()">🔇 Turn sound on</button><button type="button" id="highlight-next-button" onclick="skipHighlight()">⏭ Next clip</button></div></div><div class="lb-highlight-credit">${esc(h.title)} · ${esc(h.credit)} · ${highlightCatalog.length} available clips · Embedding and autoplay depend on YouTube/browser permissions</div></div>`;
+ return `<div class="lb-highlight-shell"><div class="lb-highlight-header"><h2>${HIGHLIGHT_ICONS[h.sport]||'🏆'} ${esc(h.sport)} highlights</h2><span>RANDOM CLIPS BY SPORT · MUTED BY DEFAULT</span></div><div class="lb-highlight-screen" id="clubhouse-highlight-screen"><iframe id="clubhouse-highlight-iframe" title="${esc(h.sport)} highlight video" src="https://www.youtube-nocookie.com/embed/${h.id}?${params.toString()}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" loading="eager"></iframe><div class="lb-highlight-controls"><button type="button" id="highlight-sound-button" aria-pressed="false" onclick="toggleHighlightSound()">🔇 Turn sound on</button><button type="button" id="highlight-next-button" onclick="skipHighlight()">⏭ Next clip</button><button type="button" id="highlight-next-sport-button" onclick="skipHighlightSport()">🔀 Next sport</button></div></div><div class="lb-highlight-credit">${esc(h.title)} · ${esc(h.credit)} · ${highlightCatalog.length} available clips · Embedding and autoplay depend on YouTube/browser permissions</div></div>`;
 }
 function skipHighlight(){
  if(LB_TABS[lbSlideIndex%LB_TABS.length]!=='Highlights')return;
  // Re-render just this video; left/right weather and schedule rotation is unchanged.
  const pane=document.getElementById('tv-highlight-pane');
- if(pane){pane.innerHTML=highlightMarkup();listenToHighlightIframe();}
+ if(pane){pane.innerHTML=highlightMarkup(activeHighlight?.sport);listenToHighlightIframe();}
+}
+function skipHighlightSport(){
+ if(LB_TABS[lbSlideIndex%LB_TABS.length]!=='Highlights')return;
+ const available=HIGHLIGHT_SPORTS.filter(s=>s!==activeHighlight?.sport && highlightCatalog.some(v=>v.sport===s));
+ if(!available.length)return;
+ const pane=document.getElementById('tv-highlight-pane');
+ if(pane){pane.innerHTML=highlightMarkup(chooseRandom(available));listenToHighlightIframe();}
 }
 function tvSportStats(sport){
  const relevant=matchups.filter(m=>countsInStandings(m) && m.resolution!=='freebie' && m.resolution!=='double_forfeit');
