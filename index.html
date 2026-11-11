@@ -39,6 +39,34 @@ body.display-mode .lb-screen{display:flex;position:fixed;inset:0;padding:0;gap:0
 .lb-nhl{min-height:clamp(80px,10.2vh,145px);display:flex;align-items:stretch;background:#f7f5e9;color:#152e26;border-top:5px solid #c8d98b;flex-shrink:0;max-width:100vw}.lb-nhl-label{background:#c8d98b;flex:0 0 auto;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:3px;padding:12px clamp(15px,1.8vw,34px);min-width:clamp(145px,15vw,260px)}.lb-nhl-label strong{font-size:clamp(17px,1.75vw,32px);font-weight:950;line-height:1}.lb-nhl-label span{font-size:clamp(10px,1.05vw,17px);font-weight:850;text-transform:uppercase;letter-spacing:.07em}.lb-nhl-track{position:relative;overflow:hidden;flex:1;display:flex;align-items:center;min-width:0}.lb-nhl-items{display:flex;align-items:center;gap:clamp(18px,2.6vw,55px);width:max-content;white-space:nowrap;padding-left:25px;animation:lb-ticker-scroll var(--nhl-duration,75s) linear infinite}.lb-nhl-track:hover .lb-nhl-items{animation-play-state:paused}.lb-nhl-item{display:flex;align-items:center;gap:clamp(9px,.9vw,18px);font-size:clamp(18px,1.6vw,29px);font-weight:900;white-space:nowrap}.lb-nhl-item em{font-style:normal;font-size:clamp(12px,1vw,18px);font-weight:800;color:#476258}.lb-nhl-score{color:#0d5038;font-variant-numeric:tabular-nums}.lb-nhl-divider{color:#b9c3b5;font-weight:400}.lb-nhl-fallback{padding:24px;font-size:clamp(16px,1.45vw,25px);font-weight:750;color:#486254}@keyframes lb-ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}@media(max-width:1000px){.lb-tv-main{grid-template-columns:minmax(0,1.6fr) minmax(220px,1fr)}.lb-tv-secondary{gap:6px}}@media(max-height:700px){.lb-tv-header{padding-top:9px;padding-bottom:9px}.lb-tv-main{padding-top:10px;padding-bottom:10px}.lb-tv-primary,.lb-tv-secondary{padding:14px}.lb-tv-section-title{margin-bottom:8px}.lb-tv-fixture{padding:8px;margin-bottom:7px}.lb-tv-leader{padding:4px 0}}@media(max-width:720px){body.display-mode{overflow:auto}body.display-mode .lb-screen{position:relative;min-height:100dvh;overflow:auto}.lb-tv-main{grid-template-columns:1fr}.lb-tv-secondary{display:none}.lb-tv-header{padding:15px}.lb-tv-meta{display:none}.lb-nhl-label{min-width:120px}.lb-tv-footer{padding:6px 15px}.lb-tv-leader{padding:10px 0}}
 @media(prefers-reduced-motion:reduce){.lb-nhl-items{animation:none}}
 
+
+/* Clubhouse Live 2.0 — visually active, Fire TV friendly */
+.lb-tv-header{background:linear-gradient(100deg,#09291f,#143f30 62%,#0a271e);border-bottom:2px solid #c8d98b42}
+.lb-tv-logo{box-shadow:0 0 30px #c8d98b33,0 10px 26px #0005;transform:rotate(-4deg)}
+.lb-tv-primary{position:relative;background:linear-gradient(150deg,#174637,#0b2920 75%);border-color:#c8d98b46}
+.lb-tv-primary:before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#c8d98b,#d7b56d,#c8d98b);opacity:.85}
+.lb-tv-section-title{letter-spacing:-.025em;text-shadow:0 3px 14px #0003}
+.lb-tv-slide{animation:clubhouse-reveal .65s ease-out both}
+@keyframes clubhouse-reveal{from{opacity:.22;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.lb-tv-side-metric{border-color:#d7b56d6b;background:linear-gradient(135deg,#d7b56d24,#c8d98b13)}
+.lb-tv-dot{box-shadow:0 0 12px #c8d98b99;animation:clubhouse-pulse 2.4s ease-in-out infinite}
+@keyframes clubhouse-pulse{50%{opacity:.35}}
+.lb-tv-progress i.on{box-shadow:0 0 12px #c8d98b77}
+.lb-sports-wire{min-height:clamp(90px,11.7vh,152px);background:#f5f3e9;border-top:5px solid #d7b56d;box-shadow:0 -6px 24px #0004}
+.lb-sports-wire .lb-nhl-label{min-width:clamp(160px,17vw,295px);background:linear-gradient(150deg,#d7b56d,#e6d39d);border-right:2px solid #0f38262a}
+.lb-sports-wire .lb-nhl-label strong{font-size:clamp(20px,2.0vw,36px);letter-spacing:.04em}
+.lb-sports-wire .lb-nhl-label span{font-size:clamp(10px,.8vw,16px);letter-spacing:.06em}
+.wire-marquee{padding-left:0;gap:0;animation:lb-ticker-scroll var(--nhl-duration,125s) linear infinite}
+.wire-pass{display:inline-flex;align-items:center;gap:clamp(18px,2vw,40px);padding:0 clamp(18px,2vw,40px);flex-shrink:0}
+.wire-league{display:inline-flex;align-items:center;gap:10px;background:#173d32;color:#f5f3e9;border-radius:10px;padding:10px 15px;font-size:clamp(15px,1.45vw,27px);font-weight:950;letter-spacing:.06em}
+.wire-icon{font-size:1.08em}.wire-game{display:inline-flex;align-items:center;gap:10px;font-size:clamp(17px,1.55vw,30px);font-weight:800;color:#143f30;white-space:nowrap}
+.wire-game strong{color:#0d5138;font-variant-numeric:tabular-nums;font-weight:950}
+.wire-game small{font-size:.67em;color:#6c746c;font-weight:900;letter-spacing:.04em}
+.wire-game .wire-live{color:#b53d2c}.wire-at{font-size:.7em;color:#52685c}
+.wire-leaders{font-size:.82em;color:#234e39}.wire-gap,.wire-sep{color:#adb7a7}.wire-section-break{color:#d4ab52;font-size:clamp(18px,1.5vw,28px)}
+.wire-empty{font-size:clamp(16px,1.35vw,23px);font-weight:700;color:#65756b;white-space:nowrap}
+@media(max-height:700px){.lb-sports-wire{min-height:80px}.lb-tv-header{padding-top:8px;padding-bottom:8px}}
+@media(prefers-reduced-motion:reduce){.lb-tv-slide,.lb-tv-dot{animation:none}}
 </style>
 </head>
 <body>
@@ -141,9 +169,9 @@ body.display-mode .lb-screen{display:flex;position:fixed;inset:0;padding:0;gap:0
   <aside class="lb-tv-secondary"><div class="lb-tv-side-head">UPCOMING</div><div class="lb-tv-side-title">Around the league</div><div id="lb-side-fixtures"></div><div class="lb-tv-side-metric"><label>Weekly deadline</label><strong id="lb-side-countdown">--:--:--</strong></div></aside>
  </div>
  <div class="lb-tv-footer"><div><span class="lb-tv-dot"></span> LIVE LEAGUE BOARD</div><div id="lb-update">Updating automatically</div><div class="lb-tv-progress" id="lb-pips"></div></div>
- <div class="lb-nhl" aria-label="NHL scores and schedule">
-  <div class="lb-nhl-label"><strong>🏒 NHL</strong><span id="lb-nhl-heading">Yesterday's finals</span></div>
-  <div class="lb-nhl-track" id="lb-nhl-track"><div class="lb-nhl-fallback">Loading NHL scores…</div></div>
+ <div class="lb-nhl lb-sports-wire" aria-label="Major league scores and PGA Tour updates">
+  <div class="lb-nhl-label"><strong>SPORTS WIRE</strong><span id="lb-nhl-heading">NHL · NBA · NFL · MLB · PGA</span></div>
+  <div class="lb-nhl-track" id="lb-nhl-track"><div class="lb-nhl-fallback">Loading the sports wire…</div></div>
  </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -441,52 +469,79 @@ function renderLunchroom(){
  $('lb-side-countdown').textContent=primaryDeadline?lbClock(primaryDeadline):'No deadline';
  $('lb-update').textContent='Updated '+tvTime(now);
 }
-const NHL_REFRESH_MS=5*60*1000;
-let nhlLastKey='',nhlLastAttempt=0;
-function nhlMode(now=new Date()){
- const p=tvDateParts(now),beforeNoon=Number(p.hour)<12;
- return {date:beforeNoon?tvYesterday(now):tvLocalISO(now),mode:beforeNoon?'finals':'upcoming'};
+const SPORTS_REFRESH_MS=5*60*1000;
+const SPORTS_LEAGUES=[
+ {id:'nhl',label:'NHL',icon:'🏒'},
+ {id:'nba',label:'NBA',icon:'🏀'},
+ {id:'nfl',label:'NFL',icon:'🏈'},
+ {id:'mlb',label:'MLB',icon:'⚾'},
+ {id:'pga',label:'PGA TOUR',icon:'⛳'}
+];
+let sportsLastKey='',sportsLastAttempt=0,sportsLoading=false;
+function sportsMode(now=new Date()){
+ const p=tvDateParts(now),early=Number(p.hour)<12;
+ return {date:early?tvYesterday(now):tvLocalISO(now),mode:early?'finals':'upcoming'};
 }
-async function refreshNhlTicker(force=false){
- if(!document.body.classList.contains('display-mode'))return;
- const {date,mode}=nhlMode();const key=mode+'-'+date,now=Date.now();
- if(!force && key===nhlLastKey && now-nhlLastAttempt<NHL_REFRESH_MS)return;
- nhlLastKey=key;nhlLastAttempt=now;
- $('lb-nhl-heading').textContent=mode==='finals'?"Yesterday's results":"Today's schedule · MT";
+function sportsScoreText(v){return v===null||v===undefined||v===''?'–':String(v);}
+function sportsGameItem(g,mode){
+ const away=esc(g.away||'Away'),home=esc(g.home||'Home');
+ if(g.state==='final'){
+  return `<span class="wire-game">${away} <strong>${esc(sportsScoreText(g.awayScore))}–${esc(sportsScoreText(g.homeScore))}</strong> ${home} <small>FINAL</small></span>`;
+ }
+ if(g.state==='live'){
+  return `<span class="wire-game">${away} <strong>${esc(sportsScoreText(g.awayScore))}–${esc(sportsScoreText(g.homeScore))}</strong> ${home} <small class="wire-live">${esc(g.detail||'LIVE')}</small></span>`;
+ }
+ return `<span class="wire-game">${away} <span class="wire-at">vs</span> ${home} <strong>${tvTime(new Date(g.date))}</strong><small>MT</small></span>`;
+}
+function sportsPgaItem(g){
+ const title=esc(g.name||'PGA Tour');
+ const detail=esc(g.detail||'Tournament update');
+ const leaders=Array.isArray(g.leaders)?g.leaders.slice(0,3):[];
+ const leaderText=leaders.map(p=>`${esc(p.name)} ${esc(p.score||'')}`).join('<span class="wire-gap"> · </span>');
+ return `<span class="wire-game wire-golf"><strong>${title}</strong> <small>${detail}</small>${leaderText?` <span class="wire-leaders">${leaderText}</span>`:''}</span>`;
+}
+async function refreshSportsWire(force=false){
+ if(!document.body.classList.contains('display-mode')||sportsLoading)return;
+ const {date,mode}=sportsMode(),key=mode+'-'+date,now=Date.now();
+ if(!force&&sportsLastKey===key&&now-sportsLastAttempt<SPORTS_REFRESH_MS)return;
+ sportsLastKey=key;sportsLastAttempt=now;sportsLoading=true;
  const track=$('lb-nhl-track');
+ $('lb-nhl-heading').textContent=mode==='finals'?"YESTERDAY'S FINALS · PGA UPDATE":"TODAY'S GAMES · MOUNTAIN TIME";
  try{
-  const response=await fetch(`/api/nhl?date=${encodeURIComponent(date)}`,{cache:'no-store'});
-  if(!response.ok)throw new Error('NHL data request failed');
-  const data=await response.json();if(!Array.isArray(data.games))throw new Error('Unexpected NHL response');
-  let games=data.games;
-  if(mode==='finals')games=games.filter(g=>['FINAL','OFF'].includes(g.gameState));
-  else games=games.filter(g=>['FUT','PRE'].includes(g.gameState));
-  const rows=games.map(g=>{
-   const away=String(g.awayTeam?.abbrev||'AWAY'),home=String(g.homeTeam?.abbrev||'HOME');
-   if(mode==='finals'){
-    const a=Number.isFinite(g.awayTeam?.score)?g.awayTeam.score:'–',h=Number.isFinite(g.homeTeam?.score)?g.homeTeam.score:'–';
-    const overtime=['OT','SO'].includes(g.gameOutcome?.lastPeriodType)?g.gameOutcome.lastPeriodType:'';
-    return `<div class="lb-nhl-item"><span>${esc(away)}</span><span class="lb-nhl-score">${a} – ${h}</span><span>${esc(home)}</span><em>${overtime?esc(overtime):'FINAL'}</em></div>`;
-   }
-   return `<div class="lb-nhl-item"><span>${esc(away)} <em>at</em> ${esc(home)}</span><span class="lb-nhl-score">${tvTime(new Date(g.startTimeUTC))}</span><em>MT</em></div>`;
+  const resp=await fetch(`/api/sports?date=${encodeURIComponent(date)}`,{cache:'no-store'});
+  if(!resp.ok)throw new Error('Sports data temporarily unavailable');
+  const data=await resp.json();
+  if(!data||typeof data.leagues!=='object')throw new Error('Unexpected sports feed');
+  const sections=SPORTS_LEAGUES.map(league=>{
+   const entry=data.leagues[league.id]||{},games=Array.isArray(entry.games)?entry.games:[];
+   const usable=league.id==='pga'?games:games.filter(g=>
+    mode==='finals'?g.state==='final':g.state==='upcoming'||g.state==='live');
+   const values=usable.slice(0,league.id==='pga'?1:18).map(g=>league.id==='pga'?sportsPgaItem(g):sportsGameItem(g,mode));
+   const content=entry.error?'Scores unavailable':league.id==='pga'? 'No current PGA event':mode==='finals'?'No final games yesterday':'No games scheduled';
+   return `<span class="wire-league"><span class="wire-icon">${league.icon}</span>${league.label}</span>${values.length?values.join('<span class="wire-sep">◆</span>'):`<span class="wire-empty">${content}</span>`}`;
   });
-  if(!rows.length){track.innerHTML=`<div class="lb-nhl-fallback">${mode==='finals'?'No final NHL games yesterday.':'No more NHL games scheduled to start today.'}</div>`;return;}
-  const items=rows.join('<span class="lb-nhl-divider">✦</span>');
-  track.innerHTML=`<div class="lb-nhl-items" style="--nhl-duration:${Math.max(30,rows.length*9)}s">${items}<span class="lb-nhl-divider">✦</span>${items}<span class="lb-nhl-divider">✦</span></div>`;
- }catch(error){console.warn('NHL ticker:',error);track.innerHTML='<div class="lb-nhl-fallback">NHL updates unavailable — league scoreboard is still live.</div>';}
+  const payload=sections.join('<span class="wire-section-break">✦</span>');
+  // Two identical halves make a seamless continuous horizontal loop.
+  const one=`<span class="wire-pass">${payload}<span class="wire-section-break">✦</span></span>`;
+  const size=Math.max(85,sections.join('').length/90);
+  track.innerHTML=`<div class="lb-nhl-items wire-marquee" style="--nhl-duration:${Math.min(190,Math.round(size))}s">${one}${one}</div>`;
+ }catch(error){
+  console.warn('Sports wire:',error);
+  track.innerHTML='<div class="lb-nhl-fallback">Sports wire temporarily unavailable · Turfcare league display continues</div>';
+ }finally{sportsLoading=false;}
 }
 if(new URLSearchParams(location.search).get('display')==='1'){
  document.body.classList.add('display-mode');
- lbRotateTimer=setInterval(()=>{lbSlideIndex=(lbSlideIndex+1)%LB_TABS.length;renderLunchroom();},16000);
+ lbRotateTimer=setInterval(()=>{lbSlideIndex=(lbSlideIndex+1)%LB_TABS.length;renderLunchroom();},11000);
  lbClockTimer=setInterval(()=>{
   $('lb-local-time').textContent=tvTime();
   const node=$('lb-ticking-clock'),next=tvScheduled()[0];if(node&&next)node.textContent=lbClock(next.deadline);
   $('lb-side-countdown').textContent=next?lbClock(next.deadline):'No deadline';
-  const mode=nhlMode();if(mode.mode+'-'+mode.date!==nhlLastKey)refreshNhlTicker(true);
+  const mode=sportsMode();if(mode.mode+'-'+mode.date!==sportsLastKey)refreshSportsWire(true);
  },1000);
  setInterval(()=>loadPublic().catch(console.error),60000);
- setInterval(()=>refreshNhlTicker(),NHL_REFRESH_MS);
- refreshNhlTicker(true);
+ setInterval(()=>refreshSportsWire(),SPORTS_REFRESH_MS);
+ refreshSportsWire(true);
 }
 // Version 4: weekly availability and adjudicated forfeits.
 function showWeeklyMessage(message,error=false){const n=$('weekly-availability-message');n.className=error?'status error':'status';n.textContent=message;}
