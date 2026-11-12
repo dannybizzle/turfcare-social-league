@@ -1117,6 +1117,17 @@ body:not(.display-mode) .home-sport-tile:focus-visible{outline:3px solid #e4c071
 #tsg-rules-dialog .rules-note{background:#efe7d2;border-left:4px solid #bd9548;padding:11px 13px;border-radius:7px;font-size:13px;line-height:1.55}
 .admin-category-nav{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0 18px}.admin-category-nav button{border:1px solid #cbb98b;background:#eee9db;color:#173d32}.admin-category-nav button.active{background:#173d32;color:#fff;border-color:#173d32}.admin-category>.panel{margin:0 0 16px}.admin-category .admin-grid{grid-template-columns:1fr}.admin-category #schedule-preview{max-height:70vh}.admin-category #rolling-generator{max-width:none}
 </style>
+<style id="tsg-v54-inbox-css">
+.tsg-inbox-count{display:inline-block;background:#9d352d;color:white;border-radius:12px;padding:1px 7px;font-size:12px;margin-left:3px}
+.tsg-inbox-tabs,.tsg-inbox-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.tsg-inbox-tabs button.active{background:#173d32;color:white}
+.tsg-inbox-item{border:1px solid #d6dacc;border-radius:12px;padding:16px;margin:12px 0;background:#fffef9}
+.tsg-inbox-heading{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}
+.tsg-inbox-item p{overflow-wrap:anywhere;margin:9px 0}
+.tsg-inbox-item textarea{display:block;width:100%;margin:6px 0 10px;padding:9px;border:1px solid #c9d1c6;border-radius:8px;font:inherit}
+.tsg-report-wrap{margin:12px 0 4px}.tsg-report-wrap button{font-size:.86rem}
+@media(max-width:620px){.tsg-inbox-heading{align-items:flex-start;flex-direction:column}.tsg-inbox-actions button{flex:1}}
+</style>
 </head>
 <body>
 <header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="home-nav-links"><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><a class="tsg-home-registration-cta" href="#tsg-registration" aria-controls="tsg-registration" aria-expanded="false">Register for the League</a></div><div class="home-hero-mark tsg-hero-crest" aria-label="The Glencoe crest"><img src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><i>FIVE SPORTS · ONE CREW</i></div></div></header>
@@ -1167,13 +1178,15 @@ body:not(.display-mode) .home-sport-tile:focus-visible{outline:3px solid #e4c071
 <section id="admin-area" class="hidden">
 <div class="section-head"><div><div class="eyebrow" style="color:var(--green2)">Organizer tools</div><h2>Administrator dashboard</h2></div><span class="muted">Admin access</span></div>
 <nav class="admin-category-nav" aria-label="Administration categories">
-<button type="button" class="secondary active" data-admin-category="overview">Overview</button>
+<button type="button" class="secondary active" data-admin-category="inbox">Inbox <span id="admin-inbox-count" class="tsg-inbox-count hidden">0</span></button>
+<button type="button" class="secondary" data-admin-category="overview">Overview</button>
 <button type="button" class="secondary" data-admin-category="players">Players</button>
 <button type="button" class="secondary" data-admin-category="scheduling">Scheduling</button>
 <button type="button" class="secondary" data-admin-category="availability">Availability</button>
 <button type="button" class="secondary" data-admin-category="results">Results</button>
 </nav>
-<div id="admin-category-overview" class="admin-category"></div>
+<div id="admin-category-inbox" class="admin-category"><section class="panel"><h3>Scheduling Inbox</h3><p class="muted">Reported matchup issues. Resolve or dismiss a report to remove it from the active inbox; history is preserved.</p><div class="tsg-inbox-tabs"><button type="button" id="tsg-inbox-open" class="secondary active">Open</button><button type="button" id="tsg-inbox-history" class="secondary">History</button><button type="button" id="tsg-inbox-refresh" class="secondary">Refresh</button></div><div id="tsg-inbox-items" role="region" aria-live="polite"><div class="empty">Loading reports…</div></div><div id="tsg-inbox-message" role="status" aria-live="polite"></div></section></div>
+<div id="admin-category-overview" class="admin-category hidden"></div>
 <div id="admin-category-players" class="admin-category hidden"></div>
 <div id="admin-category-scheduling" class="admin-category hidden"></div>
 <div id="admin-category-availability" class="admin-category hidden"></div>
@@ -1287,7 +1300,7 @@ let profiles=[], matchups=[], games=[], seasons=[],meetups=[];
 let isAdmin=false, isOwner=false, pendingSchedule=null, countdownInterval=null;
 let currentUserId=null, selectedProfileId=null, lbSlideIndex=0, lbRotateTimer=null, lbClockTimer=null;
 let weeklyUnavailable=[],blackoutWeeks=[],scheduleChanges=[],currentWeekSeasonId=null;
-let playerUnavailableDates=[],leagueBlackoutDates=[];
+let playerUnavailableDates=[],leagueBlackoutDates=[],leagueMatchupFlags=[],inboxHistoryMode=false,tsgInboxFirstOpen=true;
 const dayWeekIndex={player:0,adminPlayer:0,blackout:0};
 const calDate=d=>{const f=new Intl.DateTimeFormat('en-US',{timeZone:'America/Edmonton',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d);const x=Object.fromEntries(f.map(v=>[v.type,v.value]));return `${x.year}-${x.month}-${x.day}`;};
 const calMonday=d=>{const date=new Date(d+'T12:00:00Z');date.setUTCDate(date.getUTCDate()-((date.getUTCDay()+6)%7));return date.toISOString().slice(0,10);};
@@ -1332,6 +1345,66 @@ function renderCountdown(){
   const tick=()=>{const ms=Math.max(0,d-Date.now()),days=Math.floor(ms/86400000),hours=Math.floor(ms%86400000/3600000),mins=Math.floor(ms%3600000/60000),secs=Math.floor(ms%60000/1000);$('timer').innerHTML=[[days,'Days'],[hours,'Hours'],[mins,'Minutes'],[secs,'Seconds']].map(x=>`<div class="timebox"><strong>${String(x[0]).padStart(2,'0')}</strong><span>${x[1]}</span></div>`).join('');if(ms===0){clearInterval(countdownInterval);countdownInterval=null;}};
   tick();if(countdownInterval===null && d>Date.now())countdownInterval=setInterval(tick,1000);
 }
+// V54: staff reports + admin inbox. All writes are subject to Supabase RLS.
+async function loadLeagueFlags(){
+ if(!currentUserId){leagueMatchupFlags=[];renderLeagueInbox();return;}
+ const {data,error}=await client.from('league_matchup_flags').select('id,matchup_id,reported_by,reason,description,status,created_at,reviewed_by,reviewed_at,resolution_notes').order('created_at',{ascending:false}).limit(300);
+ if(error){console.warn('Scheduling reports:',error.message);if(isAdmin)$('tsg-inbox-items').innerHTML='<div class="empty">Unable to load reports: '+esc(error.message)+'</div>';return;}
+ leagueMatchupFlags=data||[];renderLeagueInbox();
+}
+function selectAdminCategory(name){
+ const button=document.querySelector(`[data-admin-category="${name}"]`);if(button)button.click();
+}
+function renderLeagueInbox(){
+ const box=$('tsg-inbox-items');if(!box)return;
+ const open=leagueMatchupFlags.filter(f=>f.status==='open');
+ const count=$('admin-inbox-count');count.textContent=String(open.length);count.classList.toggle('hidden',open.length===0);
+ if(!isAdmin)return;
+ if(tsgInboxFirstOpen){tsgInboxFirstOpen=false;selectAdminCategory(open.length?'inbox':'overview');}
+ $('tsg-inbox-open').classList.toggle('active',!inboxHistoryMode);
+ $('tsg-inbox-history').classList.toggle('active',inboxHistoryMode);
+ const list=leagueMatchupFlags.filter(f=>inboxHistoryMode?f.status!=='open':f.status==='open');
+ box.innerHTML=list.length?list.map(f=>{
+  const m=matchups.find(m=>m.id===f.matchup_id);
+  const heading=m?`Week ${m.week_number} · ${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}`:'Matchup unavailable';
+  const reason=({availability_conflict:'Availability conflict',scheduling_conflict:'Scheduling conflict',other:'Other issue'})[f.reason]||f.reason;
+  return `<article class="tsg-inbox-item"><div class="tsg-inbox-heading"><strong>${heading}</strong><span class="tag">${esc(f.status)}</span></div><div><b>${esc(reason)}</b> · Reported by ${esc(playerName(f.reported_by))}</div>${f.description?`<p>${esc(f.description)}</p>`:''}<small>Submitted ${esc(new Date(f.created_at).toLocaleString())}</small>${f.status==='open'?`<label for="tsg-note-${esc(f.id)}">Admin notes (optional)</label><textarea id="tsg-note-${esc(f.id)}" rows="2" maxlength="2000" placeholder="What was done to help?"></textarea><div class="tsg-inbox-actions"><button type="button" data-inbox-action="resolved" data-flag-id="${esc(f.id)}">Resolve & clear</button><button type="button" class="secondary" data-inbox-action="dismissed" data-flag-id="${esc(f.id)}">Dismiss & clear</button></div>`:`<p><b>Resolution:</b> ${esc(f.resolution_notes||'No notes recorded')}<br><small>Reviewed by ${esc(playerName(f.reviewed_by))} ${f.reviewed_at?'· '+esc(new Date(f.reviewed_at).toLocaleString()):''}</small></p><button type="button" class="secondary" data-inbox-action="open" data-flag-id="${esc(f.id)}">Reopen</button>`}</article>`;
+ }).join(''):`<div class="empty">${inboxHistoryMode?'No resolved or dismissed reports yet.':'Inbox clear. No open scheduling issues.'}</div>`;
+}
+$('tsg-inbox-open').addEventListener('click',()=>{inboxHistoryMode=false;renderLeagueInbox();});
+$('tsg-inbox-history').addEventListener('click',()=>{inboxHistoryMode=true;renderLeagueInbox();});
+$('tsg-inbox-refresh').addEventListener('click',loadLeagueFlags);
+$('tsg-inbox-items').addEventListener('click',async e=>{
+ const b=e.target.closest('[data-inbox-action]');if(!b||!isAdmin||!currentUserId)return;
+ const id=b.dataset.flagId,status=b.dataset.inboxAction;
+ if(!['resolved','dismissed','open'].includes(status))return;
+ if(status==='open'&&!confirm('Reopen this issue and return it to the active inbox?'))return;
+ const notes=$('tsg-note-'+id)?.value.trim()||null;
+ b.disabled=true;
+ const changes={status,reviewed_by:status==='open'?null:currentUserId,reviewed_at:status==='open'?null:new Date().toISOString(),resolution_notes:status==='open'?null:notes};
+ const {error}=await client.from('league_matchup_flags').update(changes).eq('id',id);
+ if(error){$('tsg-inbox-message').textContent='Could not update report: '+error.message;b.disabled=false;return;}
+ $('tsg-inbox-message').textContent=status==='open'?'Issue reopened.':'Issue '+status+' and cleared from the open inbox.';
+ await loadLeagueFlags();
+});
+$('my-matchups').addEventListener('click',async e=>{
+ const b=e.target.closest('[data-report-issue]');if(!b||!currentUserId)return;
+ const id=b.dataset.reportIssue;
+ const m=matchups.find(x=>x.id===id);
+ if(!m||![m.player1_id,m.player2_id].includes(currentUserId))return;
+ const existing=leagueMatchupFlags.some(f=>f.matchup_id===id&&f.reported_by===currentUserId&&f.status==='open');
+ if(existing){showScoreMessage('You already have an open report for this matchup. An administrator can review it.');return;}
+ const reason=prompt('Report issue: type 1 for availability conflict, 2 for scheduling conflict, or 3 for other.','2');
+ if(reason===null)return;
+ const selected=({'1':'availability_conflict','2':'scheduling_conflict','3':'other'})[reason.trim()];
+ if(!selected){showScoreMessage('Choose 1, 2 or 3 to report an issue.',true);return;}
+ const description=prompt('Briefly describe the problem for the admin inbox (optional):','');if(description===null)return;
+ b.disabled=true;
+ const {error}=await client.from('league_matchup_flags').insert({matchup_id:id,reported_by:currentUserId,reason:selected,description:description.trim().slice(0,2000)||null});
+ if(error){showScoreMessage('Could not send report: '+error.message,true);b.disabled=false;return;}
+ showScoreMessage('Scheduling issue sent to the Admin Inbox.');await loadLeagueFlags();b.disabled=false;
+});
+
 async function loadPublic(){
  const [p,m,g,s,u,b,meet]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner,is_approved'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status,submitted_by,submitted_at,resolution,forfeit_winner_id,resolved_at'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status'),client.from('league_weekly_unavailability').select('season_id,week_number,player_id'),client.from('league_blackout_weeks').select('season_id,week_number,reason'),client.from('league_matchup_meetups').select('matchup_id,starts_at,proposed_by,confirmed_by,confirmed_at')]);
  for(const r of [p,m,g,s,b])if(r.error)throw r.error;
@@ -1348,6 +1421,7 @@ async function loadPublic(){
  const active=seasons.find(x=>x.status==='active')||seasons[0];$('season-label').textContent=active?.name||'Season not yet published';
  renderStandings();renderMatchups();renderCountdown();renderProfile();renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
  if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();await loadScheduleLog();await loadPendingRegistrations();}else $('player-management-list').innerHTML='Administrator access required.';
+ if(currentUserId)await loadLeagueFlags();
  if(document.body.classList.contains('display-mode'))renderLunchroom();
 }
 async function refreshAuth(){
@@ -1361,9 +1435,10 @@ async function refreshAuth(){
  if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();}
  renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
  if(session)await loadPublic();
+ else {leagueMatchupFlags=[];renderLeagueInbox();}
 }
 (function setupAdminCategories(){
- const places={overview:$('admin-category-overview'),players:$('admin-category-players'),scheduling:$('admin-category-scheduling'),availability:$('admin-category-availability'),results:$('admin-category-results')};
+ const places={inbox:$('admin-category-inbox'),overview:$('admin-category-overview'),players:$('admin-category-players'),scheduling:$('admin-category-scheduling'),availability:$('admin-category-availability'),results:$('admin-category-results')};
  const seasonGrid=$('season-setup-grid');
  const generator=$('rolling-generator');
  if(seasonGrid&&generator){seasonGrid.removeChild(generator);places.overview.appendChild(seasonGrid);places.scheduling.appendChild(generator);}
@@ -1614,6 +1689,7 @@ function renderMyMatchups(){
    return `<div class="match-card" data-match-id="${esc(m.id)}"><div class="match-head"><strong>Week ${m.week_number}: ${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}</strong><span class="tag ${future?'warning':''}">${esc(matchStatus(m))}</span></div>
    <div class="match-sports">${esc(gs.map(g=>`${sportIcon[g.discipline]||''} ${g.discipline}`).join(' · '))}</div>${summary}
    ${meetupControls(m)}
+   <div class="tsg-report-wrap"><button type="button" class="secondary" data-report-issue="${esc(m.id)}">⚑ Report a scheduling issue</button></div>
    ${m.submitted_at?`<div class="notice">Submitted ${new Date(m.submitted_at).toLocaleString()} by ${esc(playerName(m.submitted_by))}</div>`:''}
    ${canSubmit?`<div class="notice">${future?'Playing early? You can submit now. The result will count when Week '+m.week_number+' starts.':'Enter the winner of each assigned game.'}</div><form class="score-form" data-match-id="${esc(m.id)}">${gs.map(g=>`<div class="score-row"><label for="winner-${esc(g.id)}">${sportIcon[g.discipline]||''} ${esc(g.discipline)}</label><select required id="winner-${esc(g.id)}" data-game-id="${esc(g.id)}"><option value="">Choose winner</option><option value="${esc(m.player1_id)}">${esc(playerName(m.player1_id))}</option><option value="${esc(m.player2_id)}">${esc(playerName(m.player2_id))}</option></select></div>`).join('')}<button type="submit" style="margin-top:12px">Submit all 3 games</button></form>`:!finished?`<div class="notice">${expired?'Deadline passed. Contact an administrator.':gs.length!==3?'Matchup is missing its three assigned games. Contact an administrator.':'Score entry is closed.'}</div>`:''}</div>`;
  }).join('');
