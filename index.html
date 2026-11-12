@@ -760,6 +760,24 @@ body:not(.display-mode) .tsg-beer-tile{overflow:hidden;}
 .day-opponent-note{font-size:.83rem;margin:9px 0;padding:10px;background:#f6f0dc;border:1px solid #dfd1a5;border-radius:9px;color:#51431f}
 @media(max-width:700px){.day-admin-toolbar,.admin-week-grid{grid-template-columns:1fr}.day-calendar-grid{gap:4px}.day-cell{min-height:68px;padding:6px 2px}.day-cell .day-name{font-size:.65rem}.day-cell .day-num{font-size:1rem}.day-cell .day-state{font-size:.57rem}}
 .admin-category-nav{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0 18px}.admin-category-nav button{border:1px solid #cbb98b;background:#eee9db;color:#173d32}.admin-category-nav button.active{background:#173d32;color:#fff;border-color:#173d32}.admin-category>.panel{margin:0 0 16px}.admin-category .admin-grid{grid-template-columns:1fr}.admin-category #schedule-preview{max-height:70vh}.admin-category #rolling-generator{max-width:none}
+
+/* V53 — invisible touch targets for the independently rotating right panel.
+   Keep the top heading, progress pips and bottom stats unobstructed. */
+body.display-mode .lb-tv-secondary{position:relative}
+body.display-mode .tsg-side-tap{
+ position:absolute;top:17%;bottom:17%;width:12%;min-width:34px;
+ z-index:5;margin:0;padding:0;border:0;border-radius:0;
+ background:transparent!important;box-shadow:none!important;opacity:0;
+ cursor:pointer;touch-action:manipulation;
+}
+body.display-mode .tsg-side-tap-prev{left:0}
+body.display-mode .tsg-side-tap-next{right:0}
+body.display-mode .tsg-side-tap:focus-visible{opacity:1;outline:2px solid #e7c574;outline-offset:-4px}
+@media(hover:none){body.display-mode .tsg-side-tap{min-width:42px;width:15%}}
+@media(prefers-reduced-motion:no-preference){
+ body.display-mode .lb-side-upcoming,body.display-mode .lb-side-focus{animation:tsg-side-soft-in .25s ease-out both}
+ @keyframes tsg-side-soft-in{from{opacity:.6;transform:translateY(3px)}to{opacity:1;transform:none}}
+}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1249,7 +1267,7 @@ body:not(.display-mode) .home-sport-tile:focus-visible{outline:3px solid #e4c071
  </div>
  <div class="lb-tv-main">
   <section class="lb-tv-primary"><div class="lb-tv-eyebrow" id="lb-eyebrow">LEAGUE LIVE</div><div id="lb-slide" class="lb-tv-slide"></div></section>
-  <aside class="lb-tv-secondary"><div class="lb-tv-side-head"><span class="tsg-season-star">✦</span> 2026–2027 INAUGURAL SEASON</div><div id="lb-side-fixtures" aria-live="off"></div><div class="lb-side-pips" id="lb-side-pips"></div><div class="clubhouse-stats-footer" id="lb-side-summary"><div><small>PLAYERS</small><strong id="lb-side-players">—</strong></div><div><small>MATCHUPS</small><strong id="lb-side-matchups">—</strong></div><div><small>RESULTS</small><strong id="lb-side-results">—</strong></div></div></aside>
+  <aside class="lb-tv-secondary"><div class="lb-tv-side-head"><span class="tsg-season-star">✦</span> 2026–2027 INAUGURAL SEASON</div><div id="lb-side-fixtures" aria-live="off"></div><div class="lb-side-pips" id="lb-side-pips"></div><button type="button" class="tsg-side-tap tsg-side-tap-prev" id="tv-side-prev" aria-label="Previous right-panel slide" title="Previous right-panel slide"></button><button type="button" class="tsg-side-tap tsg-side-tap-next" id="tv-side-next" aria-label="Next right-panel slide" title="Next right-panel slide"></button><div class="clubhouse-stats-footer" id="lb-side-summary"><div><small>PLAYERS</small><strong id="lb-side-players">—</strong></div><div><small>MATCHUPS</small><strong id="lb-side-matchups">—</strong></div><div><small>RESULTS</small><strong id="lb-side-results">—</strong></div></div></aside>
  </div>
  <div class="lb-tv-footer"><div id="lb-update">Updating automatically</div><div class="lb-tv-progress" id="lb-pips"></div></div>
  <div class="lb-nhl lb-sports-wire" aria-label="Major league scores, published betting odds, PGA Tour and World Curling updates">
@@ -1778,10 +1796,18 @@ const HIGHLIGHT_HISTORY_KEY='turfcare-highlight-history-by-sport-v1';
 const SIDE_SECTIONS=['Leaderboard','Overall leaders','Ping Pong','Darts','Today confirmed','Pool','Air Hockey','Beer Pong','Leaderboard','Overall leaders','Upcoming confirmed','Matchups'];
 const SIDE_SECTION_DURATIONS={'Leaderboard':30000,'Overall leaders':25000,'Ping Pong':15000,'Darts':15000,'Pool':15000,'Air Hockey':15000,'Beer Pong':15000,'Today confirmed':16000,'Upcoming confirmed':16000,'Matchups':16000};
 const sideSectionDuration=()=>SIDE_SECTION_DURATIONS[SIDE_SECTIONS[sideSlideIndex%SIDE_SECTIONS.length]]||15000;
-function startSidebarRotation(){
- const advance=()=>{if(!document.body.classList.contains('display-mode'))return;sideSlideIndex=(sideSlideIndex+1)%SIDE_SECTIONS.length;renderLeagueSidebar();setTimeout(advance,sideSectionDuration());};
- setTimeout(advance,sideSectionDuration());
+let sideRotateTimer=null;
+function scheduleSidebarRotation(){
+ clearTimeout(sideRotateTimer);
+ sideRotateTimer=setTimeout(()=>advanceSidebarSlide(1),sideSectionDuration());
 }
+function advanceSidebarSlide(direction){
+ if(!document.body.classList.contains('display-mode'))return;
+ sideSlideIndex=(sideSlideIndex+direction+SIDE_SECTIONS.length)%SIDE_SECTIONS.length;
+ renderLeagueSidebar();
+ scheduleSidebarRotation();
+}
+function startSidebarRotation(){scheduleSidebarRotation();}
 const HIGHLIGHT_SPORTS=['Ping Pong','Darts','Pool','Air Hockey'];
 function readHighlightHistory(){
  try {
@@ -2140,12 +2166,15 @@ function updateClubhouseHeader(deadline){
   n.style.color=target?tvDeadlineColor(target):'#c8d98b';
   n.style.textShadow=target&&new Date(target).getTime()-now<24*3600000?'0 0 18px #d93c3977':'0 0 12px #d7b56d22';
  }
- const demo=golferPreviewActive();
- const active=demo?GOLF_DEMO_PLAYERS.length:profiles.filter(p=>p.is_player).length;
- const finished=matchups.filter(m=>m.status==='completed'||m.status==='played_ahead'||m.resolution==='freebie'||m.resolution==='double_forfeit').length;
+ // The persistent TV footer always reflects live, approved league records.
+ // Pre-season sample standings remain clearly labelled within their own panels.
+ const active=profiles.filter(p=>p.is_player===true&&p.is_approved===true).length;
+ const seasonId=tvSidebarSeason()?.season?.id;
+ const seasonMatchups=seasonId?matchups.filter(m=>m.season_id===seasonId):[];
+ const finished=seasonMatchups.filter(m=>m.status==='completed'||m.status==='played_ahead'||m.resolution==='freebie'||m.resolution==='double_forfeit').length;
  if($('lb-side-players'))$('lb-side-players').textContent=active;
- if($('lb-side-matchups'))$('lb-side-matchups').textContent=demo?GOLF_DEMO_MATCHUPS.length:matchups.length;
- if($('lb-side-results'))$('lb-side-results').textContent=demo?27:finished;
+ if($('lb-side-matchups'))$('lb-side-matchups').textContent=seasonMatchups.length;
+ if($('lb-side-results'))$('lb-side-results').textContent=finished;
  updateCurrentWeatherBadge();
 }
 function renderLunchroom(){
@@ -2383,6 +2412,8 @@ if(new URLSearchParams(location.search).get('display')==='1'){
  fetchTVWeather();
  setInterval(fetchTVWeather,WEATHER_REFRESH_MS);
  startSidebarRotation();
+ document.getElementById('tv-side-prev')?.addEventListener('click',()=>advanceSidebarSlide(-1));
+ document.getElementById('tv-side-next')?.addEventListener('click',()=>advanceSidebarSlide(1));
  lbClockTimer=setInterval(()=>{
   $('lb-local-time').textContent=tvTime();
   const node=$('lb-ticking-clock'),next=tvScheduled()[0];if(node&&next)node.textContent=lbClock(next.deadline);
