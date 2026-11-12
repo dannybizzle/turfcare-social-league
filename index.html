@@ -2034,7 +2034,9 @@ function renderLeagueSidebar(){
  const index=sideSlideIndex%SIDE_SECTIONS.length,section=SIDE_SECTIONS[index];
  const seasonInfo=tvSidebarSeason(), seasonId=seasonInfo?.season?.id, historical=!!seasonInfo?.history;
  const historyTag=historical?` <span class="tsg-demo-flag">${esc(seasonInfo.season.name)} · PREVIOUS SEASON</span>`:'';
- if(golferPreviewActive()){
+ // Use real Supabase records for scheduled and confirmed matchups even before kickoff.
+ // Only standings / sport leaders retain the explicitly labelled pre-season sample data.
+ if(golferPreviewActive() && !['Today confirmed','Upcoming confirmed','Matchups'].includes(section)){
   $('lb-side-pips').innerHTML=SIDE_SECTIONS.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join('');
   demoLeagueSidebar(section);return;
  }
