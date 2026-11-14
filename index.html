@@ -1128,6 +1128,47 @@ body:not(.display-mode) .home-sport-tile:focus-visible{outline:3px solid #e4c071
 .tsg-report-wrap{margin:12px 0 4px}.tsg-report-wrap button{font-size:.86rem}
 @media(max-width:620px){.tsg-inbox-heading{align-items:flex-start;flex-direction:column}.tsg-inbox-actions button{flex:1}}
 </style>
+<style id="tsg-v56-mobile-css">
+/* V56 mobile-first player homepage. TV mode is deliberately untouched. */
+body:not(.display-mode) .tsg-v56-actions{margin:16px 0 20px;padding:20px;border:1px solid #d6cba9;border-radius:18px;background:linear-gradient(145deg,#fffdf6,#f1efe1);box-shadow:0 8px 24px #0d342015}
+body:not(.display-mode) .tsg-v56-kicker{font:800 11px 'DM Sans',sans-serif;letter-spacing:.15em;color:#416753;text-transform:uppercase}
+body:not(.display-mode) .tsg-v56-actions h2{font:800 clamp(24px,3vw,34px)/1.12 'Barlow Condensed',sans-serif;color:#143d2e;margin:6px 0}
+body:not(.display-mode) .tsg-v56-actions p{margin:0 0 16px;color:#516759;font-size:14px}
+body:not(.display-mode) .tsg-v56-action-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+body:not(.display-mode) .tsg-v56-action{display:flex;align-items:center;gap:11px;padding:15px 16px;border:1px solid #d8d8c8;border-radius:12px;background:#fff;color:#103c2b;text-decoration:none;min-width:0;min-height:66px;transition:background .12s,border-color .12s}
+body:not(.display-mode) .tsg-v56-action:hover{background:#edf4e9;border-color:#96b49b}
+body:not(.display-mode) .tsg-v56-action:focus-visible{outline:3px solid #d7b56d;outline-offset:2px}
+body:not(.display-mode) .tsg-v56-action .symbol{display:grid;place-items:center;width:34px;height:34px;flex:none;border-radius:9px;background:#e8efdf;font-size:20px}
+body:not(.display-mode) .tsg-v56-action strong{display:block;font-size:14px;line-height:1.2}
+body:not(.display-mode) .tsg-v56-action small{display:block;font-size:11px;color:#64796b;margin-top:3px;line-height:1.25}
+body:not(.display-mode) #page-home>#deadline-section{margin:0 0 19px}
+@media(max-width:760px){
+ body:not(.display-mode) .home-hero{min-height:0!important;padding:26px 18px 29px!important}
+ body:not(.display-mode) .home-hero h1{font-size:clamp(48px,13vw,69px)!important;margin:8px 0 13px!important}
+ body:not(.display-mode) .home-hero-lede{font-size:14px!important;line-height:1.45}
+ body:not(.display-mode) .home-rotating-slogan{font-size:11px!important;margin-top:8px}
+ body:not(.display-mode) .home-hero-mark{display:none!important}
+ body:not(.display-mode) .home-body{padding-bottom:calc(95px + env(safe-area-inset-bottom))!important}
+ body:not(.display-mode) .home-launch-strip{margin-top:0!important}
+ body:not(.display-mode) .tsg-v56-actions{margin:14px 0;padding:15px;border-radius:14px}
+ body:not(.display-mode) .tsg-v56-actions h2{font-size:28px}
+ body:not(.display-mode) .tsg-v56-action-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ body:not(.display-mode) .tsg-v56-action{min-height:73px;padding:10px;gap:8px}
+ body:not(.display-mode) .tsg-v56-action .symbol{width:30px;height:30px;font-size:18px}
+ body:not(.display-mode) .tsg-v56-action strong{font-size:12px}
+ body:not(.display-mode) .tsg-v56-action small{font-size:10px}
+ body:not(.display-mode) #page-home>#deadline-section{padding:15px;margin-bottom:13px}
+ body:not(.display-mode) #page-home>#deadline-section .timer{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;gap:6px;margin-top:10px}
+ body:not(.display-mode) #page-home>#deadline-section .timebox{min-width:0;padding:9px 3px}
+ body:not(.display-mode) #page-home>#deadline-section .timebox strong{font-size:clamp(18px,6vw,26px)}
+ body:not(.display-mode) .home-mobile-tabs a{display:flex;align-items:center;justify-content:center;flex-direction:column;min-height:48px;padding:5px 2px}
+ body:not(.display-mode) .home-mobile-tabs a[aria-current="page"]{background:#245b49;border-radius:10px;color:#fff}
+ body:not(.display-mode) .home-body button,body:not(.display-mode) .home-body select,body:not(.display-mode) .home-body input{min-height:44px}
+ body:not(.display-mode) .score-form button[type="submit"]{width:100%}
+ body:not(.display-mode) #page-player .panel{margin-bottom:12px}
+}
+@media(max-width:370px){body:not(.display-mode) .tsg-v56-action small{display:none}body:not(.display-mode) .tsg-v56-action{min-height:61px}}
+</style>
 </head>
 <body>
 <header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="home-nav-links"><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><a class="tsg-home-registration-cta" href="#tsg-registration" aria-controls="tsg-registration" aria-expanded="false">Register for the League</a></div><div class="home-hero-mark tsg-hero-crest" aria-label="The Glencoe crest"><img src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><i>FIVE SPORTS · ONE CREW</i></div></div></header>
@@ -2959,6 +3000,47 @@ $('password-setup-form').addEventListener('submit', async (e) => {
   dialog.hidden=false;close.focus();document.addEventListener('keydown',keys);
  }));
  close.addEventListener('click',hide);dialog.addEventListener('click',event=>{if(event.target===dialog)hide()});
+})();
+</script>
+<script id="tsg-v56-mobile-js">
+/* V56: reorganize EXISTING home sections after the page router has finished.
+   No changes to auth, Supabase, league calculations or the separate TV screen. */
+(function(){
+  if(new URLSearchParams(location.search).get('display')==='1')return;
+  const home=document.getElementById('page-home');
+  if(!home)return;
+  const deadline=document.getElementById('deadline-section');
+  const launch=home.querySelector('.home-launch-strip');
+  const welcome=home.querySelector('.home-welcome');
+  if(!launch||!deadline||!welcome)return;
+  const actions=document.createElement('section');
+  actions.className='tsg-v56-actions';
+  actions.setAttribute('aria-label','Quick league actions');
+  actions.innerHTML=`
+    <div class="tsg-v56-kicker">YOUR LEAGUE, ONE TAP AWAY</div>
+    <h2>What would you like to do?</h2>
+    <p>Find your games, manage your availability, or check who's leading.</p>
+    <div class="tsg-v56-action-grid">
+      <a class="tsg-v56-action" href="#page-matchups"><span class="symbol" aria-hidden="true">⚔️</span><span><strong>Matchups</strong><small>See who's playing</small></span></a>
+      <a class="tsg-v56-action" href="#page-player" data-v56-target="weekly-availability-panel"><span class="symbol" aria-hidden="true">📅</span><span><strong>My availability</strong><small>Choose days off</small></span></a>
+      <a class="tsg-v56-action" href="#page-player" data-v56-target="my-matchups"><span class="symbol" aria-hidden="true">🏆</span><span><strong>Submit scores</strong><small>Record your games</small></span></a>
+      <a class="tsg-v56-action" href="#page-standings"><span class="symbol" aria-hidden="true">📊</span><span><strong>Standings</strong><small>View the leaderboard</small></span></a>
+    </div>`;
+  launch.after(actions);
+  // Surface the actual live deadline before the promotional sport artwork.
+  actions.after(deadline);
+  document.querySelectorAll('.tsg-v56-action[data-v56-target]').forEach(link=>{
+    link.addEventListener('click',()=>{
+      const id=link.getAttribute('data-v56-target');
+      // hashchange executes the original router; after that, scroll if signed in.
+      setTimeout(()=>{
+        const target=document.getElementById(id);
+        if(target&&target.getClientRects().length&&target.closest('.tsg-page-active')){
+          target.scrollIntoView({behavior:'smooth',block:'start'});
+        }
+      },50);
+    });
+  });
 })();
 </script>
 </body>
