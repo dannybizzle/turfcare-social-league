@@ -1181,10 +1181,27 @@ body:not(.display-mode) .tsg-v56b-link{display:inline-flex;align-items:center;ju
 body:not(.display-mode) .tsg-v56b-link:focus-visible{outline:3px solid #c59c45;outline-offset:2px}
 @media(max-width:760px){body:not(.display-mode) .tsg-v56b-next{padding:16px;margin-bottom:13px}body:not(.display-mode) .tsg-v56b-link{width:100%}}
 </style>
+<style id="tsg-v56c-mobile-polish">
+/* V56c: changes are strictly on the non-TV website. */
+body:not(.display-mode) .tsg-v56-action-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+body:not(.display-mode) .tsg-v56c-navigation{position:relative;margin-left:auto;z-index:35}
+body:not(.display-mode) .tsg-v56c-menu-button{display:flex;align-items:center;justify-content:center;gap:9px;min-height:44px;border:1px solid #d5bb79;background:#f9f4df;color:#173b2b;border-radius:11px;padding:10px 15px;font-size:13px;font-weight:800;white-space:nowrap}
+body:not(.display-mode) #tsg-v56c-menu.home-nav-links{position:absolute;right:0;top:calc(100% + 8px);display:flex;flex-direction:column;gap:3px;margin:0;padding:9px;width:205px;max-width:calc(100vw - 30px);border:1px solid #c9b487;border-radius:13px;background:#fffdf5;box-shadow:0 18px 45px #0005;z-index:50}
+body:not(.display-mode) #tsg-v56c-menu[hidden]{display:none!important}
+body:not(.display-mode) #tsg-v56c-menu a{display:block;padding:11px 13px;min-height:43px;border-radius:8px;font:750 13px 'DM Sans',sans-serif;text-decoration:none;color:#193e2e}
+body:not(.display-mode) #tsg-v56c-menu a:hover,body:not(.display-mode) #tsg-v56c-menu a:focus-visible,body:not(.display-mode) #tsg-v56c-menu a[aria-current=page]{background:#e5ebdd;color:#0b3a29}
+body:not(.display-mode) #tsg-v56c-menu .tsg-admin-link[hidden]{display:none!important}
+body:not(.display-mode) .tsg-v56b-next{padding:15px 17px;margin-bottom:14px}
+body:not(.display-mode) .tsg-v56b-next h2{margin:3px 0 6px}
+body:not(.display-mode) .tsg-v56b-meta{margin:7px 0}
+body:not(.display-mode) .tsg-v56b-note{margin:6px 0}
+@media(max-width:760px){body:not(.display-mode) .tsg-v56c-menu-button{padding:9px 10px;font-size:12px}body:not(.display-mode) .tsg-v56-action-grid{grid-template-columns:repeat(2,minmax(0,1fr))}body:not(.display-mode) .tsg-v56b-next{padding:14px}}
+@media(max-width:400px){body:not(.display-mode) .tsg-v56c-menu-button{gap:5px;padding:8px}body:not(.display-mode) #tsg-v56c-current{max-width:77px;overflow:hidden;text-overflow:ellipsis}}
+</style>
 </head>
 <body>
-<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="home-nav-links"><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><a class="tsg-home-registration-cta" href="#tsg-registration" aria-controls="tsg-registration" aria-expanded="false">Register for the League</a></div><div class="home-hero-mark tsg-hero-crest" aria-label="The Glencoe crest"><img src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><i>FIVE SPORTS · ONE CREW</i></div></div></header>
-<main class="wrap home-body"><section class="home-launch-strip" aria-label="Season dates"><div><small>01 / REGISTRATION</small><strong>Closes Nov 19</strong></div><div><small>02 / PLAYER ACCESS</small><strong>Nov 20</strong></div><div><small>03 / SEASON KICKOFF</small><strong>Nov 23 · 7 AM</strong></div></section><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a data-sport-rules="Ping Pong" aria-haspopup="dialog" aria-label="View Ping Pong rules" href="#sport-rules" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a data-sport-rules="Darts" aria-haspopup="dialog" aria-label="View Darts rules" href="#sport-rules" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a data-sport-rules="Pool" aria-haspopup="dialog" aria-label="View Pool rules" href="#sport-rules" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a data-sport-rules="Air Hockey" aria-haspopup="dialog" aria-label="View Air Hockey rules" href="#sport-rules" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a data-sport-rules="Beer Pong" aria-haspopup="dialog" aria-label="View Beer Pong rules" href="#sport-rules" class="home-sport-tile tsg-beer-tile"><img src="assets/beer-pong.jpg" alt="Beer pong game with red cups and a ping-pong ball" loading="lazy"><span>05 <strong>BEER PONG</strong></span></a></div></section>
+<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="tsg-v56c-navigation"><button id="tsg-v56c-menu-button" class="tsg-v56c-menu-button" type="button" aria-expanded="false" aria-controls="tsg-v56c-menu">☰ <span id="tsg-v56c-current">Menu</span> <span aria-hidden="true">▾</span></button><div id="tsg-v56c-menu" class="home-nav-links" hidden><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><a class="tsg-home-registration-cta" href="#tsg-registration" aria-controls="tsg-registration" aria-expanded="false">Register for the League</a></div><div class="home-hero-mark tsg-hero-crest" aria-label="The Glencoe crest"><img src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><i>FIVE SPORTS · ONE CREW</i></div></div></header>
+<main class="wrap home-body"><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a data-sport-rules="Ping Pong" aria-haspopup="dialog" aria-label="View Ping Pong rules" href="#sport-rules" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a data-sport-rules="Darts" aria-haspopup="dialog" aria-label="View Darts rules" href="#sport-rules" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a data-sport-rules="Pool" aria-haspopup="dialog" aria-label="View Pool rules" href="#sport-rules" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a data-sport-rules="Air Hockey" aria-haspopup="dialog" aria-label="View Air Hockey rules" href="#sport-rules" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a data-sport-rules="Beer Pong" aria-haspopup="dialog" aria-label="View Beer Pong rules" href="#sport-rules" class="home-sport-tile tsg-beer-tile"><img src="assets/beer-pong.jpg" alt="Beer pong game with red cups and a ping-pong ball" loading="lazy"><span>05 <strong>BEER PONG</strong></span></a></div></section>
 
 <section class="countdown" id="deadline-section"><div><h2>Time left to finish this week's matchup</h2><div id="deadline-label" class="muted">The weekly deadline will appear here once matchups are published.</div></div><div class="timer" id="timer"><div class="timebox"><strong>--</strong><span>Days</span></div><div class="timebox"><strong>--</strong><span>Hours</span></div><div class="timebox"><strong>--</strong><span>Minutes</span></div><div class="timebox"><strong>--</strong><span>Seconds</span></div></div></section>
 <div class="section-head" id="standings-section"><div><div class="eyebrow" style="color:var(--green2)">The leaderboard</div><h2>Overall standings</h2></div><span class="muted" id="season-label">Loading season…</span></div>
@@ -3014,89 +3031,27 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  close.addEventListener('click',hide);dialog.addEventListener('click',event=>{if(event.target===dialog)hide()});
 })();
 </script>
-<script id="tsg-v56-mobile-js">
-/* V56: reorganize EXISTING home sections after the page router has finished.
-   No changes to auth, Supabase, league calculations or the separate TV screen. */
-(function(){
-  if(new URLSearchParams(location.search).get('display')==='1')return;
-  const home=document.getElementById('page-home');
-  if(!home)return;
-  const deadline=document.getElementById('deadline-section');
-  const launch=home.querySelector('.home-launch-strip');
-  const welcome=home.querySelector('.home-welcome');
-  if(!launch||!deadline||!welcome)return;
-  const actions=document.createElement('section');
-  actions.className='tsg-v56-actions';
-  actions.setAttribute('aria-label','Quick league actions');
-  actions.innerHTML=`
-    <div class="tsg-v56-kicker">YOUR LEAGUE, ONE TAP AWAY</div>
-    <h2>What would you like to do?</h2>
-    <p>Find your games, manage your availability, or submit your scores.</p>
-    <div class="tsg-v56-action-grid">
-      <a class="tsg-v56-action" href="#page-matchups"><span class="symbol" aria-hidden="true">⚔️</span><span><strong>Matchups</strong><small>See who's playing</small></span></a>
-      <a class="tsg-v56-action" href="#page-player" data-v56-target="weekly-availability-panel"><span class="symbol" aria-hidden="true">📅</span><span><strong>My availability</strong><small>Choose days off</small></span></a>
-      <a class="tsg-v56-action" href="#page-player" data-v56-target="my-matchups"><span class="symbol" aria-hidden="true">🏆</span><span><strong>Submit scores</strong><small>Record your games</small></span></a>
-    </div>`;
-  launch.after(actions);
-  // Surface the actual live deadline before the promotional sport artwork.
-  actions.after(deadline);
-  document.querySelectorAll('.tsg-v56-action[data-v56-target]').forEach(link=>{
-    link.addEventListener('click',()=>{
-      const id=link.getAttribute('data-v56-target');
-      // hashchange executes the original router; after that, scroll if signed in.
-      setTimeout(()=>{
-        const target=document.getElementById(id);
-        if(target&&target.getClientRects().length&&target.closest('.tsg-page-active')){
-          target.scrollIntoView({behavior:'smooth',block:'start'});
-        }
-      },50);
-    });
-  });
-})();
-</script>
-
-<script id="tsg-v56b-next-matchup">
-/* Home snapshot uses existing cached Supabase data. No new fetches or writes. */
+<script id="tsg-v56c-nav-js">
+/* Existing links and admin permissions remain controlled by the V42 page router. */
 (function(){
  if(new URLSearchParams(location.search).get('display')==='1')return;
- const home=document.getElementById('page-home');
- const quick=home?.querySelector('.tsg-v56-actions');
- if(!home||!quick||document.getElementById('tsg-v56b-next'))return;
- const panel=document.createElement('section');
- panel.id='tsg-v56b-next';panel.className='tsg-v56b-next';
- panel.setAttribute('aria-label','My next league matchup');
- quick.after(panel);
- const add=(parent,tag,cls,value)=>{const e=document.createElement(tag);if(cls)e.className=cls;e.textContent=value;parent.append(e);return e};
- function action(text,target){const a=add(panel,'a','tsg-v56b-link',text);a.href='#page-player';if(target){a.addEventListener('click',()=>setTimeout(()=>{const el=document.getElementById(target);if(el?.getClientRects().length)el.scrollIntoView({behavior:'smooth',block:'start'})},70));}}
- function render(){
-  panel.replaceChildren();
-  add(panel,'div','eyeline','YOUR UPCOMING GAMES');
-  add(panel,'h2','', 'My next matchup');
-  if(!currentUserId){add(panel,'p','tsg-v56b-note','Sign in to see your next opponent and assigned sports.');action('Open My League');return;}
-  if(document.getElementById('player-area')?.classList.contains('hidden')){add(panel,'p','tsg-v56b-note','Your player tools are not active yet. Check My League for account status.');action('View account status');return;}
-  const mine=matchups.filter(m=>inRollingWindow(m)&&(m.player1_id===currentUserId||m.player2_id===currentUserId));
-  const pending=mine.filter(m=>m.status==='scheduled');
-  const next=(pending.length?pending:mine).sort((a,b)=>a.week_number-b.week_number||new Date(a.deadline)-new Date(b.deadline))[0];
-  if(!next){add(panel,'p','tsg-v56b-note','No matchups assigned in the current two-week window.');action('See My League');return;}
-  const opponent=next.player1_id===currentUserId?next.player2_id:next.player1_id;
-  add(panel,'div','tsg-v56b-pair','You vs. '+playerName(opponent));
-  const meta=add(panel,'div','tsg-v56b-meta','');
-  add(meta,'span','tsg-v56b-chip','Week '+next.week_number);
-  add(meta,'span','tsg-v56b-chip',matchStatus(next));
-  if(next.deadline&&Number.isFinite(new Date(next.deadline).getTime())){
-   const deadline=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Edmonton',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true,timeZoneName:'short'}).format(new Date(next.deadline));
-   add(meta,'span','tsg-v56b-chip','Due '+deadline);
-  }
-  const sportList=matchupGames(next).map(g=>(sportIcon[g.discipline]||'')+' '+g.discipline).join(' · ');
-  if(sportList)add(panel,'p','tsg-v56b-note',sportList);
-  const meet=appointmentFor(next.id);
-  if(meet?.starts_at){add(panel,'p','tsg-v56b-note',(meet.confirmed_at?'✓ Confirmed: ':'⏳ Proposed: ')+meetupWhen(meet.starts_at));}
-  action(next.status==='scheduled'?'Manage matchup & scores':'View matchup details','my-matchups');
+ const btn=document.getElementById('tsg-v56c-menu-button');
+ const menu=document.getElementById('tsg-v56c-menu');
+ const label=document.getElementById('tsg-v56c-current');
+ if(!btn||!menu||!label)return;
+ const pages={home:'Home',standings:'Standings',matchups:'Matchups',player:'My League',admin:'Admin'};
+ function close(){menu.hidden=true;btn.setAttribute('aria-expanded','false');}
+ function refresh(){
+   const current=location.hash.startsWith('#page-')?location.hash.slice(6):'home';
+   label.textContent=pages[current]||'Home';
+   close();
  }
- // Reuse existing render path so refreshed games/auth/meetups update this card.
- const original=renderMyMatchups;
- renderMyMatchups=function(){original();render();};
- render();
+ btn.addEventListener('click',()=>{menu.hidden=!menu.hidden;btn.setAttribute('aria-expanded',String(!menu.hidden));});
+ menu.addEventListener('click',e=>{if(e.target.closest('a'))close();});
+ document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!menu.contains(e.target)&&!btn.contains(e.target))close();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!menu.hidden){close();btn.focus();}});
+ window.addEventListener('hashchange',refresh);
+ refresh();
 })();
 </script>
 </body>
