@@ -835,6 +835,35 @@ body:not(.display-mode) .tsg-score-body { padding:0 14px 15px; }
 body:not(.display-mode) .tsg-score-body select { min-height:44px; }
 @media(max-width:600px){body:not(.display-mode) details.tsg-score-entry > summary {flex-direction:column;align-items:flex-start;position:relative;padding-right:36px;}body:not(.display-mode) details.tsg-score-entry > summary::after{position:absolute;right:12px;top:14px;}body:not(.display-mode) .tsg-score-body{padding:0 10px 12px;}}
 
+
+/* V58d — one optional report form at the bottom of My League. */
+body:not(.display-mode) .tsg-single-issue-panel{margin-top:18px;}
+body:not(.display-mode) .tsg-single-issue-panel details>summary{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  min-height:48px;padding:6px 0;cursor:pointer;list-style:none;
+  font-weight:800;color:#134631;
+}
+body:not(.display-mode) .tsg-single-issue-panel details>summary::-webkit-details-marker{display:none;}
+body:not(.display-mode) .tsg-single-issue-panel details>summary:after{
+  content:'⌄';font-size:22px;color:#37674e;
+}
+body:not(.display-mode) .tsg-single-issue-panel details[open]>summary:after{content:'⌃';}
+body:not(.display-mode) .tsg-single-issue-panel details>summary small{
+  font-weight:500;color:#67786a;font-size:.78rem;margin-left:auto;text-align:right;
+}
+body:not(.display-mode) .tsg-single-issue-body{padding:6px 0 4px;}
+body:not(.display-mode) .tsg-single-issue-body textarea{
+  width:100%;font:inherit;resize:vertical;padding:12px;border:1px solid var(--line);
+  border-radius:9px;
+}
+body:not(.display-mode) .tsg-single-issue-body button[type=submit]{margin-top:14px;}
+body:not(.display-mode) .tsg-single-issue-body select,
+body:not(.display-mode) .tsg-single-issue-body textarea{max-width:650px;}
+@media(max-width:600px){
+ body:not(.display-mode) .tsg-single-issue-panel details>summary small{display:none;}
+ body:not(.display-mode) .tsg-single-issue-body button[type=submit]{width:100%;min-height:46px;}
+}
+
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1392,6 +1421,28 @@ body:not(.display-mode) .tsg-v58-rules-content section:last-child{border-bottom:
 <div id="my-matchups"><div class="empty">Sign in to view your matchups.</div></div>
 <div id="score-message" role="status"></div>
 </section>
+<section class="panel player-tools tsg-single-issue-panel" aria-label="Scheduling help">
+  <details id="tsg-report-details">
+    <summary><span>⚑ Report a scheduling issue</span><small>Need help? Let an admin know.</small></summary>
+    <div class="tsg-single-issue-body">
+      <p class="muted">Only use this if you can't work something out with your opponent. The report goes directly to the Admin Inbox.</p>
+      <form id="tsg-report-form">
+        <label for="tsg-report-matchup">Which matchup?</label>
+        <select id="tsg-report-matchup" required><option value="">Choose a matchup</option></select>
+        <label for="tsg-report-reason">What's the issue?</label>
+        <select id="tsg-report-reason" required>
+          <option value="scheduling_conflict">Can't agree on a playing day</option>
+          <option value="availability_conflict">Availability has changed</option>
+          <option value="other">Something else</option>
+        </select>
+        <label for="tsg-report-description">Details (optional)</label>
+        <textarea id="tsg-report-description" maxlength="2000" rows="3" placeholder="Anything the admin should know?"></textarea>
+        <button type="submit">Send to Admin Inbox</button>
+      </form>
+      <div id="tsg-report-status" class="notice" role="status" aria-live="polite"></div>
+    </div>
+  </details>
+</section>
 </section>
 <section id="admin-area" class="hidden">
 <div class="section-head"><div><div class="eyebrow" style="color:var(--green2)">Organizer tools</div><h2>Administrator dashboard</h2></div><span class="muted">Admin access</span></div>
@@ -1606,22 +1657,55 @@ $('tsg-inbox-items').addEventListener('click',async e=>{
  $('tsg-inbox-message').textContent=status==='open'?'Issue reopened.':'Issue '+status+' and cleared from the open inbox.';
  await loadLeagueFlags();
 });
-$('my-matchups').addEventListener('click',async e=>{
- const b=e.target.closest('[data-report-issue]');if(!b||!currentUserId)return;
- const id=b.dataset.reportIssue;
+function refreshIssueMatchups(){
+ const select=$('tsg-report-matchup');
+ if(!select)return;
+ const oldValue=select.value;
+ const available=matchups.filter(m=>inRollingWindow(m)&&
+   (m.player1_id===currentUserId||m.player2_id===currentUserId)&&m.status==='scheduled')
+   .sort((a,b)=>a.week_number-b.week_number);
+ select.innerHTML='<option value="">Choose a matchup</option>'+available.map(m=>{
+   const opponent=m.player1_id===currentUserId?m.player2_id:m.player1_id;
+   return `<option value="${esc(m.id)}">Week ${m.week_number} — ${esc(playerName(opponent))}</option>`;
+ }).join('');
+ if(available.some(m=>m.id===oldValue))select.value=oldValue;
+ else if(available.length===1)select.value=available[0].id;
+ const submit=$('tsg-report-form').querySelector('button[type="submit"]');
+ submit.disabled=!available.length;
+}
+$('tsg-report-form').addEventListener('submit',async e=>{
+ e.preventDefault();
+ if(!currentUserId)return;
+ const form=e.currentTarget,button=form.querySelector('button[type="submit"]');
+ const id=$('tsg-report-matchup').value;
+ const reason=$('tsg-report-reason').value;
+ const description=$('tsg-report-description').value.trim().slice(0,2000);
+ const message=$('tsg-report-status');
  const m=matchups.find(x=>x.id===id);
- if(!m||![m.player1_id,m.player2_id].includes(currentUserId))return;
- const existing=leagueMatchupFlags.some(f=>f.matchup_id===id&&f.reported_by===currentUserId&&f.status==='open');
- if(existing){showScoreMessage('You already have an open report for this matchup. An administrator can review it.');return;}
- const reason=prompt('Report issue: type 1 for availability conflict, 2 for scheduling conflict, or 3 for other.','2');
- if(reason===null)return;
- const selected=({'1':'availability_conflict','2':'scheduling_conflict','3':'other'})[reason.trim()];
- if(!selected){showScoreMessage('Choose 1, 2 or 3 to report an issue.',true);return;}
- const description=prompt('Briefly describe the problem for the admin inbox (optional):','');if(description===null)return;
- b.disabled=true;
- const {error}=await client.from('league_matchup_flags').insert({matchup_id:id,reported_by:currentUserId,reason:selected,description:description.trim().slice(0,2000)||null});
- if(error){showScoreMessage('Could not send report: '+error.message,true);b.disabled=false;return;}
- showScoreMessage('Scheduling issue sent to the Admin Inbox.');await loadLeagueFlags();b.disabled=false;
+ if(!m||m.status!=='scheduled'||![m.player1_id,m.player2_id].includes(currentUserId)){
+   message.textContent='Choose one of your active matchups.';return;
+ }
+ if(!['availability_conflict','scheduling_conflict','other'].includes(reason)){
+   message.textContent='Choose an issue type.';return;
+ }
+ if(leagueMatchupFlags.some(f=>f.matchup_id===id&&f.reported_by===currentUserId&&f.status==='open')){
+   message.textContent='You already have an open report for this matchup. An administrator can review it.';return;
+ }
+ button.disabled=true;message.textContent='Sending your report…';
+ try{
+   const {error}=await client.from('league_matchup_flags').insert({
+     matchup_id:id,reported_by:currentUserId,reason,description:description||null
+   });
+   if(error)throw error;
+   message.textContent='Report sent to the Admin Inbox.';
+   form.reset();
+   await loadLeagueFlags();
+ }catch(error){
+   message.textContent='Could not send report: '+(error.message||'Please try again.');
+ }finally{
+   button.disabled=false;
+   refreshIssueMatchups();
+ }
 });
 
 async function loadPublic(){
@@ -1907,7 +1991,7 @@ function meetupControls(m){
 }
 function renderMyMatchups(){
  const box=$('my-matchups');if(!box)return;
- if(!currentUserId){box.innerHTML='<div class="empty">Sign in to submit results.</div>';return;}
+ if(!currentUserId){box.innerHTML='<div class="empty">Sign in to submit results.</div>';refreshIssueMatchups();return;}
  const mine=matchups.filter(m=>inRollingWindow(m)&&(m.player1_id===currentUserId||m.player2_id===currentUserId)).sort((a,b)=>a.week_number-b.week_number);
  // Keep a player's deliberate open/close choice during normal data refreshes,
  // but reset when the actual league week advances.
@@ -1924,7 +2008,7 @@ function renderMyMatchups(){
  }).join('|');
  if(currentKey!==previousCurrent)priorState.clear();
  box.dataset.currentWeek=currentKey;
- if(!mine.length){box.innerHTML='<div class="empty">No matchups assigned yet.</div>';return;}
+ if(!mine.length){box.innerHTML='<div class="empty">No matchups assigned yet.</div>';refreshIssueMatchups();return;}
  box.innerHTML=mine.map(m=>{const gs=matchupGames(m);const locked=m.status!=='scheduled';const finished=countsInStandings(m)||m.status==='played_ahead';
    const future=seasonWeekStarts(m)&&Date.now()<seasonWeekStarts(m).getTime();
    const expired=m.deadline&&new Date(m.deadline).getTime()<Date.now();
@@ -1941,10 +2025,10 @@ function renderMyMatchups(){
    return `<details class="tsg-week-matchup" data-match-id="${esc(m.id)}" ${isOpen?'open':''}><summary><span class="tsg-week-title"><strong>Week ${m.week_number} — ${esc(playerName(opponent))}</strong><small>${esc(dateRange)} · ${weekLabel} · ${statusLabel}</small></span></summary><div class="tsg-week-body"><div class="match-card" data-match-id="${esc(m.id)}"><div class="match-head"><strong>Week ${m.week_number}: ${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}</strong><span class="tag ${future?'warning':''}">${esc(matchStatus(m))}</span></div>
    <div class="match-sports">${esc(gs.map(g=>`${sportIcon[g.discipline]||''} ${g.discipline}`).join(' · '))}</div>${summary}
    ${meetupControls(m)}
-   <div class="tsg-report-wrap"><button type="button" class="secondary" data-report-issue="${esc(m.id)}">⚑ Report a scheduling issue</button></div>
    ${m.submitted_at?`<div class="notice">Submitted ${new Date(m.submitted_at).toLocaleString()} by ${esc(playerName(m.submitted_by))}</div>`:''}
    ${canSubmit?`<details class="tsg-score-entry" data-match-id="${esc(m.id)}" ${draft?.open?'open':''}><summary><span>🏆 Enter results</span><small>${future?'Playing ahead? Results count when this week begins.':'Choose the winner of all three sports.'}</small></summary><div class="tsg-score-body"><form class="score-form" data-match-id="${esc(m.id)}">${gs.map(g=>`<div class="score-row"><label for="winner-${esc(g.id)}">${sportIcon[g.discipline]||''} ${esc(g.discipline)}</label><select required id="winner-${esc(g.id)}" data-game-id="${esc(g.id)}"><option value="">Choose winner</option><option value="${esc(m.player1_id)}">${esc(playerName(m.player1_id))}</option><option value="${esc(m.player2_id)}">${esc(playerName(m.player2_id))}</option></select></div>`).join('')}<p class="notice">Each sport counts as one league game win, whether you played a single game, best of 3 or best of 5.</p><button type="submit" style="margin-top:12px">Submit all 3 games</button></form></div></details>`:!finished?`<div class="notice">${expired?'Deadline passed. Contact an administrator.':gs.length!==3?'Matchup is missing its three assigned games. Contact an administrator.':'Score entry is closed.'}</div>`:''}</div></div></details>`;
  }).join('');
+ refreshIssueMatchups();
  // Restore unsent selections after HTML is refreshed. Never touch server-saved results.
  for(const [matchId,draft] of scoreDrafts){
    const editor=[...box.querySelectorAll('details.tsg-score-entry')].find(x=>x.dataset.matchId===matchId);
