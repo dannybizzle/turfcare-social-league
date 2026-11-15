@@ -889,6 +889,35 @@ body:not(.display-mode) .tsg-v59-metrics span{font-size:.78rem;font-weight:800;m
 body:not(.display-mode) .tsg-v59-season{margin:17px 0;}
 body:not(.display-mode) .tsg-v59-links{display:flex;gap:8px;flex-wrap:wrap;}
 @media(max-width:750px){body:not(.display-mode) .tsg-v59-metrics{grid-template-columns:repeat(2,minmax(0,1fr));}}
+
+/* V59b: Admin workflow navigation, standard website only. TV is unchanged. */
+body:not(.display-mode) .tsg-admin-task-nav{
+ display:flex;gap:8px;align-items:stretch;flex-wrap:wrap;margin:0 0 16px;
+ border-bottom:1px solid #ded4bc;padding-bottom:13px;
+}
+body:not(.display-mode) .tsg-admin-task-nav button{
+ background:#eee8d8;color:#173d32;border:1px solid #d4c19d;
+ border-radius:11px;padding:11px 14px;min-height:44px;line-height:1.2;
+}
+body:not(.display-mode) .tsg-admin-task-nav button.active{
+ background:#174532;color:#fff;border-color:#174532;
+}
+body:not(.display-mode) .tsg-admin-task-pane[hidden]{display:none!important;}
+body:not(.display-mode) .tsg-admin-task-heading{margin:2px 0 16px;}
+body:not(.display-mode) .tsg-admin-task-heading h3{margin:0;color:#173d32;font-size:1.24rem;}
+body:not(.display-mode) .tsg-admin-task-heading p{margin:4px 0 0;color:#647668;font-size:.88rem;}
+body:not(.display-mode) .tsg-admin-task-pane > .panel,
+body:not(.display-mode) .tsg-admin-task-pane > .admin-grid{margin-bottom:14px;}
+body:not(.display-mode) .tsg-admin-task-pane #rolling-generator{width:100%;}
+body:not(.display-mode) .admin-category-nav{gap:7px;}
+body:not(.display-mode) .admin-category-nav button{min-height:44px;}
+@media(max-width:650px){
+ body:not(.display-mode) .tsg-admin-task-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+ body:not(.display-mode) .tsg-admin-task-nav button{font-size:.82rem;padding:11px 7px;white-space:normal;}
+ body:not(.display-mode) .admin-category-nav{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding:0 0 10px;}
+ body:not(.display-mode) .admin-category-nav button{flex:0 0 auto;}
+}
+
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1822,6 +1851,82 @@ async function refreshAuth(){
   Object.entries(places).forEach(([name,element])=>element.classList.toggle('hidden',name!==button.dataset.adminCategory));
  }));
 })();
+/* V59b: one purpose per Admin screen. Reparent ORIGINAL elements so event listeners remain attached. */
+(function organizeAdminWorkflows(){
+ const root=document.getElementById('admin-area');
+ if(!root)return;
+ const groups={
+  players:[
+    ['approvals','Pending registrations','Review new accounts before they can play', ['tsg-approval-panel']],
+    ['accounts','Player accounts & invitations','Invite players, manage participation and roles', ['tsg-v59b-player-management']]
+  ],
+  scheduling:[
+    ['weeks','Weekly schedules','Publish and preview weekly matchups', ['rolling-generator','schedule-preview-panel']],
+    ['seasons','Season setup & registration','Create seasons and set the public registration window', ['season-setup-grid']],
+    ['delete','Delete a season','Permanent deletion — use with care', ['tsg-v59b-season-delete']]
+  ],
+  results:[
+    ['freebies','Freebies & missed games','Resolve incomplete matchups after their deadline', ['forfeit-panel']],
+    ['corrections','Correct scores','Update a recorded result when required', ['tsg-v59b-correction-panel']]
+  ]
+ };
+ // Identify the existing panels by their stable child IDs, without altering their contents.
+ const playerPanel=document.getElementById('player-management-list')?.closest('section.panel');
+ if(playerPanel)playerPanel.id='tsg-v59b-player-management';
+ const deletePanel=document.getElementById('delete-season-select')?.closest('section.panel');
+ if(deletePanel)deletePanel.id='tsg-v59b-season-delete';
+ const correctionPanel=document.getElementById('correction-matchup')?.closest('section.panel');
+ if(correctionPanel)correctionPanel.id='tsg-v59b-correction-panel';
+ // Previously season creation and registration were placed in Overview. Keep Overview summary-only.
+ const scheduleGroup=document.getElementById('admin-category-scheduling');
+ const seasonGrid=document.getElementById('season-setup-grid');
+ if(scheduleGroup&&seasonGrid)scheduleGroup.appendChild(seasonGrid);
+ Object.entries(groups).forEach(([category,views])=>{
+   const host=document.getElementById('admin-category-'+category);
+   if(!host)return;
+   const nav=document.createElement('nav');
+   nav.className='tsg-admin-task-nav';
+   nav.setAttribute('aria-label',category+' tasks');
+   host.prepend(nav);
+   const panes=[];
+   views.forEach(([id,label,description,ids],index)=>{
+     const button=document.createElement('button');
+     button.type='button';button.className='secondary';
+     button.textContent=label;button.dataset.adminTask=id;
+     button.setAttribute('aria-controls','tsg-admin-task-'+category+'-'+id);
+     nav.appendChild(button);
+     const pane=document.createElement('section');
+     pane.className='tsg-admin-task-pane';
+     pane.id='tsg-admin-task-'+category+'-'+id;
+     const header=document.createElement('div');header.className='tsg-admin-task-heading';
+     const heading=document.createElement('h3');heading.textContent=label;
+     const subtitle=document.createElement('p');subtitle.textContent=description;
+     header.append(heading,subtitle);pane.appendChild(header);
+     ids.forEach(nodeId=>{const el=document.getElementById(nodeId);if(el)pane.appendChild(el);});
+     host.appendChild(pane);
+     panes.push({button,pane});
+     button.addEventListener('click',()=>{
+       panes.forEach(entry=>{
+         const active=entry===panes[index];
+         entry.pane.hidden=!active;
+         entry.button.classList.toggle('active',active);
+         entry.button.setAttribute('aria-pressed',String(active));
+       });
+     });
+   });
+   // Default to the task that is most frequently needed.
+   if(panes.length)panes[0].button.click();
+ });
+ // Allow overview shortcuts to lead directly to the right nested screen.
+ root.addEventListener('click',e=>{
+   const link=e.target.closest('[data-v59b-open]');
+   if(!link)return;
+   const [category,task]=link.dataset.v59bOpen.split(':');
+   selectAdminCategory(category);
+   document.querySelector('#admin-category-'+category+' [data-admin-task="'+task+'"]')?.click();
+ });
+})();
+
 function localDatePlus(dateString, days){const d=new Date(dateString+'T12:00:00');d.setDate(d.getDate()+days);return d;}
 function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function roundRobin(players){const list=shuffle(players);if(list.length%2)list.push(null);const rounds=[];for(let r=0;r<list.length-1;r++){const pairs=[];let bye=null;for(let i=0;i<list.length/2;i++){const a=list[i],b=list[list.length-1-i];if(a&&b)pairs.push([a,b]);else bye=a||b;}rounds.push({pairs,bye});list.splice(1,0,list.pop());}return rounds;}
