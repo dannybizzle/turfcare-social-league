@@ -982,14 +982,34 @@ body:not(.display-mode) .tsg-potential-pair span:last-child{text-align:right}
 body:not(.display-mode) .tsg-potential-pair b{font-size:10px;color:#e1b96b}
 body:not(.display-mode) .tsg-potential-empty{grid-column:1/-1;color:#e5e9d7;font-size:.95rem;margin:0}
 body.display-mode .tsg-tv-preview-sub{font-weight:900;color:#eac780;font-size:clamp(16px,1.7vw,30px);letter-spacing:.06em;margin:0 0 12px}
-body.display-mode .tsg-potential-week{border:1px solid #d0a75b66;border-radius:10px;background:#102d23a8;padding:9px 12px;margin-bottom:9px}
-body.display-mode .tsg-potential-week h3{font-size:clamp(18px,2vw,31px);color:#e1bb72;margin:0 0 5px}
+body.display-mode .tsg-potential-week{border:1px solid #d0a75b99;border-radius:12px;background:#123d2e;padding:12px 17px;margin-bottom:10px}
+body.display-mode .tsg-potential-week h3{font-size:clamp(21px,2.3vw,35px);color:#ffe2a2;margin:0 0 7px}
 body.display-mode .tsg-potential-week h3 small{font-size:.65em;color:#c8d8c4;font-weight:500}
-body.display-mode .tsg-potential-pair{display:flex;align-items:center;gap:9px;padding:5px 0;font-size:clamp(15px,1.6vw,26px);font-weight:750;border-top:1px solid #ffffff1b}
-body.display-mode .tsg-potential-pair span{flex:1;min-width:0;overflow-wrap:anywhere}
+body.display-mode .tsg-potential-pair{display:flex;align-items:center;gap:12px;padding:9px 3px;font-size:clamp(20px,2.05vw,33px);font-weight:850;color:#fff;border-top:1px solid #ffffff35}
+body.display-mode .tsg-potential-pair span{flex:1;min-width:0;overflow-wrap:anywhere;color:#ffffff!important;font-weight:900;text-shadow:0 2px 8px #000b;line-height:1.2}
 body.display-mode .tsg-potential-pair span:last-child{text-align:right}
-body.display-mode .tsg-potential-pair b{font-size:.65em;color:#d7b56d}
+body.display-mode .tsg-potential-pair b{font-size:.7em;color:#ffe3a4;font-weight:900}
 body.display-mode .tsg-tv-preview-foot{font-size:clamp(12px,1.1vw,18px);color:#c9d9cd;margin-top:12px}
+
+
+/* V60b: TV registration preview — contrast and provisional sport chips. */
+body.display-mode .tsg-potential-week{
+ background:#103e2f!important;border:2px solid #ddb970!important;
+ box-shadow:0 6px 22px #0006;
+}
+body.display-mode .tsg-potential-fixture{border-top:1px solid #ffffff50;padding:10px 2px 13px;}
+body.display-mode .tsg-potential-fixture:first-of-type{border-top:0;}
+body.display-mode .tsg-potential-fixture .tsg-potential-pair{border-top:0;padding:2px 0 7px;}
+body.display-mode .tsg-potential-pair span{color:#fff!important;font-size:clamp(22px,2.3vw,38px)!important;text-shadow:0 2px 7px #000a;}
+body.display-mode .tsg-potential-pair b{color:#ffe1a0!important;}
+body.display-mode .tsg-potential-sports{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:3px;}
+body.display-mode .tsg-potential-sports>small{color:#e6c77b;font-size:clamp(11px,.88vw,17px);font-weight:900;letter-spacing:.07em;}
+body.display-mode .tsg-potential-sports>div{display:flex;gap:8px;flex-wrap:wrap;}
+body.display-mode .tsg-potential-sports>div span{
+ display:inline-flex;align-items:center;white-space:nowrap;
+ font-size:clamp(13px,1.12vw,20px);font-weight:800;color:#fff9dd;
+ background:#22694f;border:1px solid #a6d3b4;border-radius:999px;padding:4px 11px;
+}
 
 </style>
 <style id="tsg-v30-clean-home">
@@ -1855,9 +1875,15 @@ function tsgPotentialDraw(){
  }
  return {season,participants,weeks};
 }
-function tsgPreviewMatchupRows(weeks,maxWeeks=4){
+function tsgPreviewSports(week,pair){
+ // A stable, promotional three-sport possibility. The official scheduler assigns the real sports.
+ const seed=[...String(pair.a)+String(pair.b)].reduce((n,c)=>n+c.charCodeAt(0),week*3);
+ const start=seed%SPORTS.length;
+ return [0,1,2].map(i=>SPORTS[(start+i*2)%SPORTS.length]);
+}
+function tsgPreviewMatchupRows(weeks,maxWeeks=4,showPossibleSports=false){
  const visible=weeks.filter(w=>w.slots.length).slice(0,maxWeeks);
- return visible.map(w=>`<div class="tsg-potential-week"><h3>Week ${w.week} <small>· ${esc(weekDates(tsgRegistrationSeason(),w.week))}</small></h3>${w.slots.map(p=>`<div class="tsg-potential-pair"><span>${esc(playerName(p.a))}</span><b>VS</b><span>${esc(playerName(p.b))}</span></div>`).join('')}</div>`).join('');
+ return visible.map(w=>`<div class="tsg-potential-week"><h3>Week ${w.week} <small>· ${esc(weekDates(tsgRegistrationSeason(),w.week))}</small></h3>${w.slots.map(p=>`<div class="tsg-potential-fixture"><div class="tsg-potential-pair"><span>${esc(playerName(p.a))}</span><b>VS</b><span>${esc(playerName(p.b))}</span></div>${showPossibleSports?`<div class="tsg-potential-sports"><small>POSSIBLE SPORTS</small><div>${tsgPreviewSports(w.week,p).map(s=>`<span>${sportIcon[s]||'🏆'} ${esc(s)}</span>`).join('')}</div></div>`:''}</div>`).join('')}</div>`).join('');
 }
 function renderPotentialSchedule(){
  const root=$('tsg-potential-schedule');if(!root)return;
@@ -3062,7 +3088,7 @@ function renderLunchroom(){
   }
  }else if(page==='Potential schedule'){
   const draw=tsgPotentialDraw();
-  html=`<div class="lb-tv-section-title">Potential matchups · Registration preview</div><div class="tsg-tv-preview-sub">NOT OFFICIAL · Updates as new players are approved</div>${draw&&draw.participants.length>=2?(tsgPreviewMatchupRows(draw.weeks,3)||'<div class="lb-tv-empty">Official matches are already published. See the schedule on the website.</div>'):'<div class="lb-tv-empty">The preview will start once two players have been approved.</div>'}<div class="tsg-tv-preview-foot">Final opponents, weeks and sports may change · Official matchups take priority</div>`;
+  html=`<div class="lb-tv-section-title">Potential matchups · Registration preview</div><div class="tsg-tv-preview-sub">NOT OFFICIAL · Updates as new players are approved</div>${draw&&draw.participants.length>=2?(tsgPreviewMatchupRows(draw.weeks,3,true)||'<div class="lb-tv-empty">Official matches are already published. See the schedule on the website.</div>'):'<div class="lb-tv-empty">The preview will start once two players have been approved.</div>'}<div class="tsg-tv-preview-foot">Final opponents, weeks and sports may change · Official matchups take priority</div>`;
  }else if(page==='Standings'){
   const rows=leaderboard().slice(0,6);
   html=`<div class="lb-tv-section-title">League standings</div>${rows.length?rows.map((p,i)=>`<div class="lb-tv-leader"><div class="lb-tv-rank">${i+1}</div><div class="lb-tv-name">${esc(p.display_name)}${p.freebies?` <span class="lb-tv-minor">· ${p.freebies} freebie${p.freebies===1?'':'s'}</span>`:''}</div><div class="lb-tv-record">${p.wins} W <span class="lb-tv-minor">· ${p.losses} L · ${p.gameWins} GW</span></div></div>`).join(''):'<div class="lb-tv-empty">Standings will appear once the season begins.</div>'}`;
