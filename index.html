@@ -1495,6 +1495,23 @@ body:not(.display-mode) .tsg-v58-rules-content section:last-child{border-bottom:
    -webkit-overflow-scrolling:touch;max-width:100%;
  }
 }
+
+/* V59g: Three clear Player tasks, one horizontal tab row on phones too. */
+body:not(.display-mode) #admin-category-players .tsg-admin-task-nav{
+  display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
+  max-width:100%;gap:8px;scrollbar-width:thin;
+  -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+}
+body:not(.display-mode) #admin-category-players .tsg-admin-task-nav button{
+  flex:0 0 auto;min-height:44px;white-space:nowrap;padding:10px 14px;
+}
+body:not(.display-mode) #tsg-v59g-invitation-panel>div{
+  padding:2px 0 0;background:transparent;
+}
+body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
+@media(max-width:650px){
+ body:not(.display-mode) #tsg-v59g-invitation-panel button{width:100%;min-height:46px;}
+}
 </style>
 </head>
 <body>
@@ -1963,8 +1980,9 @@ async function refreshAuth(){
  if(!root)return;
  const groups={
   players:[
-    ['approvals','Pending registrations','Review new accounts before they can play', ['tsg-approval-panel']],
-    ['accounts','Player accounts & invitations','Invite players, manage participation and roles', ['tsg-v59b-player-management']]
+    ['approvals','Pending approvals','Review new accounts before they can play', ['tsg-approval-panel']],
+    ['accounts','Player accounts','Manage league participation, account roles, and ownership', ['tsg-v59b-player-management']],
+    ['invitations','Invite a player','Send an invitation to a new player', ['tsg-v59g-invitation-panel']]
   ],
   scheduling:[
     ['weeks','Weekly schedules','View and manage weekly matchups', ['rolling-generator','schedule-preview-panel']]
@@ -1980,7 +1998,25 @@ async function refreshAuth(){
  };
  // Identify the existing panels by their stable child IDs, without altering their contents.
  const playerPanel=document.getElementById('player-management-list')?.closest('section.panel');
- if(playerPanel)playerPanel.id='tsg-v59b-player-management';
+ if(playerPanel){
+   playerPanel.id='tsg-v59b-player-management';
+   // Move the ORIGINAL invitation inputs to a separate screen, preserving their IDs and listeners.
+   const invitation=document.getElementById('invite-player-button')?.closest('div');
+   if(invitation){
+     const invitationPanel=document.createElement('section');
+     invitationPanel.className='panel admin-form';
+     invitationPanel.id='tsg-v59g-invitation-panel';
+     invitationPanel.innerHTML='<h3>Invite a New Player</h3><p class="muted">Send a personal invitation. Public registration dates do not prevent an administrator from inviting players.</p>';
+     // The invitation form already contains its own heading. Avoid duplicated headings.
+     const invitationHeading=invitation.querySelector('h4');
+     if(invitationHeading)invitationHeading.remove();
+     invitation.removeAttribute('style');
+     invitationPanel.appendChild(invitation);
+     playerPanel.after(invitationPanel);
+   }
+   const header=playerPanel.querySelector('h3');
+   if(header)header.textContent='Player Accounts';
+ }
  const deletePanel=document.getElementById('delete-season-select')?.closest('section.panel');
  if(deletePanel)deletePanel.id='tsg-v59b-season-delete';
  const correctionPanel=document.getElementById('correction-matchup')?.closest('section.panel');
