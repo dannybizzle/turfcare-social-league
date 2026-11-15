@@ -930,6 +930,29 @@ body:not(.display-mode) .tsg-v59c-season-facts strong{display:block;font-size:1.
 body:not(.display-mode) .tsg-v59c-registration{margin:17px 0 0;}
 @media(max-width:550px){body:not(.display-mode) .tsg-v59c-season-facts>div{padding:10px;}body:not(.display-mode) .tsg-v59c-season-facts strong{font-size:1.4rem;}}
 
+
+/* V59f — task-focused Admin availability; TV and player side unchanged. */
+body:not(.display-mode) .tsg-v59f-availability-tabs{
+ display:flex;gap:8px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:thin;
+ padding:3px 0 12px;margin:12px 0;
+}
+body:not(.display-mode) .tsg-v59f-availability-tabs button{
+ flex:0 0 auto;min-height:44px;border-radius:10px;border:1px solid #cbb98b;
+ color:#173d32;background:#eee9db;white-space:nowrap;
+}
+body:not(.display-mode) .tsg-v59f-availability-tabs button.active{
+ background:#173d32;border-color:#173d32;color:#fff;
+}
+body:not(.display-mode) .tsg-v59f-season-select,
+body:not(.display-mode) .tsg-v59f-player-choice{max-width:440px;margin:0 0 14px;}
+body:not(.display-mode) .tsg-v59f-season-select select,
+body:not(.display-mode) .tsg-v59f-player-choice select{width:100%;}
+body:not(.display-mode) .tsg-v59f-availability-pane[hidden]{display:none!important;}
+body:not(.display-mode) .tsg-v59f-calendar-panel{margin:0;}
+@media (max-width:600px){
+ body:not(.display-mode) .tsg-v59f-availability-tabs button{padding:10px 13px;font-size:.9rem;}
+}
+
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1619,9 +1642,22 @@ body:not(.display-mode) .tsg-v58-rules-content section:last-child{border-bottom:
 <section class="panel score-panel" id="weekly-admin-panel">
 <h3>🗓 Daily Schedule Controls</h3>
 <p class="muted">Tap individual dates. Player days off affect only that person; a league blackout blocks everyone. Existing matchups are not automatically removed.</p>
-<div class="day-admin-toolbar"><div><label for="blackout-season">Season</label><select id="blackout-season"></select></div><div><label for="day-admin-player">Player to manage</label><select id="day-admin-player"></select></div></div>
-<div class="admin-week-grid"><div class="panel"><h4>Player days off</h4><div id="day-admin-player-calendar" class="day-calendar-shell"></div><div id="day-admin-player-message" class="notice" role="status" aria-live="polite"></div></div><div class="panel"><h4>League blackout dates</h4><div id="admin-blackout-weeks" class="day-calendar-shell"></div><div id="blackout-week-message" class="notice" role="status" aria-live="polite"></div></div></div>
-<details class="day-admin-history"><summary>Recent schedule changes</summary><div id="schedule-change-log" class="admin-week-list"></div></details>
+<div class="tsg-v59f-season-select"><label for="blackout-season">Season</label><select id="blackout-season"></select></div>
+<nav class="tsg-v59f-availability-tabs" aria-label="Availability tools">
+ <button type="button" class="secondary active" data-availability-view="player" aria-controls="tsg-v59f-availability-player" aria-pressed="true">Player days off</button>
+ <button type="button" class="secondary" data-availability-view="blackout" aria-controls="tsg-v59f-availability-blackout" aria-pressed="false">League blackout dates</button>
+ <button type="button" class="secondary" data-availability-view="history" aria-controls="tsg-v59f-availability-history" aria-pressed="false">Change history</button>
+</nav>
+<div id="tsg-v59f-availability-player" class="tsg-v59f-availability-pane">
+ <div class="tsg-v59f-player-choice"><label for="day-admin-player">Player to manage</label><select id="day-admin-player"></select></div>
+ <div class="panel tsg-v59f-calendar-panel"><h4>Player days off</h4><p class="muted">Select dates when this player is unavailable. Other players are not affected.</p><div id="day-admin-player-calendar" class="day-calendar-shell"></div><div id="day-admin-player-message" class="notice" role="status" aria-live="polite"></div></div>
+</div>
+<div id="tsg-v59f-availability-blackout" class="tsg-v59f-availability-pane" hidden>
+ <div class="panel tsg-v59f-calendar-panel"><h4>League blackout dates</h4><p class="muted">These dates apply to everyone in the selected season.</p><div id="admin-blackout-weeks" class="day-calendar-shell"></div><div id="blackout-week-message" class="notice" role="status" aria-live="polite"></div></div>
+</div>
+<div id="tsg-v59f-availability-history" class="tsg-v59f-availability-pane" hidden>
+ <div class="panel tsg-v59f-calendar-panel"><h4>Recent schedule changes</h4><div id="schedule-change-log" class="admin-week-list"></div></div>
+</div>
 </section>
 <section class="panel score-panel" id="forfeit-panel">
 <h3>🏅 Resolve missed matchups</h3>
@@ -1903,6 +1939,22 @@ async function refreshAuth(){
  document.querySelectorAll('[data-admin-category]').forEach(button=>button.addEventListener('click',()=>{
   document.querySelectorAll('[data-admin-category]').forEach(b=>b.classList.toggle('active',b===button));
   Object.entries(places).forEach(([name,element])=>element.classList.toggle('hidden',name!==button.dataset.adminCategory));
+ }));
+})();
+/* V59f: Availability tools display one task at a time, preserving their existing inputs. */
+(function setupAvailabilityViews(){
+ const root=document.getElementById('weekly-admin-panel');
+ if(!root)return;
+ const buttons=Array.from(root.querySelectorAll('[data-availability-view]'));
+ const panes={player:document.getElementById('tsg-v59f-availability-player'),blackout:document.getElementById('tsg-v59f-availability-blackout'),history:document.getElementById('tsg-v59f-availability-history')};
+ buttons.forEach(button=>button.addEventListener('click',()=>{
+   const chosen=button.dataset.availabilityView;
+   Object.entries(panes).forEach(([name,pane])=>{if(pane)pane.hidden=name!==chosen;});
+   buttons.forEach(tab=>{
+     const active=tab===button;
+     tab.classList.toggle('active',active);
+     tab.setAttribute('aria-pressed',String(active));
+   });
  }));
 })();
 /* V59b: one purpose per Admin screen. Reparent ORIGINAL elements so event listeners remain attached. */
