@@ -953,6 +953,16 @@ body:not(.display-mode) .tsg-v59f-calendar-panel{margin:0;}
  body:not(.display-mode) .tsg-v59f-availability-tabs button{padding:10px 13px;font-size:.9rem;}
 }
 
+
+/* V59h scheduling: compact defaults with one easy-to-read status block. */
+body:not(.display-mode) .tsg-v59h-generator .tsg-v59h-schedule-status{
+ margin:14px 0;padding:13px 15px;border-radius:10px;
+ background:#edf2e9;color:#214732;border:1px solid #d1dfce;font-size:.92rem;line-height:1.5;
+}
+body:not(.display-mode) .tsg-v59h-generator .tsg-v59h-schedule-help{margin-top:17px;border-top:1px solid var(--line);padding-top:13px;}
+body:not(.display-mode) .tsg-v59h-generator .tsg-v59h-schedule-help summary{cursor:pointer;color:var(--green2);font-weight:700;padding:8px 0;}
+body:not(.display-mode) .tsg-v59h-generator .tsg-v59h-schedule-help .tsg-default-rules{margin-top:10px;}
+body:not(.display-mode) .tsg-v59h-generator .tsg-v59h-schedule-help p{margin:10px 0 0;}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1612,7 +1622,19 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 <div class="admin-grid" id="season-setup-grid">
 <section class="panel admin-form"><h3>Create a season</h3><label for="season-name">Season name</label><input id="season-name" placeholder="Season 1 – Fall 2026"><label for="season-start">Start date</label><input id="season-start" type="date"><label for="season-end">End date</label><input id="season-end" type="date"><label for="registration-opens">Public registration opens (Calgary)</label><input id="registration-opens" type="date"><label for="registration-closes">Public registration closes (inclusive)</label><input id="registration-closes" type="date"><p class="notice">The public Register link appears only during these dates. Admin invitations and player approvals remain available throughout the season.</p><div class="tsg-default-rules">Competition settings are reused automatically. Just enter the season name and dates; the schedule generator keeps the five sports, three-game matchups, random draw and established scoring rules.</div><button id="create-season">Create season</button><div id="create-season-message" class="notice" role="status"></div><div class="notice">This creates the season record only. It does not publish any matchups.</div></section>
 <section class="panel admin-form" id="tsg-v57-registration-editor"><h3>Public registration window</h3><p class="muted">Edit a season's public signup dates at any time. This does not restrict administrator invitations or approvals.</p><label for="tsg-v57-season">Season</label><select id="tsg-v57-season"></select><label for="tsg-v57-opens">Opens (Calgary)</label><input id="tsg-v57-opens" type="date"><label for="tsg-v57-closes">Closes (inclusive)</label><input id="tsg-v57-closes" type="date"><button id="tsg-v57-save-window" type="button">Save registration dates</button><div id="tsg-v57-editor-message" class="notice" role="status"></div></section>
-<section class="panel admin-form" id="rolling-generator"><h3>Rolling weekly schedule generator</h3><label for="schedule-season">Choose season</label><select id="schedule-season" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit"></select><input id="deadline-time" type="hidden" value="23:59"><div class="tsg-default-rules"><strong>Season defaults:</strong> Five sports (Ping Pong, Darts, Pool, Air Hockey and Beer Pong) · Three different sports per matchup · Two wins take the matchup · Total game wins break ties · Weekly deadline 11:59 PM (according to the schedule) · Fair rotating byes · Playing ahead allowed.</div><button id="preview-schedule">Preview next unpublished week</button><div class="notice">Only the next unpublished week is generated. The draw uses approved participating players, tries to avoid repeat opponents, and shares byes fairly. Individual days off and league blackout dates do not remove or replace opponents. The preview flags pairs without any mutually available dates. Every matchup receives three randomly selected sports.</div></section>
+<section class="panel admin-form tsg-v59h-generator" id="rolling-generator">
+ <h3>Weekly Scheduling</h3>
+ <p class="muted">Review your next week, preview the draw, then publish when ready.</p>
+ <label for="schedule-season">Choose season</label>
+ <select id="schedule-season" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit"></select>
+ <div id="tsg-v59h-schedule-status" class="tsg-v59h-schedule-status" role="status" aria-live="polite">Choose a season to view its schedule.</div>
+ <input id="deadline-time" type="hidden" value="23:59">
+ <button id="preview-schedule" type="button">Preview next unpublished week</button>
+ <details class="tsg-v59h-schedule-help"><summary>How automatic scheduling works</summary>
+  <div class="tsg-default-rules"><strong>Season defaults:</strong> Five sports (Ping Pong, Darts, Pool, Air Hockey and Beer Pong) · Three different sports per matchup · Two wins take the matchup · Total game wins break ties · Weekly deadline 11:59 PM (according to the schedule) · Fair rotating byes · Playing ahead allowed.</div>
+  <p class="muted">Only the next unpublished week is generated. The draw uses approved participating players, tries to avoid repeat opponents, and shares byes fairly. Individual days off and league blackout dates do not remove or replace opponents. The preview flags pairs without any mutually available dates. Every matchup receives three randomly selected sports.</p>
+ </details>
+</section>
 </div>
 <section class="panel admin-form" style="margin-top:16px">
 <h3>Season Management</h3>
@@ -2111,12 +2133,30 @@ function makeSchedule(seasonId){
  if(!out.length)throw new Error('No matchups available to generate.');
  return {payload:out,byes,conflicts,players,weeks:1,week:targetWeek,season};
 }
+/* V59h: informative scheduling status, all based on existing published data. */
+function updateV59hSchedulingStatus(){
+ const target=$('tsg-v59h-schedule-status'),select=$('schedule-season');
+ if(!target||!select)return;
+ const season=seasons.find(s=>s.id===select.value);
+ if(!season){target.textContent='No season selected. Create a season under New Season & Registration.';return;}
+ const weeks=matchups.filter(m=>m.season_id===season.id);
+ const published=weeks.length?Math.max(...weeks.map(m=>m.week_number)):0;
+ const next=published+1;
+ const total=weekCount(season);
+ const current=rollingWeekNumber(season);
+ if(next>total){target.textContent=`${season.name}: all ${total} weeks have been published.`;return;}
+ const eligible=rollingWeeks(season).includes(next);
+ const advice=eligible?'Ready to preview the next unpublished week.':'Outside the current rolling scheduling window; previewing may be restricted.';
+ target.textContent=`${season.name} · ${published} of ${total} weeks published · Next: Week ${next} · Current: Week ${current}. ${advice}`;
+}
+$('schedule-season')?.addEventListener('change',updateV59hSchedulingStatus);
 function populateSeasonSelect(){
   const sel=$('schedule-season');if(!sel)return;
   const previous=sel.value;
   sel.innerHTML=seasons.map(s=>`<option value="${esc(s.id)}">${esc(s.name)} (${s.starts_on} – ${s.ends_on})</option>`).join('');
   if(!seasons.length)sel.innerHTML='<option value="">Create a season first</option>';
   else if(seasons.some(s=>s.id===previous))sel.value=previous;
+  updateV59hSchedulingStatus();
 }
 function populateDeleteSeasonSelect(){
   const sel=$('delete-season-select');if(!sel)return;
