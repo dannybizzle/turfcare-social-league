@@ -963,6 +963,34 @@ body:not(.display-mode) .tsg-v59h-generator .tsg-v59h-schedule-help{margin-top:1
 body:not(.display-mode) .tsg-v59h-generator .tsg-v59h-schedule-help summary{cursor:pointer;color:var(--green2);font-weight:700;padding:8px 0;}
 body:not(.display-mode) .tsg-v59h-generator .tsg-v59h-schedule-help .tsg-default-rules{margin-top:10px;}
 body:not(.display-mode) .tsg-v59h-generator .tsg-v59h-schedule-help p{margin:10px 0 0;}
+
+/* V60 potential-schedule teaser: only in configured registration window. */
+body:not(.display-mode) #tsg-potential-schedule[hidden]{display:none!important}
+body:not(.display-mode) .tsg-potential-schedule{margin:28px 0 34px;padding:clamp(17px,3vw,28px);background:linear-gradient(115deg,#0e392c,#205740);color:#f9f6eb;border:1px solid #bc9e5d;border-radius:18px;box-shadow:0 6px 25px #16362728}
+body:not(.display-mode) .tsg-potential-head{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;margin-bottom:15px}
+body:not(.display-mode) .tsg-potential-head h2{font-family:'Cinzel',Georgia,serif;color:#fff2d0;margin:5px 0;font-size:clamp(23px,3vw,35px)}
+body:not(.display-mode) .tsg-potential-head p{color:#dceade;font-size:.9rem;line-height:1.55;max-width:690px;margin:0}
+body:not(.display-mode) .tsg-potential-eyebrow{font-size:11px;color:#e3c781;letter-spacing:.11em;font-weight:900}
+body:not(.display-mode) .tsg-potential-count{font-size:.81rem;font-weight:800;color:#f4e3a6;background:#ffffff16;border-radius:999px;padding:8px 12px;white-space:nowrap}
+body:not(.display-mode) .tsg-potential-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}
+body:not(.display-mode) .tsg-potential-week{background:#071f19a9;border:1px solid #d7b56d55;border-radius:12px;padding:13px 15px}
+body:not(.display-mode) .tsg-potential-week h3{color:#ebd69b;font-size:16px;margin:0 0 10px}
+body:not(.display-mode) .tsg-potential-week h3 small{font-size:11px;font-weight:500;color:#c3d9c9}
+body:not(.display-mode) .tsg-potential-pair{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid #d5dfd123;padding:10px 0;font-size:.9rem;font-weight:700}
+body:not(.display-mode) .tsg-potential-pair span{min-width:0;overflow-wrap:anywhere;flex:1}
+body:not(.display-mode) .tsg-potential-pair span:last-child{text-align:right}
+body:not(.display-mode) .tsg-potential-pair b{font-size:10px;color:#e1b96b}
+body:not(.display-mode) .tsg-potential-empty{grid-column:1/-1;color:#e5e9d7;font-size:.95rem;margin:0}
+body.display-mode .tsg-tv-preview-sub{font-weight:900;color:#eac780;font-size:clamp(16px,1.7vw,30px);letter-spacing:.06em;margin:0 0 12px}
+body.display-mode .tsg-potential-week{border:1px solid #d0a75b66;border-radius:10px;background:#102d23a8;padding:9px 12px;margin-bottom:9px}
+body.display-mode .tsg-potential-week h3{font-size:clamp(18px,2vw,31px);color:#e1bb72;margin:0 0 5px}
+body.display-mode .tsg-potential-week h3 small{font-size:.65em;color:#c8d8c4;font-weight:500}
+body.display-mode .tsg-potential-pair{display:flex;align-items:center;gap:9px;padding:5px 0;font-size:clamp(15px,1.6vw,26px);font-weight:750;border-top:1px solid #ffffff1b}
+body.display-mode .tsg-potential-pair span{flex:1;min-width:0;overflow-wrap:anywhere}
+body.display-mode .tsg-potential-pair span:last-child{text-align:right}
+body.display-mode .tsg-potential-pair b{font-size:.65em;color:#d7b56d}
+body.display-mode .tsg-tv-preview-foot{font-size:clamp(12px,1.1vw,18px);color:#c9d9cd;margin-top:12px}
+
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1535,6 +1563,7 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 <section class="countdown" id="deadline-section"><div><h2>Time left to finish this week's matchup</h2><div id="deadline-label" class="muted">The weekly deadline will appear here once matchups are published.</div></div><div class="timer" id="timer"><div class="timebox"><strong>--</strong><span>Days</span></div><div class="timebox"><strong>--</strong><span>Hours</span></div><div class="timebox"><strong>--</strong><span>Minutes</span></div><div class="timebox"><strong>--</strong><span>Seconds</span></div></div></section>
 <div class="section-head" id="standings-section"><div><div class="eyebrow" style="color:var(--green2)">The leaderboard</div><h2>Overall standings</h2></div><span class="muted" id="season-label">Loading season…</span></div>
 <div class="grid home-standings-grid"><section class="panel"><h3>League table</h3><div id="standings"><div class="empty">Connecting to the league…</div></div></section></div>
+<section id="tsg-potential-schedule" class="tsg-potential-schedule" hidden aria-label="Potential league schedule"><div class="tsg-potential-head"><div><span class="tsg-potential-eyebrow">REGISTRATION PREVIEW · NOT OFFICIAL</span><h2>Who might face whom?</h2><p>As players are approved, this potential draw updates automatically. Final matchups and sports are assigned when the official schedule is published.</p></div><span id="tsg-potential-count" class="tsg-potential-count"></span></div><div id="tsg-potential-content" class="tsg-potential-grid"></div></section>
 <div class="section-head" id="matchups-section"><div><div class="eyebrow" style="color:var(--green2)">Who's up next</div><h2>Weekly matchups</h2></div></div><section class="panel"><div id="matchups"><div class="empty">Matchups will show here when the season schedule is published.</div></div></section>
 <div class="section-head" id="statistics-section"><div><div class="eyebrow" style="color:var(--green2)">Head-to-head</div><h2>Player statistics</h2></div></div>
 <section class="panel" id="profile-panel"><div id="profile-content" class="muted">Select a player name on the leaderboard to see their results across all five sports.</div></section>
@@ -1791,6 +1820,56 @@ function matchupScore(m){const gs=matchupGames(m);return {a:gs.filter(g=>g.winne
 function leaderboard(){return profiles.map(p=>{const mine=matchups.filter(m=>(countsInStandings(m)||m.resolution==='freebie'||m.resolution==='double_forfeit')&&(m.player1_id===p.id||m.player2_id===p.id));let wins=0,losses=0,gameWins=0,freebies=0;mine.forEach(m=>{if(m.resolution==='freebie'){if(m.forfeit_winner_id===p.id){wins++;freebies++;}else losses++;return;}if(m.resolution==='double_forfeit'){losses++;return;}const gs=matchupGames(m),a=gs.filter(g=>g.winner_id===m.player1_id).length,b=gs.filter(g=>g.winner_id===m.player2_id).length;gameWins+=gs.filter(g=>g.winner_id===p.id).length;if((m.player1_id===p.id&&a>b)||(m.player2_id===p.id&&b>a))wins++;else if(a!==b)losses++;});return {...p,wins,losses,gameWins,freebies};}).sort((a,b)=>b.wins-a.wins||b.gameWins-a.gameWins||a.display_name.localeCompare(b.display_name));}
 function renderStandings(){const rows=leaderboard();$('standings').innerHTML=rows.length?`<div class="table-scroll"><table><thead><tr><th>#</th><th>Player</th><th class="num">W</th><th class="num">L</th><th class="num">Game wins</th><th class="num">Freebies</th></tr></thead><tbody>${rows.map((p,i)=>`<tr><td>${i+1}</td><td>${playerLink(p.id)}</td><td class="num">${p.wins}</td><td class="num">${p.losses}</td><td class="num">${p.gameWins}</td><td class="num">${p.freebies}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Players will appear here once they have registered.</div>';}
 function matchStatus(m){if(m.resolution==='freebie')return `Freebie win — ${playerName(m.forfeit_winner_id)}`;if(m.resolution==='double_forfeit')return 'Double forfeit';if(m.status==='played_ahead'&&!countsInStandings(m))return 'Played ahead · counts in week '+m.week_number;if(countsInStandings(m))return 'Completed';return m.status==='scheduled'?'Scheduled':m.status==='missed'?'Awaiting admin decision':m.status;}
+/* V60: Automatic read-only registration preview; not part of official scheduling. */
+function tsgRegistrationSeason(){
+ const today=calDate(new Date());
+ return seasons.filter(s=>s.registration_opens_on&&s.registration_closes_on&&s.registration_opens_on<=today&&today<=s.registration_closes_on)
+  .sort((a,b)=>String(a.starts_on).localeCompare(String(b.starts_on)))[0]||null;
+}
+function tsgPotentialDraw(){
+ const season=tsgRegistrationSeason();
+ if(!season)return null;
+ const participants=profiles.filter(p=>p.is_approved===true&&p.is_player===true&&p.display_name)
+  .sort((a,b)=>String(a.id).localeCompare(String(b.id)));
+ if(participants.length<2)return {season,participants,weeks:[]};
+ const ids=participants.map(p=>p.id), ring=ids.length%2?[...ids,null]:ids.slice();
+ const rounds=ring.length-1, pairs=[];
+ for(let round=0;round<rounds;round++){
+  const grouped=[];
+  for(let i=0;i<ring.length/2;i++){
+   const a=ring[i],b=ring[ring.length-1-i];
+   if(a&&b)grouped.push([a,b]);
+  }
+  pairs.push(grouped);
+  ring.splice(1,0,ring.pop());
+ }
+ const total=Math.min(weekCount(season),8);
+ const weeks=[];
+ for(let w=1;w<=total;w++){
+  const official=matchups.filter(m=>m.season_id===season.id&&m.week_number===w);
+  const occupied=new Set(official.flatMap(m=>[m.player1_id,m.player2_id]));
+  const candidates=pairs[(w-1)%rounds].filter(pair=>pair.every(id=>!occupied.has(id)));
+  // Do not present a competing prediction for players who already have an official opponent.
+  const slots=candidates.slice(0,6).map(([a,b])=>({a,b}));
+  weeks.push({week:w,slots,official:official.length});
+ }
+ return {season,participants,weeks};
+}
+function tsgPreviewMatchupRows(weeks,maxWeeks=4){
+ const visible=weeks.filter(w=>w.slots.length).slice(0,maxWeeks);
+ return visible.map(w=>`<div class="tsg-potential-week"><h3>Week ${w.week} <small>· ${esc(weekDates(tsgRegistrationSeason(),w.week))}</small></h3>${w.slots.map(p=>`<div class="tsg-potential-pair"><span>${esc(playerName(p.a))}</span><b>VS</b><span>${esc(playerName(p.b))}</span></div>`).join('')}</div>`).join('');
+}
+function renderPotentialSchedule(){
+ const root=$('tsg-potential-schedule');if(!root)return;
+ const preview=tsgPotentialDraw();root.hidden=!preview;
+ if(!preview)return;
+ const count=$('tsg-potential-count');
+ if(count)count.textContent=`${preview.participants.length} approved player${preview.participants.length===1?'':'s'}`;
+ const content=$('tsg-potential-content');
+ if(!content)return;
+ if(preview.participants.length<2){content.innerHTML='<p class="tsg-potential-empty">The draw will appear once two players have been approved.</p>';return;}
+ content.innerHTML=tsgPreviewMatchupRows(preview.weeks)||'<p class="tsg-potential-empty">These weeks already have official matchups. See Weekly Matchups below.</p>';
+}
 function renderMatchups(){const list=matchups.filter(inRollingWindow).sort((a,b)=>a.week_number-b.week_number||new Date(a.deadline)-new Date(b.deadline));$('matchups').innerHTML=list.length?`<div class="table-scroll"><table><thead><tr><th>Week</th><th>Matchup</th><th>3 sports</th><th>Deadline</th><th>Status</th></tr></thead><tbody>${list.map(m=>`<tr><td>${m.week_number}</td><td>${playerLink(m.player1_id)} vs ${playerLink(m.player2_id)}</td><td>${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' '))}</td><td>${m.deadline?new Date(m.deadline).toLocaleString():'—'}</td><td>${appointmentFor(m.id)?.confirmed_at?`<span class="tag">📅 ${esc(meetupWhen(appointmentFor(m.id).starts_at))}</span> · `:''}${esc(matchStatus(m))}${m.resolution==='normal'&&countsInStandings(m)?` · ${matchupScore(m).a}–${matchupScore(m).b}`:''}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No matchups have been published yet.</div>';}
 function renderProfile(){if(!selectedProfileId)return;const p=profiles.find(p=>p.id===selectedProfileId);if(!p){$('profile-content').textContent='Player is no longer registered.';return;}
   const mine=matchups.filter(m=>countsInStandings(m)&&(m.player1_id===p.id||m.player2_id===p.id));const stats=SPORTS.map(s=>{const gs=mine.flatMap(m=>matchupGames(m)).filter(g=>g.discipline===s);return {sport:s,w:gs.filter(g=>g.winner_id===p.id).length,l:gs.filter(g=>g.winner_id&&g.winner_id!==p.id).length};});
@@ -1943,11 +2022,11 @@ async function loadPublic(){
  playerUnavailableDates=dailyPlayers.data||[];
  leagueBlackoutDates=dailyBlackouts.data||[];
  const active=seasons.find(x=>x.status==='active')||seasons[0];$('season-label').textContent=active?.name||'Season not yet published';
- renderStandings();renderMatchups();renderCountdown();renderProfile();renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
+ renderStandings();renderMatchups();renderPotentialSchedule();renderCountdown();renderProfile();renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
  if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();await loadScheduleLog();await loadPendingRegistrations();}else $('player-management-list').innerHTML='Administrator access required.';
  if(currentUserId)await loadLeagueFlags();
  updateV59Overview();
- if(document.body.classList.contains('display-mode'))renderLunchroom();
+ if(document.body.classList.contains('display-mode')){const oldPage=LB_TABS[lbSlideIndex%LB_TABS.length];LB_TABS=tvSequence();const sameIndex=LB_TABS.indexOf(oldPage);if(sameIndex>=0)lbSlideIndex=sameIndex;else lbSlideIndex=0;renderLunchroom();}
 }
 async function refreshAuth(){
  const {data:{session}}=await client.auth.getSession();currentUserId=session?.user?.id||null;
@@ -2508,6 +2587,7 @@ function advanceLeagueTagline(){
 const homeSlogan=document.getElementById('tsg-home-slogan');
 if(homeSlogan)homeSlogan.textContent=leagueTagline();
 setInterval(advanceLeagueTagline,14500);
+setInterval(()=>{if(!document.body.classList.contains('display-mode')&&tsgRegistrationSeason())loadPublic().catch(console.warn);else renderPotentialSchedule();},120000);
 
 const PRELAUNCH_CARD_DURATION_MS=45*1000;
 function tvSequence(){
@@ -2517,6 +2597,7 @@ function tvSequence(){
   slides.push('Highlights','Weather 24h');
   if(prelaunch)slides.push(i===2?'Crew mottos':i%2===0?'Launch countdown':'League QR');
  }
+ if(tsgRegistrationSeason())slides.splice(2,0,'Potential schedule');
  slides.push('Standings');
  return slides;
 }
@@ -2979,6 +3060,9 @@ function renderLunchroom(){
   }else{
    html=`<div class="lb-launch-slide lb-launch-with-crest"><div class="lb-launch-league-lockup"><img class="lb-launch-crest" src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><div class="lb-launch-league-wordmark"><span class="lb-launch-glencoe">THE GLENCOE</span><strong>TURFCARE</strong><span class="lb-launch-social">SOCIAL LEAGUE</span></div></div><div class="lb-launch-eyebrow">REGISTRATION CLOSED NOVEMBER 19</div><h2 class="lb-launch-title">${preAccess?'WEEK 1 SCHEDULE RELEASE':'LEAGUE PLAY BEGINS'}</h2><div class="lb-launch-desc">${preAccess?'Player access, league functions and the Week 1 schedule release November 20.':'November 23 at 7:00 AM MST · Clock out. Game on.'}</div><div class="lb-launch-secondary">${preAccess?'NOVEMBER 20, 2026':'NOVEMBER 23, 2026'}</div></div>`;
   }
+ }else if(page==='Potential schedule'){
+  const draw=tsgPotentialDraw();
+  html=`<div class="lb-tv-section-title">Potential matchups · Registration preview</div><div class="tsg-tv-preview-sub">NOT OFFICIAL · Updates as new players are approved</div>${draw&&draw.participants.length>=2?(tsgPreviewMatchupRows(draw.weeks,3)||'<div class="lb-tv-empty">Official matches are already published. See the schedule on the website.</div>'):'<div class="lb-tv-empty">The preview will start once two players have been approved.</div>'}<div class="tsg-tv-preview-foot">Final opponents, weeks and sports may change · Official matchups take priority</div>`;
  }else if(page==='Standings'){
   const rows=leaderboard().slice(0,6);
   html=`<div class="lb-tv-section-title">League standings</div>${rows.length?rows.map((p,i)=>`<div class="lb-tv-leader"><div class="lb-tv-rank">${i+1}</div><div class="lb-tv-name">${esc(p.display_name)}${p.freebies?` <span class="lb-tv-minor">· ${p.freebies} freebie${p.freebies===1?'':'s'}</span>`:''}</div><div class="lb-tv-record">${p.wins} W <span class="lb-tv-minor">· ${p.losses} L · ${p.gameWins} GW</span></div></div>`).join(''):'<div class="lb-tv-empty">Standings will appear once the season begins.</div>'}`;
