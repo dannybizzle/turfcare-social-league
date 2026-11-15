@@ -1011,6 +1011,12 @@ body.display-mode .tsg-potential-sports>div span{
  background:#22694f;border:1px solid #a6d3b4;border-radius:999px;padding:4px 11px;
 }
 
+
+/* V60c: legible real-player roster on the TV sidebar during public registration. */
+body.display-mode .tsg-crew-roster-row{display:block;padding:10px 0;line-height:1.24;color:#fff;font-weight:800;font-size:clamp(17px,1.65vw,25px);overflow-wrap:anywhere;}
+body.display-mode .tsg-crew-roster-rank{color:#e6c77b;margin-right:8px;font-weight:700;}
+body.display-mode .tsg-crew-roster-note{margin-top:10px;opacity:.9;font-size:clamp(11px,.93vw,16px);}
+
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -2891,45 +2897,27 @@ function tvSeasonSportStats(sport,seasonId){
   return {name:p.display_name,wins,losses:played.length-wins,played:played.length,pct:played.length?Math.round(100*wins/played.length):0};
  }).filter(p=>p.played).sort((a,b)=>b.pct-a.pct||b.played-a.played||b.wins-a.wins);
 }
-// DISPLAY-ONLY INAUGURAL SEASON PREVIEW.
-// Fictional scores and match times with famous golfer names; NEVER written to Supabase.
-// Automatically switches back to authentic league data at 7:00 AM MST, Nov 23, 2026.
-const GOLF_DEMO_PLAYERS=[
- {name:'Scottie Scheffler',wins:8,losses:1,gameWins:22},
- {name:'Rory McIlroy',wins:7,losses:2,gameWins:20},
- {name:'Tiger Woods',wins:6,losses:3,gameWins:18},
- {name:'Nelly Korda',wins:5,losses:4,gameWins:16},
- {name:'Brooks Koepka',wins:4,losses:5,gameWins:14},
- {name:'Lydia Ko',wins:4,losses:5,gameWins:13},
- {name:'Jordan Spieth',wins:3,losses:6,gameWins:11},
- {name:'Jon Rahm',wins:2,losses:7,gameWins:9}
-];
-const GOLF_DEMO_MATCHUPS=[
- {a:'Scottie Scheffler',b:'Rory McIlroy',when:'Mon · Nov 23 · 12:30 PM',sports:'🏓 🎯 🎱'},
- {a:'Tiger Woods',b:'Brooks Koepka',when:'Tue · Nov 24 · 10:00 AM',sports:'🎯 🎱 🏒'},
- {a:'Nelly Korda',b:'Lydia Ko',when:'Wed · Nov 25 · 1:00 PM',sports:'🏓 🎱 🏒'},
- {a:'Jordan Spieth',b:'Jon Rahm',when:'Thu · Nov 26 · 11:30 AM',sports:'🏓 🎯 🏒'}
-];
-function golferPreviewActive(){return Date.now()<SEASON_KICKOFF_AT;}
-function demoKicker(text){return `<div class="lb-side-kicker">${text} <span class="tsg-demo-flag">SAMPLE DATA</span></div>`;}
-function demoLeagueSidebar(section){
- const n=$('lb-side-fixtures');if(!n)return;
- const player=GOLF_DEMO_PLAYERS,fixtures=GOLF_DEMO_MATCHUPS;
- if(section==='Leaderboard'){
-  n.innerHTML=demoKicker('LEAGUE STANDINGS')+player.slice(0,5).map((p,i)=>`<div class="lb-side-upcoming tsg-demo-row"><span><span class="tsg-demo-rank">${i+1}.</span> ${esc(p.name)}</span><small>${p.wins}W · ${p.losses}L</small></div>`).join('');
- }else if(section==='Today confirmed'||section==='Upcoming confirmed'){
-  const selected=section==='Today confirmed'?fixtures.slice(0,2):fixtures.slice(1,4);
-  n.innerHTML=demoKicker(section==='Today confirmed'?'CONFIRMED MATCH TIMES':'UPCOMING CONFIRMED MATCHUPS')+selected.map(f=>`<div class="lb-side-upcoming"><strong>${esc(f.a)}</strong> <span class="gold-vs">VS</span> <strong>${esc(f.b)}</strong><small>📅 ${esc(f.when)} · Example</small><small>${f.sports}</small></div>`).join('');
- }else if(section==='Overall leaders'){
-  const p=player[0],pct=Math.round(p.wins/(p.wins+p.losses)*100);
-  n.innerHTML=demoKicker('OVERALL WIN PERCENTAGE')+`<div class="lb-side-focus">${esc(p.name)}</div><div class="lb-side-detail">${pct}% win rate · ${p.wins}W–${p.losses}L</div><div class="lb-side-bar"><i style="width:${pct}%"></i></div><div class="lb-side-metric-grid"><div class="lb-side-stat"><b>${p.gameWins}</b><small>Sport wins</small></div><div class="lb-side-stat"><b>9</b><small>Matchups played</small></div></div>`;
- }else if(SPORTS.includes(section)){
-  const leaders={'Ping Pong':[player[1],7,8],Darts:[player[2],8,9],Pool:[player[3],6,7],'Air Hockey':[player[4],7,9],'Beer Pong':[player[6],5,8]};
-  const [p,w,total]=leaders[section],pct=Math.round(w/total*100);
-  n.innerHTML=demoKicker(`${sportIcon[section]||'🏆'} ${esc(section.toUpperCase())} LEADER`)+`<div class="lb-side-focus">${esc(p.name)}</div><div class="lb-side-detail">${pct}% win rate · ${w}W–${total-w}L</div><div class="lb-side-bar"><i style="width:${pct}%"></i></div><div class="lb-side-upcoming">${esc(player[5].name)} · 71%<small>5 wins · 7 games played</small></div>`;
- }else{
-  n.innerHTML=demoKicker('UPCOMING MATCHUPS')+fixtures.slice(0,3).map(f=>`<div class="lb-side-upcoming"><strong>${esc(f.a)}</strong> <span class="gold-vs">VS</span> <strong>${esc(f.b)}</strong><small>${esc(f.when)} · ${f.sports}</small></div>`).join('');
- }
+// During public registration, the TV sidebar showcases real approved players.
+// It never fabricates standings, sport victories, appointments, or match results.
+function tvRegisteredCrewSidebar(section){
+ const root=$('lb-side-fixtures');if(!root)return;
+ const crew=profiles.filter(p=>p.is_approved===true&&p.is_player===true&&p.display_name)
+  .sort((a,b)=>String(a.display_name).localeCompare(String(b.display_name)));
+ const count=crew.length;
+ const overview=['Leaderboard','Overall leaders'].includes(section);
+ const sport=SPORTS.includes(section)?section:null;
+ const kicker=sport?`${sportIcon[sport]||'🏆'} ${esc(sport.toUpperCase())} · MEET THE CREW`:
+  overview?'MEET THE REGISTERED CREW':'REGISTERED PLAYERS';
+ // Rotate names in groups of five as the existing sidebar advances.
+ const pageSize=5;
+ const pageCount=Math.max(1,Math.ceil(count/pageSize));
+ const offset=(sideSlideIndex%pageCount)*pageSize;
+ const shown=crew.slice(offset,offset+pageSize);
+ root.innerHTML=`<div class="lb-side-kicker">${kicker} <span class="tsg-demo-flag">REGISTRATION OPEN</span></div>`+
+  `<div class="lb-side-detail">${count} approved ${count===1?'player':'players'} · Roster grows as people join</div>`+
+  (shown.length?shown.map((p,i)=>`<div class="lb-side-upcoming tsg-crew-roster-row"><span><span class="tsg-crew-roster-rank">${offset+i+1}.</span> ${esc(p.display_name)}</span></div>`).join(''):
+  '<div class="lb-side-empty">Approved players will appear here as they join.</div>')+
+  `<div class="lb-side-detail tsg-crew-roster-note">Names only · Competition stats begin when games are played${pageCount>1?` · Page ${sideSlideIndex%pageCount+1}/${pageCount}`:''}</div>`;
 }
 function renderLeagueSidebar(){
  if(!document.body.classList.contains('display-mode'))return;
@@ -2937,11 +2925,11 @@ function renderLeagueSidebar(){
  const index=sideSlideIndex%SIDE_SECTIONS.length,section=SIDE_SECTIONS[index];
  const seasonInfo=tvSidebarSeason(), seasonId=seasonInfo?.season?.id, historical=!!seasonInfo?.history;
  const historyTag=historical?` <span class="tsg-demo-flag">${esc(seasonInfo.season.name)} · PREVIOUS SEASON</span>`:'';
- // Use real Supabase records for scheduled and confirmed matchups even before kickoff.
- // Only standings / sport leaders retain the explicitly labelled pre-season sample data.
- if(golferPreviewActive() && !['Today confirmed','Upcoming confirmed','Matchups'].includes(section)){
+ // During the registration window, showcase real approved participants instead
+ // of fictional golfer stats. Confirmed and published matchups stay authentic.
+ if(tsgRegistrationSeason() && !['Today confirmed','Upcoming confirmed','Matchups'].includes(section)){
   $('lb-side-pips').innerHTML=SIDE_SECTIONS.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join('');
-  demoLeagueSidebar(section);return;
+  tvRegisteredCrewSidebar(section);return;
  }
  $('lb-side-pips').innerHTML=SIDE_SECTIONS.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join('');
  if(section==='Leaderboard'){
