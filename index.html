@@ -822,6 +822,19 @@ body:not(.display-mode) .tsg-week-matchup .match-card { margin:0; border-color:#
   body:not(.display-mode) .tsg-week-matchup > .tsg-week-body{padding:0 8px 10px;}
 }
 
+
+/* V58c: optional score entry, comfortably tappable on mobile. TV untouched. */
+body:not(.display-mode) details.tsg-score-entry { margin-top:14px; border:1px solid #cbb98d; border-radius:12px; background:#f9f7ef; overflow:hidden; }
+body:not(.display-mode) details.tsg-score-entry > summary { list-style:none; cursor:pointer; min-height:52px; padding:13px 15px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; color:#103e2b; font-weight:800; }
+body:not(.display-mode) details.tsg-score-entry > summary::-webkit-details-marker { display:none; }
+body:not(.display-mode) details.tsg-score-entry > summary::after { content:'⌄'; font-size:1.45rem; margin-left:auto; line-height:1; }
+body:not(.display-mode) details.tsg-score-entry[open] > summary::after { content:'⌃'; }
+body:not(.display-mode) details.tsg-score-entry > summary small { color:#607267; font-size:.79rem; font-weight:500; }
+body:not(.display-mode) details.tsg-score-entry > summary:focus-visible { outline:3px solid #c59c45; outline-offset:-3px; }
+body:not(.display-mode) .tsg-score-body { padding:0 14px 15px; }
+body:not(.display-mode) .tsg-score-body select { min-height:44px; }
+@media(max-width:600px){body:not(.display-mode) details.tsg-score-entry > summary {flex-direction:column;align-items:flex-start;position:relative;padding-right:36px;}body:not(.display-mode) details.tsg-score-entry > summary::after{position:absolute;right:12px;top:14px;}body:not(.display-mode) .tsg-score-body{padding:0 10px 12px;}}
+
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1899,6 +1912,10 @@ function renderMyMatchups(){
  // Keep a player's deliberate open/close choice during normal data refreshes,
  // but reset when the actual league week advances.
  const existing=[...box.querySelectorAll('details.tsg-week-matchup')];
+ // Save open score editors and selected winners across the automatic minute refresh.
+ const scoreDrafts=new Map([...box.querySelectorAll('details.tsg-score-entry')].map(el=>[
+   el.dataset.matchId,{open:el.open,winners:Object.fromEntries([...el.querySelectorAll('select[data-game-id]')].map(s=>[s.dataset.gameId,s.value]))}
+ ]));
  const priorState=new Map(existing.map(el=>[el.dataset.matchId,el.open]));
  const previousCurrent=box.dataset.currentWeek||'';
  const currentKey=mine.map(m=>{
@@ -1920,13 +1937,23 @@ function renderMyMatchups(){
    const dateRange=s?weekDates(s,m.week_number):'';
    const weekLabel=isCurrent?'Current week':'Upcoming · play ahead available';
    const statusLabel=finished?'Results recorded':esc(matchStatus(m));
+   const draft=scoreDrafts.get(m.id);
    return `<details class="tsg-week-matchup" data-match-id="${esc(m.id)}" ${isOpen?'open':''}><summary><span class="tsg-week-title"><strong>Week ${m.week_number} — ${esc(playerName(opponent))}</strong><small>${esc(dateRange)} · ${weekLabel} · ${statusLabel}</small></span></summary><div class="tsg-week-body"><div class="match-card" data-match-id="${esc(m.id)}"><div class="match-head"><strong>Week ${m.week_number}: ${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}</strong><span class="tag ${future?'warning':''}">${esc(matchStatus(m))}</span></div>
    <div class="match-sports">${esc(gs.map(g=>`${sportIcon[g.discipline]||''} ${g.discipline}`).join(' · '))}</div>${summary}
    ${meetupControls(m)}
    <div class="tsg-report-wrap"><button type="button" class="secondary" data-report-issue="${esc(m.id)}">⚑ Report a scheduling issue</button></div>
    ${m.submitted_at?`<div class="notice">Submitted ${new Date(m.submitted_at).toLocaleString()} by ${esc(playerName(m.submitted_by))}</div>`:''}
-   ${canSubmit?`<div class="notice">${future?'Playing early? You can submit now. The result will count when Week '+m.week_number+' starts.':'Enter the winner of each assigned game.'}</div><form class="score-form" data-match-id="${esc(m.id)}">${gs.map(g=>`<div class="score-row"><label for="winner-${esc(g.id)}">${sportIcon[g.discipline]||''} ${esc(g.discipline)}</label><select required id="winner-${esc(g.id)}" data-game-id="${esc(g.id)}"><option value="">Choose winner</option><option value="${esc(m.player1_id)}">${esc(playerName(m.player1_id))}</option><option value="${esc(m.player2_id)}">${esc(playerName(m.player2_id))}</option></select></div>`).join('')}<button type="submit" style="margin-top:12px">Submit all 3 games</button></form>`:!finished?`<div class="notice">${expired?'Deadline passed. Contact an administrator.':gs.length!==3?'Matchup is missing its three assigned games. Contact an administrator.':'Score entry is closed.'}</div>`:''}</div></div></details>`;
+   ${canSubmit?`<details class="tsg-score-entry" data-match-id="${esc(m.id)}" ${draft?.open?'open':''}><summary><span>🏆 Enter results</span><small>${future?'Playing ahead? Results count when this week begins.':'Choose the winner of all three sports.'}</small></summary><div class="tsg-score-body"><form class="score-form" data-match-id="${esc(m.id)}">${gs.map(g=>`<div class="score-row"><label for="winner-${esc(g.id)}">${sportIcon[g.discipline]||''} ${esc(g.discipline)}</label><select required id="winner-${esc(g.id)}" data-game-id="${esc(g.id)}"><option value="">Choose winner</option><option value="${esc(m.player1_id)}">${esc(playerName(m.player1_id))}</option><option value="${esc(m.player2_id)}">${esc(playerName(m.player2_id))}</option></select></div>`).join('')}<p class="notice">Each sport counts as one league game win, whether you played a single game, best of 3 or best of 5.</p><button type="submit" style="margin-top:12px">Submit all 3 games</button></form></div></details>`:!finished?`<div class="notice">${expired?'Deadline passed. Contact an administrator.':gs.length!==3?'Matchup is missing its three assigned games. Contact an administrator.':'Score entry is closed.'}</div>`:''}</div></div></details>`;
  }).join('');
+ // Restore unsent selections after HTML is refreshed. Never touch server-saved results.
+ for(const [matchId,draft] of scoreDrafts){
+   const editor=[...box.querySelectorAll('details.tsg-score-entry')].find(x=>x.dataset.matchId===matchId);
+   if(!editor)continue;
+   for(const input of editor.querySelectorAll('select[data-game-id]')){
+     const value=draft.winners[input.dataset.gameId];
+     if(value&&[...input.options].some(o=>o.value===value))input.value=value;
+   }
+ }
 }
 $('my-matchups').addEventListener('click',async e=>{
  const b=e.target.closest('[data-meetup-confirm]');if(!b)return;
