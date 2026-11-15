@@ -1029,6 +1029,12 @@ body.display-mode .lb-tv-primary .tsg-potential-week .tsg-potential-fixture .tsg
   font-size:clamp(24px,2.35vw,40px) !important;
   text-shadow:0 2px 6px rgba(0,0,0,.85) !important;
 }
+
+/* V60e — Each provisional TV card displays at most two complete matchups. */
+body.display-mode .tsg-tv-page-indicator{display:inline-block;margin:0 0 12px;padding:5px 13px;border:1px solid #c7a45e;border-radius:999px;color:#fff1ce;background:#184c38;font-weight:850;font-size:clamp(14px,1.05vw,20px);}
+body.display-mode .lb-tv-primary .tsg-potential-week{margin-bottom:8px;}
+body.display-mode .lb-tv-primary .tsg-potential-fixture{padding:9px 2px 11px;}
+body.display-mode .lb-tv-primary .tsg-potential-pair{padding:2px 0 5px;}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1903,6 +1909,22 @@ function tsgPreviewMatchupRows(weeks,maxWeeks=4,showPossibleSports=false){
  const visible=weeks.filter(w=>w.slots.length).slice(0,maxWeeks);
  return visible.map(w=>`<div class="tsg-potential-week"><h3>Week ${w.week} <small>· ${esc(weekDates(tsgRegistrationSeason(),w.week))}</small></h3>${w.slots.map(p=>`<div class="tsg-potential-fixture"><div class="tsg-potential-pair"><span class="tsg-preview-player-name">${esc(playerName(p.a))}</span><b>VS</b><span class="tsg-preview-player-name">${esc(playerName(p.b))}</span></div>${showPossibleSports?`<div class="tsg-potential-sports"><small>POSSIBLE SPORTS</small><div>${tsgPreviewSports(w.week,p).map(s=>`<span>${sportIcon[s]||'🏆'} ${esc(s)}</span>`).join('')}</div></div>`:''}</div>`).join('')}</div>`).join('');
 }
+/* V60e: TV-only pagination. Keep every pairing visible at full TV size. */
+const TSG_TV_PREVIEW_PAIRS_PER_SLIDE=2;
+function tsgTVPreviewPages(){
+ const draw=tsgPotentialDraw();
+ if(!draw||draw.participants.length<2)return [{week:null,slots:[],part:1,totalParts:1}];
+ const pages=[];
+ for(const w of draw.weeks){
+  if(!w.slots.length)continue;
+  const totalParts=Math.ceil(w.slots.length/TSG_TV_PREVIEW_PAIRS_PER_SLIDE);
+  for(let part=0;part<totalParts;part++){
+   pages.push({week:w.week,slots:w.slots.slice(part*TSG_TV_PREVIEW_PAIRS_PER_SLIDE,(part+1)*TSG_TV_PREVIEW_PAIRS_PER_SLIDE),part:part+1,totalParts});
+  }
+ }
+ return pages.length?pages:[{week:null,slots:[],part:1,totalParts:1}];
+}
+function tsgTVPageKey(index){return 'Potential schedule '+(index+1);}
 function renderPotentialSchedule(){
  const root=$('tsg-potential-schedule');if(!root)return;
  const preview=tsgPotentialDraw();root.hidden=!preview;
@@ -2641,7 +2663,20 @@ function tvSequence(){
   slides.push('Highlights','Weather 24h');
   if(prelaunch)slides.push(i===2?'Crew mottos':i%2===0?'Launch countdown':'League QR');
  }
- if(tsgRegistrationSeason())slides.splice(2,0,'Potential schedule');
+ if(tsgRegistrationSeason()){
+  const potential=tsgTVPreviewPages().map((_,i)=>tsgTVPageKey(i));
+  // Spread all preview cards through the usual rotation rather than blocking TV
+  // with one long stretch of schedules. All pages remain reachable by Next/Previous.
+  potential.forEach((name,i)=>{
+   const afterWeather=Math.floor(i*5/potential.length);
+   const weatherIndices=slides.map((x,j)=>x==='Weather 24h'?j:-1).filter(j=>j>=0);
+   const target=weatherIndices[Math.min(afterWeather,weatherIndices.length-1)];
+   let insertAt=target+1;
+   while(insertAt<slides.length&&slides[insertAt].startsWith('Potential schedule '))insertAt++;
+   slides.splice(insertAt,0,name);
+  });
+ }
+
  slides.push('Standings');
  return slides;
 }
@@ -3086,9 +3121,15 @@ function renderLunchroom(){
   }else{
    html=`<div class="lb-launch-slide lb-launch-with-crest"><div class="lb-launch-league-lockup"><img class="lb-launch-crest" src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><div class="lb-launch-league-wordmark"><span class="lb-launch-glencoe">THE GLENCOE</span><strong>TURFCARE</strong><span class="lb-launch-social">SOCIAL LEAGUE</span></div></div><div class="lb-launch-eyebrow">REGISTRATION CLOSED NOVEMBER 19</div><h2 class="lb-launch-title">${preAccess?'WEEK 1 SCHEDULE RELEASE':'LEAGUE PLAY BEGINS'}</h2><div class="lb-launch-desc">${preAccess?'Player access, league functions and the Week 1 schedule release November 20.':'November 23 at 7:00 AM MST · Clock out. Game on.'}</div><div class="lb-launch-secondary">${preAccess?'NOVEMBER 20, 2026':'NOVEMBER 23, 2026'}</div></div>`;
   }
- }else if(page==='Potential schedule'){
-  const draw=tsgPotentialDraw();
-  html=`<div class="lb-tv-section-title">Potential matchups · Registration preview</div><div class="tsg-tv-preview-sub">NOT OFFICIAL · Updates as new players are approved</div>${draw&&draw.participants.length>=2?(tsgPreviewMatchupRows(draw.weeks,3,true)||'<div class="lb-tv-empty">Official matches are already published. See the schedule on the website.</div>'):'<div class="lb-tv-empty">The preview will start once two players have been approved.</div>'}<div class="tsg-tv-preview-foot">Final opponents, weeks and sports may change · Official matchups take priority</div>`;
+ }else if(page.startsWith('Potential schedule ')){
+  const pages=tsgTVPreviewPages();
+  const requested=Number(page.slice('Potential schedule '.length))-1;
+  const index=Math.max(0,Math.min(pages.length-1,Number.isFinite(requested)?requested:0));
+  const card=pages[index];
+  const detail=card.week===null?'<div class="lb-tv-empty">The preview will appear when approved players have potential pairings available.</div>':
+   tsgPreviewMatchupRows([{week:card.week,slots:card.slots}],1,true);
+  html=`<div class="lb-tv-section-title">Potential matchups · Registration preview</div><div class="tsg-tv-preview-sub">NOT OFFICIAL · Updates as new players are approved</div><div class="tsg-tv-page-indicator">Preview ${index+1} of ${pages.length}${card.week!==null?' · Week '+card.week+(card.totalParts>1?' · Part '+card.part+' of '+card.totalParts:''):''}</div>${detail}<div class="tsg-tv-preview-foot">Final opponents, weeks and sports may change · Official matchups take priority</div>`;
+
  }else if(page==='Standings'){
   const rows=leaderboard().slice(0,6);
   html=`<div class="lb-tv-section-title">League standings</div>${rows.length?rows.map((p,i)=>`<div class="lb-tv-leader"><div class="lb-tv-rank">${i+1}</div><div class="lb-tv-name">${esc(p.display_name)}${p.freebies?` <span class="lb-tv-minor">· ${p.freebies} freebie${p.freebies===1?'':'s'}</span>`:''}</div><div class="lb-tv-record">${p.wins} W <span class="lb-tv-minor">· ${p.losses} L · ${p.gameWins} GW</span></div></div>`).join(''):'<div class="lb-tv-empty">Standings will appear once the season begins.</div>'}`;
