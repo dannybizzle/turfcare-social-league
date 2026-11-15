@@ -1017,6 +1017,18 @@ body.display-mode .tsg-crew-roster-row{display:block;padding:10px 0;line-height:
 body.display-mode .tsg-crew-roster-rank{color:#e6c77b;margin-right:8px;font-weight:700;}
 body.display-mode .tsg-crew-roster-note{margin-top:10px;opacity:.9;font-size:clamp(11px,.93vw,16px);}
 
+
+/* V60d: guaranteed high-contrast names on TV potential-matchup preview. */
+body.display-mode .lb-tv-primary .tsg-potential-week .tsg-potential-fixture .tsg-potential-pair > span.tsg-preview-player-name {
+  color:#FFFFFF !important;
+  -webkit-text-fill-color:#FFFFFF !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  filter:none !important;
+  font-weight:950 !important;
+  font-size:clamp(24px,2.35vw,40px) !important;
+  text-shadow:0 2px 6px rgba(0,0,0,.85) !important;
+}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1889,7 +1901,7 @@ function tsgPreviewSports(week,pair){
 }
 function tsgPreviewMatchupRows(weeks,maxWeeks=4,showPossibleSports=false){
  const visible=weeks.filter(w=>w.slots.length).slice(0,maxWeeks);
- return visible.map(w=>`<div class="tsg-potential-week"><h3>Week ${w.week} <small>· ${esc(weekDates(tsgRegistrationSeason(),w.week))}</small></h3>${w.slots.map(p=>`<div class="tsg-potential-fixture"><div class="tsg-potential-pair"><span>${esc(playerName(p.a))}</span><b>VS</b><span>${esc(playerName(p.b))}</span></div>${showPossibleSports?`<div class="tsg-potential-sports"><small>POSSIBLE SPORTS</small><div>${tsgPreviewSports(w.week,p).map(s=>`<span>${sportIcon[s]||'🏆'} ${esc(s)}</span>`).join('')}</div></div>`:''}</div>`).join('')}</div>`).join('');
+ return visible.map(w=>`<div class="tsg-potential-week"><h3>Week ${w.week} <small>· ${esc(weekDates(tsgRegistrationSeason(),w.week))}</small></h3>${w.slots.map(p=>`<div class="tsg-potential-fixture"><div class="tsg-potential-pair"><span class="tsg-preview-player-name">${esc(playerName(p.a))}</span><b>VS</b><span class="tsg-preview-player-name">${esc(playerName(p.b))}</span></div>${showPossibleSports?`<div class="tsg-potential-sports"><small>POSSIBLE SPORTS</small><div>${tsgPreviewSports(w.week,p).map(s=>`<span>${sportIcon[s]||'🏆'} ${esc(s)}</span>`).join('')}</div></div>`:''}</div>`).join('')}</div>`).join('');
 }
 function renderPotentialSchedule(){
  const root=$('tsg-potential-schedule');if(!root)return;
