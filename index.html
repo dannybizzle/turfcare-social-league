@@ -864,6 +864,31 @@ body:not(.display-mode) .tsg-single-issue-body textarea{max-width:650px;}
  body:not(.display-mode) .tsg-single-issue-body button[type=submit]{width:100%;min-height:46px;}
 }
 
+
+/* V59: restore the 4-link mobile bottom navigation; desktop and TV remain unchanged. */
+body:not(.display-mode) .tsg-v59-bottom-nav{display:none!important;}
+body.display-mode .tsg-v59-bottom-nav{display:none!important;}
+@media(max-width:760px){
+ body:not(.display-mode) .tsg-v59-bottom-nav:not([hidden]){display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));position:fixed;bottom:0;left:0;right:0;z-index:1800;gap:2px;padding:7px 9px max(8px,env(safe-area-inset-bottom));background:#092d23f7;border-top:1px solid #d4ae65;box-shadow:0 -7px 28px #0004;backdrop-filter:blur(12px);}
+ body:not(.display-mode) .tsg-v59-bottom-nav a{min-width:0;min-height:51px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;text-align:center;color:#f6ebce;text-decoration:none;font-size:11px;font-weight:800;border-radius:10px;}
+ body:not(.display-mode) .tsg-v59-bottom-nav a span{font-size:22px;line-height:1;color:#d6b36d;}
+ body:not(.display-mode) .tsg-v59-bottom-nav a[aria-current="page"]{background:#296447;color:white;}
+ body:not(.display-mode) .tsg-v59-bottom-nav a:focus-visible{outline:2px solid #e5c47d;outline-offset:-2px;}
+ body:not(.display-mode):has(.tsg-v59-bottom-nav:not([hidden])) main.home-body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important;}
+}
+/* V59: lightweight admin summary, showing only already-loaded league data. */
+body:not(.display-mode) .tsg-v59-overview{margin-bottom:16px;}
+body:not(.display-mode) .tsg-v59-overview-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+body:not(.display-mode) .tsg-v59-overview-head p{margin-top:0;}
+body:not(.display-mode) .tsg-v59-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
+body:not(.display-mode) .tsg-v59-metrics button{min-width:0;min-height:130px;display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;background:#f5f0e3;color:#133d2b;border:1px solid #d4c29b;border-radius:13px;padding:14px;}
+body:not(.display-mode) .tsg-v59-metrics button:hover{background:#ece5d3;}
+body:not(.display-mode) .tsg-v59-metrics small{font-size:.78rem;color:#546b5d;}
+body:not(.display-mode) .tsg-v59-metrics strong{font-size:clamp(25px,3vw,38px);font-variant-numeric:tabular-nums;line-height:1.1;}
+body:not(.display-mode) .tsg-v59-metrics span{font-size:.78rem;font-weight:800;margin-top:auto;}
+body:not(.display-mode) .tsg-v59-season{margin:17px 0;}
+body:not(.display-mode) .tsg-v59-links{display:flex;gap:8px;flex-wrap:wrap;}
+@media(max-width:750px){body:not(.display-mode) .tsg-v59-metrics{grid-template-columns:repeat(2,minmax(0,1fr));}}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1455,7 +1480,19 @@ body:not(.display-mode) .tsg-v58-rules-content section:last-child{border-bottom:
 <button type="button" class="secondary" data-admin-category="results">Results</button>
 </nav>
 <div id="admin-category-inbox" class="admin-category"><section class="panel"><h3>Scheduling Inbox</h3><p class="muted">Reported matchup issues. Resolve or dismiss a report to remove it from the active inbox; history is preserved.</p><div class="tsg-inbox-tabs"><button type="button" id="tsg-inbox-open" class="secondary active">Open</button><button type="button" id="tsg-inbox-history" class="secondary">History</button><button type="button" id="tsg-inbox-refresh" class="secondary">Refresh</button></div><div id="tsg-inbox-items" role="region" aria-live="polite"><div class="empty">Loading reports…</div></div><div id="tsg-inbox-message" role="status" aria-live="polite"></div></section></div>
-<div id="admin-category-overview" class="admin-category hidden"></div>
+<div id="admin-category-overview" class="admin-category hidden">
+ <section class="panel tsg-v59-overview">
+  <div class="tsg-v59-overview-head"><div><h3>League at a glance</h3><p class="muted">The essentials, with quick access to your existing admin tools.</p></div><button type="button" class="secondary" id="tsg-v59-refresh">Refresh</button></div>
+  <div class="tsg-v59-metrics">
+   <button type="button" data-v59-category="players"><small>Participating players</small><strong id="tsg-v59-players">—</strong><span>Manage players</span></button>
+   <button type="button" data-v59-category="players"><small>Pending approval</small><strong id="tsg-v59-pending">—</strong><span>Review registrations</span></button>
+   <button type="button" data-v59-category="inbox"><small>Open reports</small><strong id="tsg-v59-reports">—</strong><span>Open Inbox</span></button>
+   <button type="button" data-v59-category="scheduling"><small>Season matchups</small><strong id="tsg-v59-matchups">—</strong><span>Scheduling</span></button>
+  </div>
+  <p id="tsg-v59-season" class="tsg-v59-season muted">Loading season…</p>
+  <div class="tsg-v59-links"><button type="button" class="secondary" data-v59-category="availability">Availability</button><button type="button" class="secondary" data-v59-category="results">Results &amp; Freebies</button><button type="button" class="secondary" data-v59-category="inbox">Admin Inbox</button></div>
+ </section>
+</div>
 <div id="admin-category-players" class="admin-category hidden"></div>
 <div id="admin-category-scheduling" class="admin-category hidden"></div>
 <div id="admin-category-availability" class="admin-category hidden"></div>
@@ -1527,6 +1564,12 @@ body:not(.display-mode) .tsg-v58-rules-content section:last-child{border-bottom:
 </section>
 <div class="foot">Turfcare Social Games League · Built for the crew</div>
 </main>
+<nav class="home-mobile-tabs tsg-v59-bottom-nav" aria-label="Mobile quick navigation" hidden>
+<a href="#page-home" aria-label="Home"><span aria-hidden="true">⌂</span>Home</a>
+<a href="#page-matchups" aria-label="Matchups"><span aria-hidden="true">⚔</span>Matchups</a>
+<a href="#page-standings" aria-label="Standings"><span aria-hidden="true">▥</span>Standings</a>
+<a href="#page-player" aria-label="My League"><span aria-hidden="true">♟</span>My League</a>
+</nav>
 <div class="lb-screen" id="lunchroom-screen" aria-label="Lunchroom league scoreboard">
  <div class="lb-tv-header">
   <div class="lb-tv-brand"><img class="lb-tv-logo tsg-crest" src="assets/glencoe-crest.jpg" alt="Glencoe Golf & Country Club crest"><div class="tsg-wordmark"><div class="lb-tv-title">TURFCARE</div><div class="tsg-submark">SOCIAL LEAGUE</div></div></div>
@@ -1620,8 +1663,28 @@ async function loadLeagueFlags(){
  if(!currentUserId){leagueMatchupFlags=[];renderLeagueInbox();return;}
  const {data,error}=await client.from('league_matchup_flags').select('id,matchup_id,reported_by,reason,description,status,created_at,reviewed_by,reviewed_at,resolution_notes').order('created_at',{ascending:false}).limit(300);
  if(error){console.warn('Scheduling reports:',error.message);if(isAdmin)$('tsg-inbox-items').innerHTML='<div class="empty">Unable to load reports: '+esc(error.message)+'</div>';return;}
- leagueMatchupFlags=data||[];renderLeagueInbox();
+ leagueMatchupFlags=data||[];renderLeagueInbox();updateV59Overview();
 }
+/* V59 Admin Overview uses existing in-memory data. */
+function updateV59Overview(){
+ if(!isAdmin)return;
+ const put=(id,v)=>{const element=$(id);if(element)element.textContent=String(v);};
+ put('tsg-v59-players',profiles.filter(p=>p.is_player===true&&p.is_approved===true).length);
+ put('tsg-v59-pending',profiles.filter(p=>p.is_approved===false&&!p.is_owner).length);
+ put('tsg-v59-reports',leagueMatchupFlags.filter(f=>f.status==='open').length);
+ const season=seasons.find(x=>x.status==='active')||seasons.find(x=>x.status==='upcoming')||seasons[0];
+ put('tsg-v59-matchups',season?matchups.filter(m=>m.season_id===season.id).length:0);
+ put('tsg-v59-season',season?`${season.name} · ${season.starts_on} to ${season.ends_on}`:'No season created yet');
+}
+$('admin-category-overview')?.addEventListener('click',event=>{
+ const target=event.target.closest('button[data-v59-category]');if(target)selectAdminCategory(target.dataset.v59Category);
+});
+$('tsg-v59-refresh')?.addEventListener('click',async()=>{
+ const b=$('tsg-v59-refresh');if(b.disabled)return;
+ b.disabled=true;
+ try{await loadPublic();updateV59Overview();}catch(e){console.warn('Overview refresh failed',e);}
+ finally{b.disabled=false;}
+});
 function selectAdminCategory(name){
  const button=document.querySelector(`[data-admin-category="${name}"]`);if(button)button.click();
 }
@@ -1725,6 +1788,7 @@ async function loadPublic(){
  renderStandings();renderMatchups();renderCountdown();renderProfile();renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
  if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();await loadScheduleLog();await loadPendingRegistrations();}else $('player-management-list').innerHTML='Administrator access required.';
  if(currentUserId)await loadLeagueFlags();
+ updateV59Overview();
  if(document.body.classList.contains('display-mode'))renderLunchroom();
 }
 async function refreshAuth(){
@@ -3236,6 +3300,7 @@ $('password-setup-form').addEventListener('submit', async (e) => {
   document.querySelectorAll('.tsg-admin-link,.tsg-page-tabs a[data-page="admin"]').forEach(a=>{a.hidden=!isAdmin;a.setAttribute('aria-hidden',String(!isAdmin));});
   document.querySelectorAll('#tsg-v56c-menu a[href^="#page-"],.home-mobile-tabs a[href^="#page-"],.tsg-page-tabs a[href^="#page-"]').forEach(a=>{const restricted=!['#page-home','#page-rules'].includes(a.getAttribute('href'));a.hidden=restricted&&!signedIn;if(restricted)a.setAttribute('aria-hidden',String(!signedIn));});
   document.body.classList.toggle('tsg-v56g-guest',!signedIn);
+  const quickNav=document.querySelector('.tsg-v59-bottom-nav');if(quickNav)quickNav.hidden=!signedIn;
   Object.entries(sections).forEach(([k,el])=>el.classList.toggle('tsg-page-active',k===key));
   document.body.classList.toggle('tsg-secondary-page',key!=='home');
   [...tabs.querySelectorAll('a'),...document.querySelectorAll('.home-mobile-tabs a,.home-nav-links a')].forEach(a=>{
