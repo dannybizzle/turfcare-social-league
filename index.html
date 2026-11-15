@@ -1244,12 +1244,37 @@ body:not(.display-mode) #page-home>.countdown{margin-top:12px}
 body:not(.display-mode) .tsg-v56g-entrance .tsg-home-registration-cta[hidden]{display:none!important}
 @media(max-width:760px){body:not(.display-mode) .home-body{padding-bottom:24px!important}}
 </style>
+<style id="tsg-v57a-clean-entry">
+/* One Sign In action for guests: the existing hero button. Keep a convenient Sign Out for members. */
+body:not(.display-mode).tsg-v56g-guest #tsg-top-auth{display:none!important}
+/* TV link goes back below the Home content instead of competing with Register / Sign In. */
+body:not(.display-mode) #page-home .tsg-footer-display{display:flex!important;justify-content:space-between;align-items:center;gap:14px;margin:34px 0 8px;padding:18px 4px;border-top:1px solid #d6dacd;font:500 13px 'Manrope',sans-serif}
+body:not(.display-mode) #page-home .tsg-footer-display a{min-height:44px;display:inline-flex;align-items:center;text-decoration:none;font-weight:800;color:#14503a}
+@media(max-width:760px){body:not(.display-mode) #page-home .tsg-footer-display{display:flex!important;flex-wrap:wrap;margin:20px 0 8px;gap:8px}}
+</style>
+
+<style id="tsg-v57b-scenic-home">
+/* Version 57b: public-facing image is an illustration, not a photograph of The Glencoe. */
+body:not(.display-mode) .home-hero:before {
+  background:linear-gradient(90deg,rgba(2,28,21,.91) 0%,rgba(3,31,23,.74) 36%,rgba(4,36,26,.42) 67%,rgba(3,28,20,.30) 100%),url('assets/turfcare-hero.webp') center 58%/cover no-repeat!important;
+}
+body:not(.display-mode) .home-hero:after{background:linear-gradient(0deg,rgba(3,29,22,.58),transparent 38%)!important}
+body:not(.display-mode) .home-hero{min-height:380px}
+/* The only hero action is conditional public registration. */
+body:not(.display-mode) .tsg-v56g-login{display:none!important}
+body:not(.display-mode) .tsg-v56g-entrance{margin-top:18px}
+/* No duplicate top-right auth button; login and logout live in the dropdown. */
+body:not(.display-mode) #tsg-top-auth{display:none!important}
+body:not(.display-mode) #tsg-v56c-menu #tsg-v57b-account-action{display:block;width:100%;border:0;border-top:1px solid #dde3d7;border-radius:0;background:#fffdf5;color:#124631;padding:13px 14px;text-align:left;font:800 14px 'Manrope',sans-serif;cursor:pointer}
+body:not(.display-mode) #tsg-v56c-menu #tsg-v57b-account-action:hover{background:#f2eedb}
+@media(max-width:760px){body:not(.display-mode) .home-hero{min-height:330px}}
+</style>
 </head>
 <body>
 <header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="tsg-v56c-navigation"><button id="tsg-v56c-menu-button" class="tsg-v56c-menu-button" type="button" aria-expanded="false" aria-controls="tsg-v56c-menu">☰ <span id="tsg-v56c-current">Menu</span> <span aria-hidden="true">▾</span></button><div id="tsg-v56c-menu" class="home-nav-links" hidden><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><div class="tsg-v56g-entrance">
 <a aria-controls="tsg-registration" aria-expanded="false" class="tsg-home-registration-cta" href="#tsg-registration">Register for the League</a>
 <button class="tsg-v56g-login" id="tsg-v56g-login" type="button">Already a member? Sign in</button>
-<a class="tsg-v56g-tv" href="?display=1" aria-label="Open the separate lunchroom TV display">TV Display ↗</a>
+
 </div></div><div class="home-hero-mark tsg-hero-crest" aria-label="The Glencoe crest"><img src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><i>FIVE SPORTS · ONE CREW</i></div></div></header>
 <main class="wrap home-body"><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a data-sport-rules="Ping Pong" aria-haspopup="dialog" aria-label="View Ping Pong rules" href="#sport-rules" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a data-sport-rules="Darts" aria-haspopup="dialog" aria-label="View Darts rules" href="#sport-rules" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a data-sport-rules="Pool" aria-haspopup="dialog" aria-label="View Pool rules" href="#sport-rules" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a data-sport-rules="Air Hockey" aria-haspopup="dialog" aria-label="View Air Hockey rules" href="#sport-rules" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a data-sport-rules="Beer Pong" aria-haspopup="dialog" aria-label="View Beer Pong rules" href="#sport-rules" class="home-sport-tile tsg-beer-tile"><img src="assets/beer-pong.jpg" alt="Beer pong game with red cups and a ping-pong ball" loading="lazy"><span>05 <strong>BEER PONG</strong></span></a></div></section>
 
@@ -2980,7 +3005,10 @@ $('password-setup-form').addEventListener('submit', async (e) => {
   }
   pages[key].forEach(el=>section.appendChild(el));
   if(key==='home'){
-   // TV Display is linked directly from the hero, including on mobile.
+   const tv=document.createElement('div');
+   tv.className='tsg-footer-display';
+   tv.innerHTML='<span>For the lunchroom TV or a desktop browser</span><a href="?display=1" aria-label="Open Lunchroom TV Display">TV Display ↗</a>';
+   section.appendChild(tv);
   }
   main.appendChild(section);sections[key]=section;
  }
@@ -3048,7 +3076,7 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  title.append(caption,close);menu.append(title,authbox);document.body.append(menu);
  function isSignedIn(){return form.classList.contains('hidden');}
  function update(){toggle.textContent=isSignedIn()?'Sign out':'Sign in';if(isSignedIn())hide();}
- function place(){const r=toggle.getBoundingClientRect();menu.style.top=Math.max(8,Math.min(innerHeight-110,r.bottom+9))+'px';menu.style.right=Math.max(12,innerWidth-r.right)+'px';}
+ function place(){const anchor=document.getElementById('tsg-v56c-menu-button')||toggle;const r=anchor.getBoundingClientRect();menu.style.top=Math.max(8,Math.min(innerHeight-110,r.bottom+9))+'px';menu.style.right=Math.max(12,innerWidth-r.right)+'px';}
  function hide(){menu.hidden=true;toggle.setAttribute('aria-expanded','false');}
  function show(){place();menu.hidden=false;toggle.setAttribute('aria-expanded','true');document.getElementById('email')?.focus();}
  toggle.addEventListener('click',()=>{if(isSignedIn()){signout.click();return;}menu.hidden?show():hide();});
@@ -3138,7 +3166,7 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  const editorMessage=document.getElementById('tsg-v57-editor-message');
  const status=document.getElementById('tsg-signup-message');
  const seasonMap=new Map();
- function todayCalgary(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Edmonton',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
+ function todayCalgary(){const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'America/Edmonton',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));return `${p.year}-${p.month}-${p.day}`;}
  function publicOpen(){const today=todayCalgary();return Array.isArray(seasons)&&seasons.some(s=>s.registration_opens_on&&s.registration_closes_on&&s.registration_opens_on<=today&&today<=s.registration_closes_on);}
  window.tsgV57RegistrationOpen=publicOpen;
  function refresh(){
@@ -3176,6 +3204,28 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  // If public dates cross midnight while a browser is open, update the CTA without reloading.
  setInterval(refresh,60000);
  queueMicrotask(refresh);
+})();
+</script>
+
+<script id="tsg-v57b-menu-account">
+/* Menu account action preserves the existing Supabase auth form and sign-out handlers. */
+(function(){
+ if(new URLSearchParams(location.search).get('display')==='1')return;
+ const menu=document.getElementById('tsg-v56c-menu');
+ const toggle=document.getElementById('tsg-top-auth');
+ const form=document.getElementById('auth-form');
+ const menuToggle=document.getElementById('tsg-v56c-menu-button');
+ if(!menu||!toggle||!form||!menuToggle)return;
+ const button=document.createElement('button');
+ button.type='button';button.id='tsg-v57b-account-action';
+ function refresh(){button.textContent=form.classList.contains('hidden')?'Sign out':'Sign in';}
+ button.addEventListener('click',()=>{
+   menu.hidden=true;menuToggle.setAttribute('aria-expanded','false');
+   toggle.click();
+ });
+ menu.appendChild(button);
+ new MutationObserver(refresh).observe(form,{attributes:true,attributeFilter:['class']});
+ refresh();
 })();
 </script>
 </body>
