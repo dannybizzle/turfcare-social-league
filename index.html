@@ -7,6 +7,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet"><style>
 :root{--green:#173d32;--green2:#245b49;--lime:#c8d98b;--cream:#f5f3e9;--ink:#1d2924;--muted:#66736c;--line:#dce2d9;--white:#fff;--gold:#d7b56d}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}header{background:linear-gradient(120deg,#102c25,#245b49);color:white;padding:34px max(22px,calc((100vw - 1120px)/2));position:relative;overflow:hidden}header:after{content:'⛳';position:absolute;right:7%;top:-26px;font-size:150px;opacity:.13}nav{display:flex;align-items:center;justify-content:space-between;gap:16px;position:relative;z-index:1}.brand{font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.85rem}.pill{border:1px solid #ffffff66;border-radius:30px;padding:7px 13px;font-size:.82rem}.hero{padding:48px 0 35px;position:relative;z-index:1}.eyebrow{color:var(--lime);font-weight:700;text-transform:uppercase;letter-spacing:.14em;font-size:.75rem}.hero h1{font-size:clamp(2.2rem,5vw,4.2rem);line-height:1.02;max-width:700px;margin:10px 0}.hero p{max-width:610px;color:#e0e9e2;margin:14px 0 0}.wrap{max-width:1120px;margin:auto;padding:26px 22px 60px}.countdown{display:grid;grid-template-columns:1.4fr 2fr;gap:20px;background:var(--white);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:-2px;box-shadow:0 12px 30px #153a2b0d}.countdown h2{margin:0 0 4px;font-size:1.05rem}.muted{color:var(--muted)}.timer{display:flex;gap:12px;align-items:center;justify-content:flex-end}.timebox{background:#edf2e9;border-radius:12px;padding:10px 15px;text-align:center;min-width:68px}.timebox strong{display:block;font-size:1.45rem;color:var(--green);font-variant-numeric:tabular-nums}.timebox span{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:34px 0 14px}.section-head h2{margin:0;font-size:1.45rem;color:var(--green)}.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:20px}.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:20px;min-width:0}.panel h3{margin:0 0 12px;color:var(--green)}table{border-collapse:collapse;width:100%;font-size:.92rem}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}th{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}.discipline-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.discipline{background:#edf2e9;border-radius:12px;padding:14px 8px;text-align:center}.discipline .ico{font-size:1.5rem}.discipline strong{display:block;color:var(--green);font-size:.85rem}.discipline small{color:var(--muted)}.auth{display:flex;align-items:center;gap:8px}.button,button{border:0;border-radius:9px;padding:10px 15px;background:var(--green2);color:white;font-weight:700;cursor:pointer}.button.secondary,button.secondary{background:#edf2e9;color:var(--green)}input,select{padding:10px 12px;border:1px solid var(--line);border-radius:8px;width:100%;font:inherit}label{display:block;font-size:.82rem;font-weight:700;margin:10px 0 5px}.authbox{max-width:440px}.hidden{display:none!important}.status{padding:10px 12px;border-radius:9px;background:#edf2e9;color:var(--green);margin:10px 0}.error{background:#fbe9e6;color:#8b2d1d}.empty{color:var(--muted);padding:18px 0}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.admin-form{max-width:100%}.admin-form button{margin-top:12px}.preview{max-height:360px;overflow:auto}.notice{font-size:.88rem;color:var(--muted);margin:8px 0}.danger{background:#a13b32!important;color:#fff!important}.action-buttons{display:flex;gap:6px;flex-wrap:wrap}.action-buttons button{padding:7px 10px;font-size:.8rem}.table-scroll{overflow-x:auto}.foot{color:var(--muted);font-size:.8rem;text-align:center;padding:24px}a{color:var(--green2)}@media(max-width:760px){.countdown,.grid,.admin-grid{grid-template-columns:1fr}.timer{justify-content:flex-start;flex-wrap:wrap}.discipline-grid{grid-template-columns:repeat(2,1fr)}nav{align-items:flex-start}.auth{flex-wrap:wrap}}
 
+
+/* V58a — Keep day-only scheduling closed until the player chooses to open it. */
+body:not(.display-mode) details.meetup-tools{padding:0;overflow:hidden}
+body:not(.display-mode) details.meetup-tools>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:14px 16px;cursor:pointer;list-style:none;font-weight:800;color:#163b2c;min-height:48px}
+body:not(.display-mode) details.meetup-tools>summary::-webkit-details-marker{display:none}
+body:not(.display-mode) details.meetup-tools>summary:after{content:'⌄';font-size:1.35em;line-height:1;transition:transform .15s;order:2}
+body:not(.display-mode) details.meetup-tools[open]>summary:after{transform:rotate(180deg)}
+body:not(.display-mode) details.meetup-tools>summary small{font-size:.76rem;font-weight:700;color:#476756;margin-left:auto}
+body:not(.display-mode) details.meetup-tools>.meetup-body{padding:0 14px 14px;border-top:1px solid #c7d1b7}
+body:not(.display-mode) details.meetup-tools>summary:focus-visible{outline:3px solid #d8b76d;outline-offset:-3px}
+
 /* Version 3: player profiles, score entry, lunchroom screen */
 .score-panel{margin-top:18px}.score-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(160px,1.25fr);align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.score-row:last-child{border-bottom:0}.score-row select{width:100%}.player-link{background:transparent;color:var(--green2);padding:0;border-radius:0;text-decoration:underline;text-underline-offset:3px;font:inherit;font-weight:700}.player-link:hover{color:#101e18}.match-card{border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0;background:#fff}.match-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.match-sports{font-size:.86rem;color:var(--muted);margin:7px 0}.match-result{font-weight:700;color:var(--green)}.tag{display:inline-block;border-radius:20px;background:#edf2e9;color:var(--green);padding:4px 10px;font-size:.75rem;font-weight:700}.warning{background:#f5e7cf;color:#76521a}.player-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat-tile{background:#eef3eb;border-radius:12px;padding:15px;text-align:center}.stat-tile strong{font-size:1.35rem;display:block;color:var(--green)}.player-tools{margin-top:18px}.display-link{display:inline-flex;align-items:center;gap:8px;text-decoration:none;background:var(--green);color:#fff;border-radius:9px;padding:11px 16px;font-weight:800}.display-link:hover{background:var(--green2)}.lb-screen{display:none}.lb-screen.visible{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;background:#102a23;color:#f5f3e9;padding:clamp(20px,3.2vw,60px);gap:2.5vh}.lb-top{display:flex;justify-content:space-between;align-items:center;gap:20px}.lb-logo{font-size:clamp(16px,2vw,32px);font-weight:900;letter-spacing:.14em;text-transform:uppercase}.lb-sub{color:#c8d98b;letter-spacing:.14em;text-transform:uppercase;font-size:clamp(11px,1.1vw,20px)}.lb-slide{display:flex;flex:1;flex-direction:column;justify-content:center;min-height:0}.lb-title{font-size:clamp(30px,4.8vw,84px);line-height:1.02;margin:0 0 3vh}.lb-row{display:grid;grid-template-columns:70px 1fr auto;gap:2vw;align-items:center;border-bottom:1px solid #ffffff2a;padding:1.6vh 0;font-size:clamp(20px,3vw,52px);font-weight:800}.lb-rank{color:#d7b56d}.lb-kpi{color:#c8d98b}.lb-match{border:1px solid #ffffff3a;border-radius:20px;padding:2vh 3vw;margin:1vh 0;display:flex;flex-direction:column;gap:.5vh}.lb-match-main{font-size:clamp(19px,2.7vw,44px);font-weight:800}.lb-match-sub{font-size:clamp(13px,1.45vw,25px);color:#c8d98b}.lb-bigclock{font-size:clamp(55px,12vw,200px);font-variant-numeric:tabular-nums;letter-spacing:.03em;font-weight:900;line-height:1.1;color:#c8d98b;text-align:center}.lb-foot{display:flex;justify-content:space-between;align-items:center;gap:20px;color:#d0e2d6;font-size:clamp(12px,1.2vw,21px)}.lb-pips{display:flex;gap:10px}.lb-pips span{width:12px;height:12px;border-radius:50%;background:#5c786a}.lb-pips span.on{background:#c8d98b}body.display-mode{background:#102a23;overflow:hidden}body.display-mode>header,body.display-mode>main,body.display-mode>#password-setup{display:none!important}body.display-mode .lb-screen{display:flex}.tool-status{min-height:24px}@media(max-width:760px){.score-row{grid-template-columns:1fr}.player-stats{grid-template-columns:repeat(2,1fr)}.lb-row{grid-template-columns:34px 1fr auto}}
 
@@ -1273,10 +1284,21 @@ body:not(.display-mode) #tsg-v56c-menu #tsg-v57b-account-action:hover{background
 /* Remove obsolete inline page tabs on phones and desktops.
    The existing dropdown remains the single website navigation. */
 body:not(.display-mode) nav.tsg-page-tabs{display:none!important}
+
+/* V58: Dedicated public rules page, lightweight mobile-first layout. */
+body:not(.display-mode) .tsg-v58-rules-panel{max-width:940px;margin:0 auto 28px;padding:clamp(18px,4vw,36px)}
+body:not(.display-mode) .tsg-v58-rules-content{max-width:78ch;color:#23382c;line-height:1.65}
+body:not(.display-mode) .tsg-v58-motto{font:800 clamp(20px,3vw,31px)/1.2 'Barlow Condensed',sans-serif;color:#14503a;margin:0 0 18px}
+body:not(.display-mode) .tsg-v58-rules-content section{padding:17px 0;border-top:1px solid #dcd9c9}
+body:not(.display-mode) .tsg-v58-rules-content h3{font:800 23px/1.2 'Barlow Condensed',sans-serif;color:#194c36;margin:0 0 9px}
+body:not(.display-mode) .tsg-v58-rules-content h4{font-size:1rem;margin:0 0 3px;color:#184631}
+body:not(.display-mode) .tsg-v58-rules-content p{margin:0 0 12px}
+body:not(.display-mode) .tsg-v58-sport{padding:9px 0}
+body:not(.display-mode) .tsg-v58-rules-content section:last-child{border-bottom:1px solid #dcd9c9}
 </style>
 </head>
 <body>
-<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="tsg-v56c-navigation"><button id="tsg-v56c-menu-button" class="tsg-v56c-menu-button" type="button" aria-expanded="false" aria-controls="tsg-v56c-menu">☰ <span id="tsg-v56c-current">Menu</span> <span aria-hidden="true">▾</span></button><div id="tsg-v56c-menu" class="home-nav-links" hidden><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><div class="tsg-v56g-entrance">
+<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="tsg-v56c-navigation"><button id="tsg-v56c-menu-button" class="tsg-v56c-menu-button" type="button" aria-expanded="false" aria-controls="tsg-v56c-menu">☰ <span id="tsg-v56c-current">Menu</span> <span aria-hidden="true">▾</span></button><div id="tsg-v56c-menu" class="home-nav-links" hidden><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-rules">League Rules</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><div class="tsg-v56g-entrance">
 <a aria-controls="tsg-registration" aria-expanded="false" class="tsg-home-registration-cta" href="#tsg-registration">Register for the League</a>
 <button class="tsg-v56g-login" id="tsg-v56g-login" type="button">Already a member? Sign in</button>
 
@@ -1809,12 +1831,22 @@ $('save-correction').onclick=async()=>{
 function showCorrectionMessage(msg,error=false){$('correction-message').className=error?'status error':'status';$('correction-message').textContent=msg;}
 function showScoreMessage(msg,error=false){$('score-message').className=error?'status error':'status';$('score-message').textContent=msg;}
 function appointmentFor(id){return meetups.find(x=>x.matchup_id===id);}
-function meetupWhen(timestamp){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Edmonton',weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true,timeZoneName:'short'}).format(new Date(timestamp));}
-function meetupInputDate(timestamp){if(!timestamp)return '';const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Edmonton',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(timestamp));const v=Object.fromEntries(parts.map(x=>[x.type,x.value]));return `${v.year}-${v.month}-${v.day}T${v.hour}:${v.minute}`;}
+function meetupWhen(timestamp){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Edmonton',weekday:'short',month:'short',day:'numeric'}).format(new Date(timestamp));}
+function meetupInputDate(timestamp){if(!timestamp)return '';const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Edmonton',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(timestamp));const v=Object.fromEntries(parts.map(x=>[x.type,x.value]));return `${v.year}-${v.month}-${v.day}`;}
+// Existing Supabase meetup RPC expects a timestamp. Encode a chosen Calgary calendar day
+// as local noon internally; this is not a playing-time requirement or appointment time.
+function meetupDayInstant(ymd){
+ const [y,m,d]=ymd.split('-').map(Number);
+ if(!y||!m||!d||new Date(Date.UTC(y,m-1,d)).toISOString().slice(0,10)!==ymd)throw Error('Invalid playing day');
+ const target=Date.UTC(y,m-1,d,12,0);let t=target;
+ const fmt=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Edmonton',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
+ for(let i=0;i<3;i++){const p=Object.fromEntries(fmt.formatToParts(new Date(t)).map(x=>[x.type,x.value]));const local=Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute);t+=target-local;}
+ return new Date(t);
+}
 function meetupControls(m){
  if(m.status!=='scheduled')return '';
  const a=appointmentFor(m.id),confirmed=!!a?.confirmed_at;
- const label=a?`<div class="meetup-status ${confirmed?'confirmed':''}">${confirmed?'✓ CONFIRMED MATCH TIME':'⏳ TIME PROPOSED — AWAITING OPPONENT'}<strong>${esc(meetupWhen(a.starts_at))}</strong>${!confirmed?`<small>Proposed by ${esc(playerName(a.proposed_by))}</small>`:''}</div>`:'<div class="notice">Set a match time so the crew can watch. Both players must agree before it appears on TV.</div>';
+ const label=a?`<div class="meetup-status ${confirmed?'confirmed':''}">${confirmed?'✓ CONFIRMED PLAYING DAY':'⏳ DAY PROPOSED — AWAITING OPPONENT'}<strong>${esc(meetupWhen(a.starts_at))}</strong>${!confirmed?`<small>Proposed by ${esc(playerName(a.proposed_by))}</small>`:''}</div>`:'<div class="notice">Choose a day to play after work. Both players must agree before it appears on TV.</div>';
  const season=seasons.find(s=>s.id===m.season_id);
  const opponent=m.player1_id===currentUserId?m.player2_id:m.player1_id;
  let opponentDays='';
@@ -1824,8 +1856,8 @@ function meetupControls(m){
    const blockedDays=days.filter(d=>dayIsBlack(season.id,d));
    opponentDays=`<div class="day-opponent-note"><strong>${esc(playerName(opponent))}'s unavailable days:</strong> ${offDays.length?offDays.map(d=>esc(dateLabel(d))).join(', '):'None marked'}${blockedDays.length?`<br><strong>League blackout:</strong> ${blockedDays.map(d=>esc(dateLabel(d))).join(', ')}`:''}</div>`;
  }
- const approve=a&&!confirmed&&a.proposed_by!==currentUserId?`<button type="button" data-meetup-confirm="${esc(m.id)}">Confirm this time</button>`:'';
- return `<div class="meetup-tools"><strong>📅 Schedule your matchup</strong>${label}<form data-meetup-propose="${esc(m.id)}"><label for="meetup-${esc(m.id)}">Propose a date and time (Calgary / Mountain time)</label><input id="meetup-${esc(m.id)}" type="datetime-local" required value="${esc(meetupInputDate(a?.starts_at))}"><button type="submit" class="secondary">${a?'Propose a different time':'Propose match time'}</button></form>${approve}${opponentDays}</div>`;
+ const approve=a&&!confirmed&&a.proposed_by!==currentUserId?`<button type="button" data-meetup-confirm="${esc(m.id)}">Confirm this day</button>`:'';
+ return `<details class="meetup-tools"><summary><span>📅 Schedule your matchup</span><small>${confirmed?'✓ Day confirmed':a?'⏳ Awaiting confirmation':'Choose a day'}</small></summary><div class="meetup-body">${label}<form data-meetup-propose="${esc(m.id)}"><label for="meetup-${esc(m.id)}">Propose a playing day (Calgary date)</label><input id="meetup-${esc(m.id)}" type="date" required value="${esc(meetupInputDate(a?.starts_at))}"><button type="submit" class="secondary">${a?'Propose a different day':'Propose playing day'}</button></form>${approve}${opponentDays}</div></details>`;
 }
 function renderMyMatchups(){
  const box=$('my-matchups');if(!box)return;
@@ -1847,20 +1879,20 @@ function renderMyMatchups(){
 }
 $('my-matchups').addEventListener('click',async e=>{
  const b=e.target.closest('[data-meetup-confirm]');if(!b)return;
- if(!confirm('Confirm this date and time? It will be shown publicly on the league website and TV display.'))return;
+ if(!confirm('Confirm this playing day? It will be shown publicly on the league website and TV display.'))return;
  b.disabled=true;
- try{const {error}=await client.rpc('confirm_league_meetup',{p_matchup_id:b.dataset.meetupConfirm});if(error)throw error;await loadPublic();showScoreMessage('Matchup confirmed and now visible on the league TV schedule.');}
+ try{const {error}=await client.rpc('confirm_league_meetup',{p_matchup_id:b.dataset.meetupConfirm});if(error)throw error;await loadPublic();showScoreMessage('Playing day confirmed and now visible on the league TV schedule.');}
  catch(err){showScoreMessage(err.message||'Unable to confirm this time.',true);b.disabled=false;}
 });
 $('my-matchups').addEventListener('submit',async e=>{
  const proposal=e.target.closest('form[data-meetup-propose]');if(proposal){
-  e.preventDefault();const matchId=proposal.dataset.meetupPropose,input=proposal.querySelector('input[type="datetime-local"]');
-  if(!input.value)return showScoreMessage('Choose a date and time.',true);
-  const when=new Date(input.value);if(!Number.isFinite(when.getTime()))return showScoreMessage('Invalid date/time.',true);
-  // Browser local time is used for datetime-local; explain to Calgary users if browser in a different zone.
+  e.preventDefault();const matchId=proposal.dataset.meetupPropose,input=proposal.querySelector('input[type="date"]');
+  if(!input.value)return showScoreMessage('Choose a playing day.',true);
+  let when;try{when=meetupDayInstant(input.value);}catch{return showScoreMessage('Invalid playing day.',true);}
+  // Supabase currently stores an instant; Calgary noon is an internal day-only placeholder.
   const b=proposal.querySelector('button');b.disabled=true;
-  try{const {error}=await client.rpc('propose_league_meetup',{p_matchup_id:matchId,p_starts_at:when.toISOString()});if(error)throw error;await loadPublic();showScoreMessage('Time proposed. Your opponent can confirm it from their player dashboard.');}
-  catch(err){showScoreMessage(err.message||'Could not propose the time.',true);b.disabled=false;}
+  try{const {error}=await client.rpc('propose_league_meetup',{p_matchup_id:matchId,p_starts_at:when.toISOString()});if(error)throw error;await loadPublic();showScoreMessage('Playing day proposed. Your opponent can confirm it from My League.');}
+  catch(err){showScoreMessage(err.message||'Could not propose the playing day.',true);b.disabled=false;}
   return;
  }
 
@@ -1997,7 +2029,7 @@ function tvYesterday(date=new Date()){
 function tvTime(date=new Date()){return new Intl.DateTimeFormat('en-CA',{timeZone:TV_TZ,hour:'numeric',minute:'2-digit',hour12:true}).format(date);}
 function tvLongDate(date=new Date()){return new Intl.DateTimeFormat('en-CA',{timeZone:TV_TZ,weekday:'long',month:'long',day:'numeric'}).format(date);}
 function lbClock(deadline){const ms=Math.max(0,new Date(deadline).getTime()-Date.now());const days=Math.floor(ms/86400000),h=Math.floor(ms%86400000/3600000),min=Math.floor(ms%3600000/60000),sec=Math.floor(ms%60000/1000);return `${String(days).padStart(2,'0')}:${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;}
-function confirmedSchedule(){return matchups.filter(m=>inRollingWindow(m)&&m.status==='scheduled').map(m=>({m,a:appointmentFor(m.id)})).filter(x=>x.a?.confirmed_at&&new Date(x.a.starts_at).getTime()>Date.now()).sort((x,y)=>new Date(x.a.starts_at)-new Date(y.a.starts_at));}
+function confirmedSchedule(){return matchups.filter(m=>inRollingWindow(m)&&m.status==='scheduled').map(m=>({m,a:appointmentFor(m.id)})).filter(x=>x.a?.confirmed_at&&meetupInputDate(x.a.starts_at)>=meetupInputDate(new Date().toISOString())).sort((x,y)=>new Date(x.a.starts_at)-new Date(y.a.starts_at));}
 function sameCalgaryDay(iso){const f=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Edmonton',year:'numeric',month:'2-digit',day:'2-digit'});return f.format(new Date(iso))===f.format(new Date());}
 function confirmedMatchupCard(x){return `<div class="lb-side-upcoming"><strong>${esc(playerName(x.m.player1_id))}</strong> <span class="gold-vs">VS</span> <strong>${esc(playerName(x.m.player2_id))}</strong><small>📅 ${esc(meetupWhen(x.a.starts_at))} · Week ${x.m.week_number}</small><small>${esc(matchupGames(x.m).map(g=>sportIcon[g.discipline]||'').join(' '))}</small></div>`;}
 function tvScheduled(){return matchups.filter(m=>inRollingWindow(m)&&m.status==='scheduled' && m.deadline && new Date(m.deadline)>new Date()).sort((a,b)=>a.week_number-b.week_number||new Date(a.deadline)-new Date(b.deadline));}
@@ -2299,7 +2331,7 @@ function renderLeagueSidebar(){
   n.innerHTML=`<div class="lb-side-kicker">LEAGUE STANDINGS${historyTag}</div>${ranked.length?ranked.map((p,i)=>`<div class="lb-side-upcoming" style="display:flex;gap:10px;justify-content:space-between;align-items:baseline"><span><span style="color:#d7b56d">${i+1}.</span> ${esc(p.display_name)}</span><small style="white-space:nowrap">${p.wins}W · ${p.losses}L</small></div>`).join(''):'<div class="lb-side-empty">Players will appear here soon.</div>'}`;
  }else if(section==='Today confirmed'||section==='Upcoming confirmed'){
   const rows=confirmedSchedule().filter(x=>section==='Today confirmed'?sameCalgaryDay(x.a.starts_at):!sameCalgaryDay(x.a.starts_at)).slice(0,3);
-  n.innerHTML=`<div class="lb-side-kicker">${section==='Today confirmed'?"TODAY'S CONFIRMED MATCHUPS":'UPCOMING CONFIRMED MATCHUPS'}</div>${rows.length?rows.map(confirmedMatchupCard).join(''):`<div class="lb-side-empty">${section==='Today confirmed'?'No confirmed matchups today.':'No future times confirmed yet.'}</div>`}`;
+  n.innerHTML=`<div class="lb-side-kicker">${section==='Today confirmed'?"TODAY'S CONFIRMED MATCHUPS":'UPCOMING CONFIRMED MATCHUPS'}</div>${rows.length?rows.map(confirmedMatchupCard).join(''):`<div class="lb-side-empty">${section==='Today confirmed'?'No confirmed matchups today.':'No future playing days confirmed yet.'}</div>`}`;
  }else if(section==='Overall leaders'){
   const ranked=(seasonId?tvSeasonRankings(seasonId):[]).filter(p=>p.wins+p.losses>0).sort((a,b)=>b.wins/(b.wins+b.losses)-a.wins/(a.wins+a.losses)||b.wins-a.wins);
   const top=ranked[0];
@@ -2978,7 +3010,7 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  const main=document.querySelector('main.home-body');
  if(!main)return;
  const originals=[...main.children];
- const pages={home:[],standings:[],matchups:[],player:[],admin:[]};
+ const pages={home:[],standings:[],matchups:[],rules:[],player:[],admin:[]};
  // Route by stable element IDs where possible. The registration panel added
  // a child to <main>, so old numeric offsets placed admin tools on Home.
  originals.forEach((el,i)=>{
@@ -2991,13 +3023,14 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  // The QR code opens the homepage: show the existing registration form prominently.
  const signupPanel=pages.home.find(el=>el.id==='tsg-registration');
  if(signupPanel){pages.home=pages.home.filter(el=>el!==signupPanel);pages.home.splice(1,0,signupPanel);}
- const names={home:['WELCOME TO THE LEAGUE','Your league, without the clutter','Find the information you need in one tap.'],standings:['LEAGUE RESULTS','Standings & player stats','Rankings and individual sport results in one place.'],matchups:['YOUR RIVALS','Schedules & matchups','See weekly opponents and confirmed meeting times.'],player:['PLAYER ACCESS','My League','Sign in, organize your matches and report your results.'],admin:['LEAGUE MANAGEMENT','Administration','Manage seasons, schedules, players and scores.']};
+ const names={home:['WELCOME TO THE LEAGUE','Your league, without the clutter','Find the information you need in one tap.'],standings:['LEAGUE RESULTS','Standings & player stats','Rankings and individual sport results in one place.'],matchups:['YOUR RIVALS','Schedules & matchups','See weekly opponents and confirmed playing days.'],rules:['THE RULEBOOK','League Rules','Friendly competition. Simple rules. Everybody welcome.'],player:['PLAYER ACCESS','My League','Sign in, organize your matches and report your results.'],admin:['LEAGUE MANAGEMENT','Administration','Manage seasons, schedules, players and scores.']};
  const tabs=document.createElement('nav');tabs.className='tsg-page-tabs';tabs.setAttribute('aria-label','Website pages');
- for(const [key,label] of [['home','Home'],['standings','Standings'],['matchups','Matchups'],['player','My League'],['admin','Administration']]){
+ for(const [key,label] of [['home','Home'],['standings','Standings'],['matchups','Matchups'],['rules','League Rules'],['player','My League'],['admin','Administration']]){
   const a=document.createElement('a');a.href='#page-'+key;a.textContent=label;a.dataset.page=key;tabs.appendChild(a);
  }
  main.prepend(tabs);
  const sections={};
+ const rulePage=document.createElement('section');rulePage.className='panel tsg-v58-rules-panel';rulePage.innerHTML='<article class="tsg-v58-rules-content" aria-label="Official league rules">\n<p class="tsg-v58-motto">All skill levels welcome. Good attitudes required.</p>\n<p>One crew. Five sports. Bragging rights. The league is about friendly competition and getting together after work. Whether you play to win or simply want to join in, you\'re welcome.</p>\n<section><h3>1. Weekly matchups</h3><p>Each matchup has <strong>three different assigned sports</strong>. Play at least one game in each of those three sports. All three sports must be completed and reported for the matchup to count.</p></section>\n<section><h3>2. Choose how much you play</h3><p>For each assigned sport, both players agree <strong>before starting</strong> whether to play one game, best of 3, or best of 5. Winning the sport counts as <strong>one game win</strong> in league tracking, whether you won 1–0, 2–1, or 3–2.</p></section>\n<section><h3>3. Winning the matchup</h3><p>Each assigned sport awards one game win. Winning two of the three sports wins the weekly matchup, but <strong>you must still play the third sport</strong>.</p></section>\n<section><h3>4. Scheduling</h3><p>Arrange a playing <strong>day</strong> with your opponent. Matches are played after work; no exact start time is required. Finish all three sports before the weekly deadline, or play ahead when allowed.</p></section>\n<section><h3>5. Standings</h3><p>Weekly matchup victories determine the standings. Total game wins across assigned sports break ties.</p><p><strong>So don\'t skip that third game!</strong> Even if you\'ve already won or lost the matchup, that final game could make all the difference in the standings. Plus, it\'s another chance to earn some bragging rights.</p></section>\n<section><h3>6. Freebies &amp; missed matchups</h3><p>Unfinished matchups may result in a forfeit — otherwise known as a <strong>Freebie</strong>. Administrators review scheduling issues and may award one player a Freebie win or record a loss for both players.</p><p>A Freebie is a win you didn\'t have to earn on the table — but hey, a win\'s a win! That said, we\'re here to play games, not collect free victories. Communicate, make an effort, and get those games played.</p></section>\n<section><h3>7. Official sporting rules</h3>\n<div class="tsg-v58-sport"><h4>🏓 Ping Pong</h4><p>First to 11, win by 2. Serves alternate every two points, then each point at 10–10. A serve bounces on your side and then your opponent\'s; a legal net-touching serve is replayed.</p></div>\n<div class="tsg-v58-sport"><h4>🎯 Darts</h4><p>301, <strong>double-out</strong>. Three darts per turn. Reach exactly zero with a double to win. Going below zero, leaving 1, or reaching zero without a double is a bust; reset to the score at the start of the turn.</p></div>\n<div class="tsg-v58-sport"><h4>🎱 Pool</h4><p>Standard 8-ball. Clear your solids or stripes, then call the pocket for the 8-ball. Pocketing the 8-ball early or in the wrong pocket, or scratching while pocketing it, is a loss. Other fouls follow agreed house rules.</p></div>\n<div class="tsg-v58-sport"><h4>🏒 Air Hockey</h4><p>First to 7 goals. No touching the puck with your hands or trapping it by lifting your mallet. Goals count when the puck enters the goal.</p></div>\n<div class="tsg-v58-sport"><h4>🏓 Beer Pong</h4><p>Ten cups in a triangle on each side. One throw per player per turn. A successful shot removes one cup. First to clear the opponent\'s cups wins.</p></div>\n</section>\n<section><h3>8. Most important rule</h3><p>Show up, respect your opponent, have a laugh, and enjoy some friendly competition with the crew.</p><p><strong>All skill levels welcome. Good attitudes required.</strong></p></section>\n</article>';pages.rules.push(rulePage);
  for(const key of Object.keys(pages)){
   const section=document.createElement('div');section.className='tsg-page';section.id='page-'+key;
   if(key!=='home'){
@@ -3036,10 +3069,10 @@ $('password-setup-form').addEventListener('submit', async (e) => {
   let key=hash.startsWith('page-')?hash.slice(5):aliases[hash]||'home';
   if(!sections[key])key='home';
   const signedIn=!!currentUserId;
-  if(key!=='home'&&!signedIn)key='home';
+  if(key!=='home'&&key!=='rules'&&!signedIn)key='home';
   if(key==='admin' && !isAdmin)key='home';
   document.querySelectorAll('.tsg-admin-link,.tsg-page-tabs a[data-page="admin"]').forEach(a=>{a.hidden=!isAdmin;a.setAttribute('aria-hidden',String(!isAdmin));});
-  document.querySelectorAll('#tsg-v56c-menu a[href^="#page-"],.home-mobile-tabs a[href^="#page-"],.tsg-page-tabs a[href^="#page-"]').forEach(a=>{const restricted=a.getAttribute('href')!=='#page-home';a.hidden=restricted&&!signedIn;if(restricted)a.setAttribute('aria-hidden',String(!signedIn));});
+  document.querySelectorAll('#tsg-v56c-menu a[href^="#page-"],.home-mobile-tabs a[href^="#page-"],.tsg-page-tabs a[href^="#page-"]').forEach(a=>{const restricted=!['#page-home','#page-rules'].includes(a.getAttribute('href'));a.hidden=restricted&&!signedIn;if(restricted)a.setAttribute('aria-hidden',String(!signedIn));});
   document.body.classList.toggle('tsg-v56g-guest',!signedIn);
   Object.entries(sections).forEach(([k,el])=>el.classList.toggle('tsg-page-active',k===key));
   document.body.classList.toggle('tsg-secondary-page',key!=='home');
@@ -3099,17 +3132,17 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  <section class="rules-card" tabindex="-1">
   <div class="rules-top"><div><div class="rules-kicker">TURFCARE SOCIAL LEAGUE · SPORT RULES</div><h2 id="tsg-rules-title">Sport rules</h2></div><button type="button" class="rules-close" id="tsg-rules-close" aria-label="Close sport rules">✕</button></div>
   <div id="tsg-rules-body"></div>
-  <div class="rules-note"><strong>Proposed house rules:</strong> These are suggested formats, not yet approved league rules. The league administrator will confirm the final format before competition begins. Each sport awards one game win; three different sports are played per weekly matchup.</div>
+  <div class="rules-note"><strong>Official league sporting rules.</strong> Players agree on a single game, best of 3, or best of 5 for each assigned sport. The sport winner earns one game win, regardless of format.</div>
  </section>
 </div>
 <script id="tsg-v47-rules-js">
 (()=>{
  const rules={
-  'Ping Pong':['Play one game to 11 points; win by 2.','Serve alternates every 2 points, switching each point at 10–10.','A serve must bounce on your side and then your opponent’s side.','A rally is won when your opponent fails to return the ball legally.'],
-  'Darts':['Suggested format: one leg of 301, straight-out (exactly zero wins).','Players take turns throwing up to 3 darts.','Scores subtract from the remaining total; going below zero is a bust and the turn does not count.','Agree who throws first before beginning.'],
-  'Pool':['Suggested format: standard 8-ball, one rack.','Players aim to pocket their assigned solids or stripes before the 8-ball.','Call the intended pocket for the 8-ball.','Scratches and fouls give the opponent ball-in-hand; agree on the rack and break before play.'],
-  'Air Hockey':['Play one game: first player to 7 goals wins.','A goal counts when the puck completely enters the opponent’s goal.','Do not touch the puck with your hands or lift the mallet off the table to trap it.','Restart play fairly after each goal.'],
-  'Beer Pong':['Suggested format: 6 cups per side, arranged in a triangle.','Use water in the cups; drinking alcohol is not required to participate.','Players alternate throws. A ball landing in a cup removes that cup.','First player to clear the opponent’s cups wins; decide bounce shots and rebuttals before playing.']
+  'Ping Pong':['First to 11 points, win by 2.','Serves alternate every 2 points, then every point at 10–10.','A serve must bounce on your own side and then your opponent’s side.','A legal serve that touches the net is replayed.'],
+  'Darts':['Play 301, double-out: finish on a double to reach exactly zero.','Up to 3 darts per turn; subtract each turn’s score from the total.','A score below zero, a score of 1, or reaching zero without a double is a bust. The score returns to the start of the turn.'],
+  'Pool':['Standard 8-ball: clear your assigned solids or stripes before the 8-ball.','Call the pocket for the 8-ball.','Pocketing the 8-ball early, in the wrong pocket, or scratching while pocketing it loses the rack.','Other fouls follow agreed house rules.'],
+  'Air Hockey':['First to 7 goals wins.','Do not touch the puck with your hands or trap it by lifting the mallet.','A goal counts when the puck enters the goal.'],
+  'Beer Pong':['Set 10 cups in a triangle on each side.','One throw per player per turn.','A successful shot removes one cup.','First player to clear all the opponent’s cups wins.']
  };
  const dialog=document.getElementById('tsg-rules-dialog'),title=document.getElementById('tsg-rules-title'),body=document.getElementById('tsg-rules-body'),close=document.getElementById('tsg-rules-close'),card=dialog?.querySelector('.rules-card');
  if(!dialog||!title||!body||!close)return;
