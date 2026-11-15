@@ -1216,10 +1216,41 @@ body:not(.display-mode) header.home-relaunch .tsg-v56c-navigation {
 body:not(.display-mode) header.home-relaunch .home-hero {
   z-index: 0;
 }
+
+body:not(.display-mode) .tsg-v56g-entrance [hidden]{display:none!important}
+/* V56g: focused public homepage; do not modify the ?display=1 TV experience. */
+body:not(.display-mode) #page-home{max-width:100%;min-height:0}
+body:not(.display-mode).tsg-secondary-page #page-matchups .home-welcome{display:block}
+body:not(.display-mode) #page-home>.foot{display:none}
+body:not(.display-mode) .tsg-v56g-entrance{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:22px}
+body:not(.display-mode) .tsg-v56g-entrance .tsg-home-registration-cta{margin:0}
+body:not(.display-mode) .tsg-v56g-login{border:1px solid #c8a85e;background:transparent;color:#f8edcf;min-height:45px;padding:10px 14px;font-size:13px}
+body:not(.display-mode) .tsg-v56g-tv{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;min-height:45px;padding:10px 15px;border:1px solid #e5d09b;border-radius:9px;color:#f9e9bd;background:#ffffff12;font-weight:800;font-size:13px}
+body:not(.display-mode) .tsg-v56g-tv:hover,body:not(.display-mode) .tsg-v56g-login:hover{background:#ffffff25}
+body:not(.display-mode) #tsg-v56c-menu.home-nav-links{position:fixed!important;top:0;left:0;right:auto;z-index:2147483000!important;background:#fffdf5!important;opacity:1!important;backdrop-filter:none!important;box-shadow:0 18px 45px #0007!important}
+body:not(.display-mode) #tsg-v56c-menu a[hidden]{display:none!important}
+body:not(.display-mode) .tsg-v56g-guest .home-mobile-tabs a[hidden]{display:none!important}
+body:not(.display-mode) .home-mobile-tabs a[hidden]{display:none!important}
+body:not(.display-mode) .tsg-page-tabs a[hidden]{display:none!important}
+body:not(.display-mode) .tsg-v56g-guest .tsg-v56g-entrance{display:flex}
+@media(max-width:760px){body:not(.display-mode) .tsg-v56g-entrance{gap:8px}body:not(.display-mode) .tsg-v56g-entrance>a,body:not(.display-mode) .tsg-v56g-entrance>button{flex:1 1 calc(50% - 8px);font-size:12px}body:not(.display-mode) .home-mobile-tabs{display:none!important}body:not(.display-mode) .home-body{padding-bottom:24px!important}}
+</style>
+<style id="tsg-v57-mobile-styles">
+/* Never render the obsolete four-link mobile footer. */
+body:not(.display-mode) .home-mobile-tabs{display:none!important}
+/* Five sports and weekly deadline stay on Home; all ranking and score tables stay on their dedicated pages. */
+body:not(.display-mode) #page-home>.home-welcome{margin-bottom:22px}
+body:not(.display-mode) #page-home>.countdown{margin-top:12px}
+body:not(.display-mode) .tsg-v56g-entrance .tsg-home-registration-cta[hidden]{display:none!important}
+@media(max-width:760px){body:not(.display-mode) .home-body{padding-bottom:24px!important}}
 </style>
 </head>
 <body>
-<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="tsg-v56c-navigation"><button id="tsg-v56c-menu-button" class="tsg-v56c-menu-button" type="button" aria-expanded="false" aria-controls="tsg-v56c-menu">☰ <span id="tsg-v56c-current">Menu</span> <span aria-hidden="true">▾</span></button><div id="tsg-v56c-menu" class="home-nav-links" hidden><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><a class="tsg-home-registration-cta" href="#tsg-registration" aria-controls="tsg-registration" aria-expanded="false">Register for the League</a></div><div class="home-hero-mark tsg-hero-crest" aria-label="The Glencoe crest"><img src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><i>FIVE SPORTS · ONE CREW</i></div></div></header>
+<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="tsg-v56c-navigation"><button id="tsg-v56c-menu-button" class="tsg-v56c-menu-button" type="button" aria-expanded="false" aria-controls="tsg-v56c-menu">☰ <span id="tsg-v56c-current">Menu</span> <span aria-hidden="true">▾</span></button><div id="tsg-v56c-menu" class="home-nav-links" hidden><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><div class="tsg-v56g-entrance">
+<a aria-controls="tsg-registration" aria-expanded="false" class="tsg-home-registration-cta" href="#tsg-registration">Register for the League</a>
+<button class="tsg-v56g-login" id="tsg-v56g-login" type="button">Already a member? Sign in</button>
+<a class="tsg-v56g-tv" href="?display=1" aria-label="Open the separate lunchroom TV display">TV Display ↗</a>
+</div></div><div class="home-hero-mark tsg-hero-crest" aria-label="The Glencoe crest"><img src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><i>FIVE SPORTS · ONE CREW</i></div></div></header>
 <main class="wrap home-body"><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a data-sport-rules="Ping Pong" aria-haspopup="dialog" aria-label="View Ping Pong rules" href="#sport-rules" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a data-sport-rules="Darts" aria-haspopup="dialog" aria-label="View Darts rules" href="#sport-rules" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a data-sport-rules="Pool" aria-haspopup="dialog" aria-label="View Pool rules" href="#sport-rules" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a data-sport-rules="Air Hockey" aria-haspopup="dialog" aria-label="View Air Hockey rules" href="#sport-rules" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a data-sport-rules="Beer Pong" aria-haspopup="dialog" aria-label="View Beer Pong rules" href="#sport-rules" class="home-sport-tile tsg-beer-tile"><img src="assets/beer-pong.jpg" alt="Beer pong game with red cups and a ping-pong ball" loading="lazy"><span>05 <strong>BEER PONG</strong></span></a></div></section>
 
 <section class="countdown" id="deadline-section"><div><h2>Time left to finish this week's matchup</h2><div id="deadline-label" class="muted">The weekly deadline will appear here once matchups are published.</div></div><div class="timer" id="timer"><div class="timebox"><strong>--</strong><span>Days</span></div><div class="timebox"><strong>--</strong><span>Hours</span></div><div class="timebox"><strong>--</strong><span>Minutes</span></div><div class="timebox"><strong>--</strong><span>Seconds</span></div></div></section>
@@ -1240,7 +1271,7 @@ body:not(.display-mode) header.home-relaunch .home-hero {
 <div><label for="tsg-signup-confirm">Confirm password</label><input id="tsg-signup-confirm" name="password_confirm" type="password" autocomplete="new-password" minlength="8" required placeholder="Repeat password"></div>
 </div>
 <button id="tsg-signup-submit" type="submit">Request League Access</button>
-<div class="tsg-register-note">Verify your email using the link we send you. New registrations start pending approval. Player access is planned for November 20; games begin November 23 at 7:00 AM Calgary time.</div>
+<div class="tsg-register-note">Verify your email using the link we send you. All new accounts remain pending administrator approval. Public registration dates are controlled separately for each season.</div>
 <div id="tsg-signup-message" role="status" aria-live="polite"></div>
 </form>
 </section>
@@ -1281,7 +1312,8 @@ body:not(.display-mode) header.home-relaunch .home-hero {
 <div id="admin-category-availability" class="admin-category hidden"></div>
 <div id="admin-category-results" class="admin-category hidden"></div>
 <div class="admin-grid" id="season-setup-grid">
-<section class="panel admin-form"><h3>Create a season</h3><label for="season-name">Season name</label><input id="season-name" placeholder="Season 1 – Fall 2026"><label for="season-start">Start date</label><input id="season-start" type="date"><label for="season-end">End date</label><input id="season-end" type="date"><div class="tsg-default-rules">Competition settings are reused automatically. Just enter the season name and dates; the schedule generator keeps the five sports, three-game matchups, random draw and established scoring rules.</div><button id="create-season">Create season</button><div id="create-season-message" class="notice" role="status"></div><div class="notice">This creates the season record only. It does not publish any matchups.</div></section>
+<section class="panel admin-form"><h3>Create a season</h3><label for="season-name">Season name</label><input id="season-name" placeholder="Season 1 – Fall 2026"><label for="season-start">Start date</label><input id="season-start" type="date"><label for="season-end">End date</label><input id="season-end" type="date"><label for="registration-opens">Public registration opens (Calgary)</label><input id="registration-opens" type="date"><label for="registration-closes">Public registration closes (inclusive)</label><input id="registration-closes" type="date"><p class="notice">The public Register link appears only during these dates. Admin invitations and player approvals remain available throughout the season.</p><div class="tsg-default-rules">Competition settings are reused automatically. Just enter the season name and dates; the schedule generator keeps the five sports, three-game matchups, random draw and established scoring rules.</div><button id="create-season">Create season</button><div id="create-season-message" class="notice" role="status"></div><div class="notice">This creates the season record only. It does not publish any matchups.</div></section>
+<section class="panel admin-form" id="tsg-v57-registration-editor"><h3>Public registration window</h3><p class="muted">Edit a season's public signup dates at any time. This does not restrict administrator invitations or approvals.</p><label for="tsg-v57-season">Season</label><select id="tsg-v57-season"></select><label for="tsg-v57-opens">Opens (Calgary)</label><input id="tsg-v57-opens" type="date"><label for="tsg-v57-closes">Closes (inclusive)</label><input id="tsg-v57-closes" type="date"><button id="tsg-v57-save-window" type="button">Save registration dates</button><div id="tsg-v57-editor-message" class="notice" role="status"></div></section>
 <section class="panel admin-form" id="rolling-generator"><h3>Rolling weekly schedule generator</h3><label for="schedule-season">Choose season</label><select id="schedule-season" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit"></select><input id="deadline-time" type="hidden" value="23:59"><div class="tsg-default-rules"><strong>Season defaults:</strong> Five sports (Ping Pong, Darts, Pool, Air Hockey and Beer Pong) · Three different sports per matchup · Two wins take the matchup · Total game wins break ties · Weekly deadline 11:59 PM (according to the schedule) · Fair rotating byes · Playing ahead allowed.</div><button id="preview-schedule">Preview next unpublished week</button><div class="notice">Only the next unpublished week is generated. The draw uses approved participating players, tries to avoid repeat opponents, and shares byes fairly. Individual days off and league blackout dates do not remove or replace opponents. The preview flags pairs without any mutually available dates. Every matchup receives three randomly selected sports.</div></section>
 </div>
 <section class="panel admin-form" style="margin-top:16px">
@@ -1345,7 +1377,7 @@ body:not(.display-mode) header.home-relaunch .home-hero {
 <section id="schedule-preview-panel" class="panel hidden" style="margin-top:16px"><h3>Schedule preview</h3><div id="schedule-preview" class="preview"></div><div class="notice" id="schedule-summary"></div><button id="publish-schedule">Approve and publish schedule</button> <button id="cancel-preview" class="secondary">Discard preview</button><div id="admin-message" role="status"></div></section>
 </section>
 <div class="foot">Turfcare Social Games League · Built for the crew</div>
-</main><nav class="home-mobile-tabs" aria-label="Quick access"><a href="#page-home"><span>⌂</span>Home</a><a href="#page-matchups"><span>⚔</span>Matchups</a><a href="#page-standings"><span>♜</span>Standings</a><a href="#page-player"><span>◉</span>My League</a></nav>
+</main>
 <div class="lb-screen" id="lunchroom-screen" aria-label="Lunchroom league scoreboard">
  <div class="lb-tv-header">
   <div class="lb-tv-brand"><img class="lb-tv-logo tsg-crest" src="assets/glencoe-crest.jpg" alt="Glencoe Golf & Country Club crest"><div class="tsg-wordmark"><div class="lb-tv-title">TURFCARE</div><div class="tsg-submark">SOCIAL LEAGUE</div></div></div>
@@ -1495,9 +1527,9 @@ $('my-matchups').addEventListener('click',async e=>{
 });
 
 async function loadPublic(){
- const [p,m,g,s,u,b,meet]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner,is_approved'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status,submitted_by,submitted_at,resolution,forfeit_winner_id,resolved_at'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status'),client.from('league_weekly_unavailability').select('season_id,week_number,player_id'),client.from('league_blackout_weeks').select('season_id,week_number,reason'),client.from('league_matchup_meetups').select('matchup_id,starts_at,proposed_by,confirmed_by,confirmed_at')]);
+ const [p,m,g,s,u,b,meet]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner,is_approved'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status,submitted_by,submitted_at,resolution,forfeit_winner_id,resolved_at'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status,registration_opens_on,registration_closes_on'),client.from('league_weekly_unavailability').select('season_id,week_number,player_id'),client.from('league_blackout_weeks').select('season_id,week_number,reason'),client.from('league_matchup_meetups').select('matchup_id,starts_at,proposed_by,confirmed_by,confirmed_at')]);
  for(const r of [p,m,g,s,b])if(r.error)throw r.error;
- profiles=p.data||[];matchups=m.data||[];games=g.data||[];seasons=s.data||[];blackoutWeeks=b.data||[];weeklyUnavailable=u.error?[]:(u.data||[]);meetups=meet.error?[]:(meet.data||[]);if(meet.error&&meet.error.code!=='42P01')console.warn('Meetup schedule loading:',meet.error.message);
+ profiles=p.data||[];matchups=m.data||[];games=g.data||[];seasons=s.data||[];if(typeof window.tsgV57RefreshRegistration==='function')window.tsgV57RefreshRegistration();blackoutWeeks=b.data||[];weeklyUnavailable=u.error?[]:(u.data||[]);meetups=meet.error?[]:(meet.data||[]);if(meet.error&&meet.error.code!=='42P01')console.warn('Meetup schedule loading:',meet.error.message);
  // Daily calendars use authenticated SELECT policies. Anonymous visitors see no availability data.
  const [dailyPlayers,dailyBlackouts]=await Promise.all([
    client.from('league_player_unavailable_dates').select('season_id,player_id,unavailable_on,created_by,created_at'),
@@ -1519,7 +1551,7 @@ async function refreshAuth(){
  $('auth-state').textContent=session?'Signed in as '+session.user.email+'.':'Sign in to access your player tools and submit completed matchups.';
  isAdmin=false;isOwner=false;
  if(session){const {data:profile}=await client.from('profiles').select('role,is_owner,is_player,is_approved,display_name').eq('id',session.user.id).maybeSingle();isAdmin=profile?.role==='admin';isOwner=profile?.is_owner===true;const approved=profile?.is_approved===true&&(profile?.is_player===true||isAdmin);const cal=calDate(new Date());const unlocked=cal>='2026-11-20'||isAdmin;$('tsg-pending-approval').classList.toggle('hidden',approved&&unlocked);$('player-area').classList.toggle('hidden',!(approved&&unlocked));if(profile&&document.activeElement!==$('my-display-name'))$('my-display-name').value=profile.display_name||'';}else{$('tsg-pending-approval').classList.add('hidden');$('player-area').classList.add('hidden');}
- $('tsg-registration').classList.toggle('hidden',!!session || $('tsg-registration').dataset.open!=='true');
+ $('tsg-registration').classList.toggle('hidden',!!session || !window.tsgV57RegistrationOpen?.() || $('tsg-registration').dataset.open!=='true');
  $('admin-area').classList.toggle('hidden',!isAdmin);
  if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();}
  renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
@@ -2733,10 +2765,11 @@ $('invite-player-button').onclick = async () => {
   }
 };
 $('create-season').onclick=async()=>{
-  const name=$('season-name').value.trim(),start=$('season-start').value,end=$('season-end').value;
+  const name=$('season-name').value.trim(),start=$('season-start').value,end=$('season-end').value,regOpen=$('registration-opens').value,regClose=$('registration-closes').value;
   if(!name||!start||!end)return showCreateSeasonMessage('Enter a season name, start date, and end date.',true);
   if(end<start)return showCreateSeasonMessage('End date must be on or after start date.',true);
-  const {error}=await client.from('seasons').insert({name,starts_on:start,ends_on:end,status:'upcoming'});
+  if(!!regOpen!==!!regClose || (regOpen&&regClose<regOpen))return showCreateSeasonMessage('Enter both registration dates in order, or leave both blank.',true);
+  const {error}=await client.from('seasons').insert({name,starts_on:start,ends_on:end,status:'upcoming',registration_opens_on:regOpen||null,registration_closes_on:regClose||null});
   if(error)return showCreateSeasonMessage(error.message,true);
   $('season-name').value='';await loadPublic();showCreateSeasonMessage('Season created successfully.');
 };
@@ -2800,6 +2833,7 @@ $('publish-schedule').onclick=async()=>{
 // Public signup: Supabase trigger creates a non-participating, unapproved player profile.
 $('tsg-signup-form').addEventListener('submit',async(event)=>{
  event.preventDefault();
+ if(!window.tsgV57RegistrationOpen?.()){const box=$('tsg-signup-message');box.className='status error';box.textContent='Public registration is closed. Contact an administrator about joining the league.';return;}
  const name=$('tsg-signup-name').value.trim().replace(/\s+/g,' ');
  const email=$('tsg-signup-email').value.trim();
  const password=$('tsg-signup-password').value;
@@ -2823,6 +2857,15 @@ $('reset').onclick=async()=>{const email=$('email').value.trim();if(!email)retur
 $('signout').onclick=async()=>{await client.auth.signOut();await refreshAuth();showMessage('You have signed out.');};
 client.auth.onAuthStateChange(()=>{setTimeout(()=>{refreshAuth().catch(console.error);},0);});
 loadPublic().catch(e=>{$('standings').innerHTML='<div class="empty">Could not load league data. Check that the Supabase tables and public read policies are set up.</div>';console.error(e);});refreshAuth();
+</script>
+<script id="tsg-v56g-auth-ui">
+(function(){
+if(new URLSearchParams(location.search).get('display')==='1')return;
+const form=document.getElementById('auth-form'),entry=document.querySelector('.tsg-v56g-entrance');
+if(!form||!entry)return;
+function update(){const signedIn=form.classList.contains('hidden');entry.querySelector('.tsg-home-registration-cta').hidden=signedIn || !window.tsgV57RegistrationOpen?.();entry.querySelector('.tsg-v56g-login').hidden=signedIn;}
+new MutationObserver(update).observe(form,{attributes:true,attributeFilter:['class']});update();
+})();
 </script>
 <!-- PLAYER PASSWORD SETUP -->
 <div id="password-setup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;padding:20px;">
@@ -2910,9 +2953,9 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  // a child to <main>, so old numeric offsets placed admin tools on Home.
  originals.forEach((el,i)=>{
   if(el.id==='admin-area')pages.admin.push(el);
-  else if(el.id==='player-area' || el.id==='tsg-pending-approval' || el.id==='player-signin' || i===10)pages.player.push(el);
-  else if(el.id==='standings-section' || el.id==='statistics-section' || el.id==='profile-panel' || i===4)pages.standings.push(el);
-  else if(el.id==='matchups-section' || i===6)pages.matchups.push(el);
+  else if(el.id==='player-area' || el.id==='tsg-pending-approval' || el.id==='player-signin' || el.classList.contains('authbox'))pages.player.push(el);
+  else if(el.id==='standings-section' || el.id==='statistics-section' || el.id==='profile-panel' || el.classList.contains('home-standings-grid'))pages.standings.push(el);
+  else if(el.id==='matchups-section' || (el.querySelector && el.querySelector('#matchups')))pages.matchups.push(el);
   else pages.home.push(el);
  });
  // The QR code opens the homepage: show the existing registration form prominently.
@@ -2937,9 +2980,7 @@ $('password-setup-form').addEventListener('submit', async (e) => {
   }
   pages[key].forEach(el=>section.appendChild(el));
   if(key==='home'){
-   const tv=document.createElement('div');tv.className='tsg-footer-display';
-   tv.innerHTML='<span>For the lounge TV or a desktop browser</span><a href="?display=1" aria-label="Open Lunchroom Display on a desktop or TV">Lunchroom Display ↗</a>';
-   section.appendChild(tv);
+   // TV Display is linked directly from the hero, including on mobile.
   }
   main.appendChild(section);sections[key]=section;
  }
@@ -2947,7 +2988,7 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  const registerCTA=document.querySelector('.tsg-home-registration-cta');
  const registerPanel=document.getElementById('tsg-registration');
  function revealRegistration(scroll){
-  if(!registerPanel)return;
+  if(!registerPanel||!window.tsgV57RegistrationOpen?.())return;
   registerPanel.dataset.open='true';
   if(!currentUserId)registerPanel.classList.remove('hidden');
   if(registerCTA)registerCTA.setAttribute('aria-expanded',String(!currentUserId));
@@ -2961,8 +3002,12 @@ $('password-setup-form').addEventListener('submit', async (e) => {
   if(hash==='tsg-registration')revealRegistration(false);
   let key=hash.startsWith('page-')?hash.slice(5):aliases[hash]||'home';
   if(!sections[key])key='home';
+  const signedIn=!!currentUserId;
+  if(key!=='home'&&!signedIn)key='home';
   if(key==='admin' && !isAdmin)key='home';
   document.querySelectorAll('.tsg-admin-link,.tsg-page-tabs a[data-page="admin"]').forEach(a=>{a.hidden=!isAdmin;a.setAttribute('aria-hidden',String(!isAdmin));});
+  document.querySelectorAll('#tsg-v56c-menu a[href^="#page-"],.home-mobile-tabs a[href^="#page-"],.tsg-page-tabs a[href^="#page-"]').forEach(a=>{const restricted=a.getAttribute('href')!=='#page-home';a.hidden=restricted&&!signedIn;if(restricted)a.setAttribute('aria-hidden',String(!signedIn));});
+  document.body.classList.toggle('tsg-v56g-guest',!signedIn);
   Object.entries(sections).forEach(([k,el])=>el.classList.toggle('tsg-page-active',k===key));
   document.body.classList.toggle('tsg-secondary-page',key!=='home');
   [...tabs.querySelectorAll('a'),...document.querySelectorAll('.home-mobile-tabs a,.home-nav-links a')].forEach(a=>{
@@ -2975,6 +3020,8 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  window.addEventListener('hashchange',activate);
  const adminArea=document.getElementById('admin-area');
  if(adminArea)new MutationObserver(()=>activate()).observe(adminArea,{attributes:true,attributeFilter:['class']});
+ const authForm=document.getElementById('auth-form');
+ if(authForm)new MutationObserver(()=>queueMicrotask(activate)).observe(authForm,{attributes:true,attributeFilter:['class']});
  activate();
  // Profile navigation from clicking a player's name stays on the standings page.
  document.addEventListener('click',e=>{if(e.target.closest('[data-player-id]')&&location.hash!=='#page-standings'){location.hash='#page-standings';}});
@@ -3005,6 +3052,7 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  function hide(){menu.hidden=true;toggle.setAttribute('aria-expanded','false');}
  function show(){place();menu.hidden=false;toggle.setAttribute('aria-expanded','true');document.getElementById('email')?.focus();}
  toggle.addEventListener('click',()=>{if(isSignedIn()){signout.click();return;}menu.hidden?show():hide();});
+ document.getElementById('tsg-v56g-login')?.addEventListener('click',()=>{if(!isSignedIn())show();});
  close.addEventListener('click',hide);
  document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!menu.contains(e.target)&&!toggle.contains(e.target))hide();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape')hide();});
@@ -3057,20 +3105,77 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  const btn=document.getElementById('tsg-v56c-menu-button');
  const menu=document.getElementById('tsg-v56c-menu');
  const label=document.getElementById('tsg-v56c-current');
+ // Hero login uses the single auth handler wired in V43.
  if(!btn||!menu||!label)return;
  const pages={home:'Home',standings:'Standings',matchups:'Matchups',player:'My League',admin:'Admin'};
+ document.body.appendChild(menu); // Never compete with the hero crest's stacking context.
+ function position(){const r=btn.getBoundingClientRect();const width=205;menu.style.top=Math.round(r.bottom+8)+'px';menu.style.left=Math.round(Math.max(10,Math.min(innerWidth-width-10,r.right-width)))+'px';}
  function close(){menu.hidden=true;btn.setAttribute('aria-expanded','false');}
  function refresh(){
    const current=location.hash.startsWith('#page-')?location.hash.slice(6):'home';
    label.textContent=pages[current]||'Home';
    close();
  }
- btn.addEventListener('click',()=>{menu.hidden=!menu.hidden;btn.setAttribute('aria-expanded',String(!menu.hidden));});
+ btn.addEventListener('click',()=>{const opening=menu.hidden;menu.hidden=!opening;if(opening)position();btn.setAttribute('aria-expanded',String(opening));});
+ window.addEventListener('resize',()=>{if(!menu.hidden)position();});
+ window.addEventListener('scroll',()=>{if(!menu.hidden)position();},{passive:true});
  menu.addEventListener('click',e=>{if(e.target.closest('a'))close();});
  document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!menu.contains(e.target)&&!btn.contains(e.target))close();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!menu.hidden){close();btn.focus();}});
  window.addEventListener('hashchange',refresh);
  refresh();
+})();
+</script>
+<script id="tsg-v57-registration-window-js">
+/* V57 public registration-window UI. Administrator invitations are deliberately NOT restricted. */
+(function(){
+ if(new URLSearchParams(location.search).get('display')==='1')return;
+ const registerLink=document.querySelector('.tsg-home-registration-cta');
+ const panel=document.getElementById('tsg-registration');
+ const form=document.getElementById('auth-form');
+ const select=document.getElementById('tsg-v57-season');
+ const opens=document.getElementById('tsg-v57-opens'),closes=document.getElementById('tsg-v57-closes');
+ const editorMessage=document.getElementById('tsg-v57-editor-message');
+ const status=document.getElementById('tsg-signup-message');
+ const seasonMap=new Map();
+ function todayCalgary(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Edmonton',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
+ function publicOpen(){const today=todayCalgary();return Array.isArray(seasons)&&seasons.some(s=>s.registration_opens_on&&s.registration_closes_on&&s.registration_opens_on<=today&&today<=s.registration_closes_on);}
+ window.tsgV57RegistrationOpen=publicOpen;
+ function refresh(){
+  const allowed=publicOpen();const guest=!currentUserId;
+  if(registerLink)registerLink.hidden=!allowed||!guest;
+  if(panel&&!allowed){panel.dataset.open='false';panel.classList.add('hidden');}
+  if(!allowed&&status&&status.textContent==='')status.textContent='';
+  if(select&&Array.isArray(seasons)){
+   const value=select.value,signature=seasons.map(s=>[s.id,s.name,s.registration_opens_on,s.registration_closes_on].join('~')).join('|');
+   if(select.dataset.signature!==signature){
+    select.replaceChildren();seasonMap.clear();
+    seasons.forEach(s=>{seasonMap.set(s.id,s);const opt=document.createElement('option');opt.value=s.id;opt.textContent=s.name;select.append(opt);});
+    select.dataset.signature=signature;
+    if(seasonMap.has(value))select.value=value;
+    showSelected();
+   }
+  }
+ }
+ function showSelected(){if(!select)return;const s=seasonMap.get(select.value);if(opens)opens.value=s?.registration_opens_on||'';if(closes)closes.value=s?.registration_closes_on||'';}
+ select?.addEventListener('change',showSelected);
+ document.getElementById('tsg-v57-save-window')?.addEventListener('click',async function(){
+  if(!isAdmin){editorMessage.textContent='Admin access required.';return;}
+  const a=opens.value||null,b=closes.value||null;
+  if((!!a)!=(!!b)||(a&&b<a)){editorMessage.textContent='Choose both dates in order, or clear both dates to close public registration.';return;}
+  this.disabled=true;editorMessage.textContent='Saving…';
+  try{
+   const {error}=await client.rpc('league_set_registration_window',{p_season_id:select.value,p_opens_on:a,p_closes_on:b});
+   if(error)throw error;
+   editorMessage.textContent='Registration dates saved. Admin invitations remain available.';
+   await loadPublic();
+  }catch(err){editorMessage.textContent=err.message||'Could not save registration dates.';}
+  finally{this.disabled=false;}
+ });
+ window.tsgV57RefreshRegistration=refresh;
+ // If public dates cross midnight while a browser is open, update the CTA without reloading.
+ setInterval(refresh,60000);
+ queueMicrotask(refresh);
 })();
 </script>
 </body>
