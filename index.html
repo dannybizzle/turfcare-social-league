@@ -1035,6 +1035,8 @@ body.display-mode .tsg-tv-page-indicator{display:inline-block;margin:0 0 12px;pa
 body.display-mode .lb-tv-primary .tsg-potential-week{margin-bottom:8px;}
 body.display-mode .lb-tv-primary .tsg-potential-fixture{padding:9px 2px 11px;}
 body.display-mode .lb-tv-primary .tsg-potential-pair{padding:2px 0 5px;}
+/* V60f official TV fixtures use the proven high-contrast, paginated preview design. */
+body.display-mode .tsg-tv-official-status{margin:8px 2px 0;color:#ffe6b2;font-weight:850;font-size:clamp(14px,1.1vw,20px);}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1925,6 +1927,31 @@ function tsgTVPreviewPages(){
  return pages.length?pages:[{week:null,slots:[],part:1,totalParts:1}];
 }
 function tsgTVPageKey(index){return 'Potential schedule '+(index+1);}
+function tsgTVOfficialPages(){
+ const season=tvCurrentSeason();
+ if(!season)return [];
+ const weeks=rollingWeeks(season);
+ const eligible=matchups.filter(m=>m.season_id===season.id&&weeks.includes(m.week_number))
+   .sort((a,b)=>a.week_number-b.week_number||String(a.id).localeCompare(String(b.id)));
+ const pages=[];
+ for(const week of weeks){
+  const rows=eligible.filter(m=>m.week_number===week);
+  const parts=Math.ceil(rows.length/TSG_TV_PREVIEW_PAIRS_PER_SLIDE);
+  for(let i=0;i<parts;i++)pages.push({week,items:rows.slice(i*TSG_TV_PREVIEW_PAIRS_PER_SLIDE,(i+1)*TSG_TV_PREVIEW_PAIRS_PER_SLIDE),part:i+1,totalParts:parts});
+ }
+ return pages;
+}
+function tsgTVOfficialRows(items){
+ return `<div class="tsg-potential-week">${items.map(m=>{
+   const assigned=matchupGames(m);
+   const result=countsInStandings(m)||m.resolution==='freebie'||m.resolution==='double_forfeit';
+   const state=result?matchStatus(m):m.status==='played_ahead'?'Played ahead':appointmentFor(m.id)?.confirmed_at?'Playing day confirmed':'Scheduled';
+   const score=result&&m.resolution==='normal'?` · ${matchupScore(m).a}–${matchupScore(m).b}`:'';
+   return `<div class="tsg-potential-fixture"><div class="tsg-potential-pair"><span class="tsg-preview-player-name">${esc(playerName(m.player1_id))}</span><b>VS</b><span class="tsg-preview-player-name">${esc(playerName(m.player2_id))}</span></div><div class="tsg-potential-sports"><small>ASSIGNED SPORTS</small><div>${assigned.length?assigned.map(g=>`<span>${sportIcon[g.discipline]||'🏆'} ${esc(g.discipline)}</span>`).join(''):'<span>Awaiting sport assignments</span>'}</div></div><div class="tsg-tv-official-status">${esc(state+score)}</div></div>`;
+  }).join('')}</div>`;
+}
+function tsgTVOfficialKey(i){return 'Official schedule '+(i+1);}
+
 function renderPotentialSchedule(){
  const root=$('tsg-potential-schedule');if(!root)return;
  const preview=tsgPotentialDraw();root.hidden=!preview;
@@ -2677,6 +2704,18 @@ function tvSequence(){
   });
  }
 
+ // Official pairings take over the same TV slots when public registration ends.
+ if(!tsgRegistrationSeason()){
+  const official=tsgTVOfficialPages().map((_,i)=>tsgTVOfficialKey(i));
+  official.forEach((name,i)=>{
+   const afterWeather=Math.floor(i*5/official.length);
+   const weatherIndices=slides.map((x,j)=>x==='Weather 24h'?j:-1).filter(j=>j>=0);
+   const target=weatherIndices[Math.min(afterWeather,weatherIndices.length-1)];
+   let insertAt=target+1;
+   while(insertAt<slides.length&&slides[insertAt].startsWith('Official schedule '))insertAt++;
+   slides.splice(insertAt,0,name);
+  });
+ }
  slides.push('Standings');
  return slides;
 }
@@ -2946,7 +2985,7 @@ function tvSeasonSportStats(sport,seasonId){
 }
 // During public registration, the TV sidebar showcases real approved players.
 // It never fabricates standings, sport victories, appointments, or match results.
-function tvRegisteredCrewSidebar(section){
+function tvRegisteredCrewSidebar(section,registrationOpen=true){
  const root=$('lb-side-fixtures');if(!root)return;
  const crew=profiles.filter(p=>p.is_approved===true&&p.is_player===true&&p.display_name)
   .sort((a,b)=>String(a.display_name).localeCompare(String(b.display_name)));
@@ -2960,11 +2999,11 @@ function tvRegisteredCrewSidebar(section){
  const pageCount=Math.max(1,Math.ceil(count/pageSize));
  const offset=(sideSlideIndex%pageCount)*pageSize;
  const shown=crew.slice(offset,offset+pageSize);
- root.innerHTML=`<div class="lb-side-kicker">${kicker} <span class="tsg-demo-flag">REGISTRATION OPEN</span></div>`+
-  `<div class="lb-side-detail">${count} approved ${count===1?'player':'players'} · Roster grows as people join</div>`+
+ root.innerHTML=`<div class="lb-side-kicker">${kicker} <span class="tsg-demo-flag">${registrationOpen?'REGISTRATION OPEN':'SEASON ROSTER'}</span></div>`+
+  `<div class="lb-side-detail">${count} approved ${count===1?'player':'players'} · ${registrationOpen?'Roster grows as people join':'Ready for the season'}</div>`+
   (shown.length?shown.map((p,i)=>`<div class="lb-side-upcoming tsg-crew-roster-row"><span><span class="tsg-crew-roster-rank">${offset+i+1}.</span> ${esc(p.display_name)}</span></div>`).join(''):
   '<div class="lb-side-empty">Approved players will appear here as they join.</div>')+
-  `<div class="lb-side-detail tsg-crew-roster-note">Names only · Competition stats begin when games are played${pageCount>1?` · Page ${sideSlideIndex%pageCount+1}/${pageCount}`:''}</div>`;
+  `<div class="lb-side-detail tsg-crew-roster-note">${registrationOpen?'Names only · Competition stats begin when games are played':'Standings appear as official results come in'}${pageCount>1?` · Page ${sideSlideIndex%pageCount+1}/${pageCount}`:''}</div>`;
 }
 function renderLeagueSidebar(){
  if(!document.body.classList.contains('display-mode'))return;
@@ -2974,9 +3013,15 @@ function renderLeagueSidebar(){
  const historyTag=historical?` <span class="tsg-demo-flag">${esc(seasonInfo.season.name)} · PREVIOUS SEASON</span>`:'';
  // During the registration window, showcase real approved participants instead
  // of fictional golfer stats. Confirmed and published matchups stay authentic.
- if(tsgRegistrationSeason() && !['Today confirmed','Upcoming confirmed','Matchups'].includes(section)){
+ const registrationOpen=!!tsgRegistrationSeason();
+ const activeSeason=tvCurrentSeason();
+ const resultsRecorded=activeSeason&&matchups.some(m=>m.season_id===activeSeason.id&&
+  (countsInStandings(m)||m.resolution==='freebie'||m.resolution==='double_forfeit'));
+ // During registration, and after it closes until there are real results,
+ // show the approved crew rather than empty leaderboards or invented statistics.
+ if((registrationOpen||!resultsRecorded)&&!['Today confirmed','Upcoming confirmed','Matchups'].includes(section)){
   $('lb-side-pips').innerHTML=SIDE_SECTIONS.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join('');
-  tvRegisteredCrewSidebar(section);return;
+  tvRegisteredCrewSidebar(section,registrationOpen);return;
  }
  $('lb-side-pips').innerHTML=SIDE_SECTIONS.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join('');
  if(section==='Leaderboard'){
@@ -3130,6 +3175,14 @@ function renderLunchroom(){
    tsgPreviewMatchupRows([{week:card.week,slots:card.slots}],1,true);
   html=`<div class="lb-tv-section-title">Potential matchups · Registration preview</div><div class="tsg-tv-preview-sub">NOT OFFICIAL · Updates as new players are approved</div><div class="tsg-tv-page-indicator">Preview ${index+1} of ${pages.length}${card.week!==null?' · Week '+card.week+(card.totalParts>1?' · Part '+card.part+' of '+card.totalParts:''):''}</div>${detail}<div class="tsg-tv-preview-foot">Final opponents, weeks and sports may change · Official matchups take priority</div>`;
 
+ }else if(page.startsWith('Official schedule ')){
+  const pages=tsgTVOfficialPages();
+  const requested=Number(page.slice('Official schedule '.length))-1;
+  const index=Math.max(0,Math.min(pages.length-1,Number.isFinite(requested)?requested:0));
+  const card=pages[index];
+  if(card){
+   html=`<div class="lb-tv-section-title">Official matchups · ${esc(tvCurrentSeason()?.name||'Current season')}</div><div class="tsg-tv-preview-sub">PUBLISHED SCHEDULE · ACTUAL ASSIGNED SPORTS</div><div class="tsg-tv-page-indicator">Matchups ${index+1} of ${pages.length} · Week ${card.week}${card.totalParts>1?' · Part '+card.part+' of '+card.totalParts:''}</div>${tsgTVOfficialRows(card.items)}<div class="tsg-tv-preview-foot">Results update automatically as players submit completed matchups.</div>`;
+  }else html='<div class="lb-tv-empty">Official matchups will appear when the scheduler publishes them.</div>';
  }else if(page==='Standings'){
   const rows=leaderboard().slice(0,6);
   html=`<div class="lb-tv-section-title">League standings</div>${rows.length?rows.map((p,i)=>`<div class="lb-tv-leader"><div class="lb-tv-rank">${i+1}</div><div class="lb-tv-name">${esc(p.display_name)}${p.freebies?` <span class="lb-tv-minor">· ${p.freebies} freebie${p.freebies===1?'':'s'}</span>`:''}</div><div class="lb-tv-record">${p.wins} W <span class="lb-tv-minor">· ${p.losses} L · ${p.gameWins} GW</span></div></div>`).join(''):'<div class="lb-tv-empty">Standings will appear once the season begins.</div>'}`;
