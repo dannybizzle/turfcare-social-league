@@ -918,6 +918,18 @@ body:not(.display-mode) .admin-category-nav button{min-height:44px;}
  body:not(.display-mode) .admin-category-nav button{flex:0 0 auto;}
 }
 
+
+/* V59c: Overview is only the current season; dedicated season administration. */
+body:not(.display-mode) .tsg-v59c-season-name{font-size:clamp(1.25rem,3.2vw,1.85rem);font-weight:900;color:#103d2a;margin:12px 0 6px;}
+body:not(.display-mode) .tsg-v59c-season-badges{display:flex;gap:8px;flex-wrap:wrap;color:#325c45;font-size:.85rem;}
+body:not(.display-mode) .tsg-v59c-season-badges span{background:#f3eddc;border:1px solid #dacaa8;border-radius:12px;padding:7px 10px;}
+body:not(.display-mode) .tsg-v59c-season-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:20px;}
+body:not(.display-mode) .tsg-v59c-season-facts>div{border:1px solid #dfd2b7;border-radius:12px;padding:14px;background:#faf8f0;}
+body:not(.display-mode) .tsg-v59c-season-facts small{display:block;color:#66756b;font-size:.8rem;}
+body:not(.display-mode) .tsg-v59c-season-facts strong{display:block;font-size:1.7rem;color:#164735;}
+body:not(.display-mode) .tsg-v59c-registration{margin:17px 0 0;}
+@media(max-width:550px){body:not(.display-mode) .tsg-v59c-season-facts>div{padding:10px;}body:not(.display-mode) .tsg-v59c-season-facts strong{font-size:1.4rem;}}
+
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1505,25 +1517,20 @@ body:not(.display-mode) .tsg-v58-rules-content section:last-child{border-bottom:
 <button type="button" class="secondary" data-admin-category="overview">Overview</button>
 <button type="button" class="secondary" data-admin-category="players">Players</button>
 <button type="button" class="secondary" data-admin-category="scheduling">Scheduling</button>
+<button type="button" class="secondary" data-admin-category="seasons">New Season &amp; Registration</button>
 <button type="button" class="secondary" data-admin-category="availability">Availability</button>
 <button type="button" class="secondary" data-admin-category="results">Results</button>
 </nav>
 <div id="admin-category-inbox" class="admin-category"><section class="panel"><h3>Scheduling Inbox</h3><p class="muted">Reported matchup issues. Resolve or dismiss a report to remove it from the active inbox; history is preserved.</p><div class="tsg-inbox-tabs"><button type="button" id="tsg-inbox-open" class="secondary active">Open</button><button type="button" id="tsg-inbox-history" class="secondary">History</button><button type="button" id="tsg-inbox-refresh" class="secondary">Refresh</button></div><div id="tsg-inbox-items" role="region" aria-live="polite"><div class="empty">Loading reports…</div></div><div id="tsg-inbox-message" role="status" aria-live="polite"></div></section></div>
 <div id="admin-category-overview" class="admin-category hidden">
- <section class="panel tsg-v59-overview">
-  <div class="tsg-v59-overview-head"><div><h3>League at a glance</h3><p class="muted">The essentials, with quick access to your existing admin tools.</p></div><button type="button" class="secondary" id="tsg-v59-refresh">Refresh</button></div>
-  <div class="tsg-v59-metrics">
-   <button type="button" data-v59-category="players"><small>Participating players</small><strong id="tsg-v59-players">—</strong><span>Manage players</span></button>
-   <button type="button" data-v59-category="players"><small>Pending approval</small><strong id="tsg-v59-pending">—</strong><span>Review registrations</span></button>
-   <button type="button" data-v59-category="inbox"><small>Open reports</small><strong id="tsg-v59-reports">—</strong><span>Open Inbox</span></button>
-   <button type="button" data-v59-category="scheduling"><small>Season matchups</small><strong id="tsg-v59-matchups">—</strong><span>Scheduling</span></button>
-  </div>
-  <p id="tsg-v59-season" class="tsg-v59-season muted">Loading season…</p>
-  <div class="tsg-v59-links"><button type="button" class="secondary" data-v59-category="availability">Availability</button><button type="button" class="secondary" data-v59-category="results">Results &amp; Freebies</button><button type="button" class="secondary" data-v59-category="inbox">Admin Inbox</button></div>
+ <section class="panel tsg-v59c-current-season" aria-label="Current season">
+  <div class="tsg-v59-overview-head"><div><h3>Current Season</h3><p class="muted">Your season at a glance.</p></div><button type="button" class="secondary" id="tsg-v59-refresh">Refresh</button></div>
+  <div id="tsg-v59c-season-summary" role="status" aria-live="polite"><p class="muted">Loading season…</p></div>
  </section>
 </div>
 <div id="admin-category-players" class="admin-category hidden"></div>
 <div id="admin-category-scheduling" class="admin-category hidden"></div>
+<div id="admin-category-seasons" class="admin-category hidden"></div>
 <div id="admin-category-availability" class="admin-category hidden"></div>
 <div id="admin-category-results" class="admin-category hidden"></div>
 <div class="admin-grid" id="season-setup-grid">
@@ -1697,13 +1704,24 @@ async function loadLeagueFlags(){
 /* V59 Admin Overview uses existing in-memory data. */
 function updateV59Overview(){
  if(!isAdmin)return;
- const put=(id,v)=>{const element=$(id);if(element)element.textContent=String(v);};
- put('tsg-v59-players',profiles.filter(p=>p.is_player===true&&p.is_approved===true).length);
- put('tsg-v59-pending',profiles.filter(p=>p.is_approved===false&&!p.is_owner).length);
- put('tsg-v59-reports',leagueMatchupFlags.filter(f=>f.status==='open').length);
- const season=seasons.find(x=>x.status==='active')||seasons.find(x=>x.status==='upcoming')||seasons[0];
- put('tsg-v59-matchups',season?matchups.filter(m=>m.season_id===season.id).length:0);
- put('tsg-v59-season',season?`${season.name} · ${season.starts_on} to ${season.ends_on}`:'No season created yet');
+ const box=$('tsg-v59c-season-summary');if(!box)return;
+ const season=seasons.find(s=>s.status==='active')||
+   seasons.filter(s=>s.status==='upcoming').sort((a,b)=>a.starts_on.localeCompare(b.starts_on))[0]||
+   [...seasons].sort((a,b)=>b.starts_on.localeCompare(a.starts_on))[0];
+ if(!season){box.innerHTML='<p class="muted">No season has been created yet.</p>';return;}
+ const seasonMatches=matchups.filter(m=>m.season_id===season.id);
+ const completed=seasonMatches.filter(m=>['completed','played_ahead'].includes(m.status)).length;
+ const upcoming=seasonMatches.filter(m=>m.status==='scheduled').length;
+ const registration=season.registration_opens_on&&season.registration_closes_on?
+   `${season.registration_opens_on} – ${season.registration_closes_on}`:'Closed (not configured)';
+ box.innerHTML=`<div class="tsg-v59c-season-name">${esc(season.name)}</div>
+  <div class="tsg-v59c-season-badges"><span>${esc(season.status)}</span><span>${esc(season.starts_on)} to ${esc(season.ends_on)}</span></div>
+  <div class="tsg-v59c-season-facts">
+   <div><small>Published matchups</small><strong>${seasonMatches.length}</strong></div>
+   <div><small>Scheduled</small><strong>${upcoming}</strong></div>
+   <div><small>Finished</small><strong>${completed}</strong></div>
+  </div>
+  <p class="muted tsg-v59c-registration">Public registration: ${esc(registration)}</p>`;
 }
 $('admin-category-overview')?.addEventListener('click',event=>{
  const target=event.target.closest('button[data-v59-category]');if(target)selectAdminCategory(target.dataset.v59Category);
@@ -1834,12 +1852,12 @@ async function refreshAuth(){
  else {leagueMatchupFlags=[];renderLeagueInbox();}
 }
 (function setupAdminCategories(){
- const places={inbox:$('admin-category-inbox'),overview:$('admin-category-overview'),players:$('admin-category-players'),scheduling:$('admin-category-scheduling'),availability:$('admin-category-availability'),results:$('admin-category-results')};
+ const places={inbox:$('admin-category-inbox'),overview:$('admin-category-overview'),players:$('admin-category-players'),scheduling:$('admin-category-scheduling'),seasons:$('admin-category-seasons'),availability:$('admin-category-availability'),results:$('admin-category-results')};
  const seasonGrid=$('season-setup-grid');
  const generator=$('rolling-generator');
- if(seasonGrid&&generator){seasonGrid.removeChild(generator);places.overview.appendChild(seasonGrid);places.scheduling.appendChild(generator);}
+ if(seasonGrid&&generator){seasonGrid.removeChild(generator);places.seasons.appendChild(seasonGrid);places.scheduling.appendChild(generator);}
  const seasonManage=$('delete-season-select')?.closest('section.panel');
- if(seasonManage)places.overview.appendChild(seasonManage);
+ if(seasonManage)places.seasons.appendChild(seasonManage);
  const approvals=$('tsg-approval-panel');if(approvals)places.players.appendChild(approvals);
  const playerManage=$('player-management-list')?.closest('section.panel');if(playerManage)places.players.appendChild(playerManage);
  const availability=$('weekly-admin-panel');if(availability)places.availability.appendChild(availability);
@@ -1861,8 +1879,10 @@ async function refreshAuth(){
     ['accounts','Player accounts & invitations','Invite players, manage participation and roles', ['tsg-v59b-player-management']]
   ],
   scheduling:[
-    ['weeks','Weekly schedules','Publish and preview weekly matchups', ['rolling-generator','schedule-preview-panel']],
-    ['seasons','Season setup & registration','Create seasons and set the public registration window', ['season-setup-grid']],
+    ['weeks','Weekly schedules','View and manage weekly matchups', ['rolling-generator','schedule-preview-panel']]
+  ],
+  seasons:[
+    ['setup','Create season & registration','Create a new season or edit public signup dates', ['season-setup-grid']],
     ['delete','Delete a season','Permanent deletion — use with care', ['tsg-v59b-season-delete']]
   ],
   results:[
@@ -1877,10 +1897,6 @@ async function refreshAuth(){
  if(deletePanel)deletePanel.id='tsg-v59b-season-delete';
  const correctionPanel=document.getElementById('correction-matchup')?.closest('section.panel');
  if(correctionPanel)correctionPanel.id='tsg-v59b-correction-panel';
- // Previously season creation and registration were placed in Overview. Keep Overview summary-only.
- const scheduleGroup=document.getElementById('admin-category-scheduling');
- const seasonGrid=document.getElementById('season-setup-grid');
- if(scheduleGroup&&seasonGrid)scheduleGroup.appendChild(seasonGrid);
  Object.entries(groups).forEach(([category,views])=>{
    const host=document.getElementById('admin-category-'+category);
    if(!host)return;
