@@ -789,6 +789,39 @@ body.display-mode .tsg-side-tap:focus-visible{opacity:1;outline:2px solid #e7c57
  body.display-mode .lb-side-upcoming,body.display-mode .lb-side-focus{animation:tsg-side-soft-in .25s ease-out both}
  @keyframes tsg-side-soft-in{from{opacity:.6;transform:translateY(3px)}to{opacity:1;transform:none}}
 }
+
+/* V58b — Current matchup first; following week available on demand. */
+body:not(.display-mode) .tsg-week-matchup {
+  margin: 12px 0 18px;
+  border: 1px solid #cbb98d;
+  border-radius: 14px;
+  background: #fffdf7;
+  overflow: hidden;
+}
+body:not(.display-mode) .tsg-week-matchup > summary {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; cursor: pointer;
+  padding: 16px; min-height: 54px; list-style: none;
+}
+body:not(.display-mode) .tsg-week-matchup > summary::-webkit-details-marker { display:none; }
+body:not(.display-mode) .tsg-week-matchup > summary::after {
+  content: '⌄'; font-size: 1.5rem; line-height: 1; color: #125139;
+  margin-left: auto;
+}
+body:not(.display-mode) .tsg-week-matchup[open] > summary::after { content: '⌃'; }
+body:not(.display-mode) .tsg-week-matchup > summary:focus-visible {
+  outline: 3px solid #c59c45; outline-offset: -3px;
+}
+body:not(.display-mode) .tsg-week-title { display:flex; flex-direction:column; gap:4px; min-width:0; }
+body:not(.display-mode) .tsg-week-title strong { font-size:1rem; color:#103a2a; }
+body:not(.display-mode) .tsg-week-title small { font-size:.8rem; color:#546b5d; }
+body:not(.display-mode) .tsg-week-matchup > .tsg-week-body { padding: 0 12px 14px; }
+body:not(.display-mode) .tsg-week-matchup .match-card { margin:0; border-color:#e5e1d4; box-shadow:none; }
+@media(max-width:600px){
+  body:not(.display-mode) .tsg-week-matchup > summary{padding:14px 12px;}
+  body:not(.display-mode) .tsg-week-matchup > .tsg-week-body{padding:0 8px 10px;}
+}
+
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1863,18 +1896,36 @@ function renderMyMatchups(){
  const box=$('my-matchups');if(!box)return;
  if(!currentUserId){box.innerHTML='<div class="empty">Sign in to submit results.</div>';return;}
  const mine=matchups.filter(m=>inRollingWindow(m)&&(m.player1_id===currentUserId||m.player2_id===currentUserId)).sort((a,b)=>a.week_number-b.week_number);
+ // Keep a player's deliberate open/close choice during normal data refreshes,
+ // but reset when the actual league week advances.
+ const existing=[...box.querySelectorAll('details.tsg-week-matchup')];
+ const priorState=new Map(existing.map(el=>[el.dataset.matchId,el.open]));
+ const previousCurrent=box.dataset.currentWeek||'';
+ const currentKey=mine.map(m=>{
+   const s=seasons.find(x=>x.id===m.season_id);
+   return s?`${s.id}:${rollingWeekNumber(s)}`:'';
+ }).join('|');
+ if(currentKey!==previousCurrent)priorState.clear();
+ box.dataset.currentWeek=currentKey;
  if(!mine.length){box.innerHTML='<div class="empty">No matchups assigned yet.</div>';return;}
  box.innerHTML=mine.map(m=>{const gs=matchupGames(m);const locked=m.status!=='scheduled';const finished=countsInStandings(m)||m.status==='played_ahead';
    const future=seasonWeekStarts(m)&&Date.now()<seasonWeekStarts(m).getTime();
    const expired=m.deadline&&new Date(m.deadline).getTime()<Date.now();
    const canSubmit=!locked&&!expired&&gs.length===3&&new Set(gs.map(g=>g.discipline)).size===3&&gs.every(g=>!g.winner_id);
    const summary=finished?`<div class="match-result">Final: ${playerName(m.player1_id)} ${matchupScore(m).a} – ${matchupScore(m).b} ${playerName(m.player2_id)}</div>`:'';
-   return `<div class="match-card" data-match-id="${esc(m.id)}"><div class="match-head"><strong>Week ${m.week_number}: ${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}</strong><span class="tag ${future?'warning':''}">${esc(matchStatus(m))}</span></div>
+   const s=seasons.find(x=>x.id===m.season_id);
+   const isCurrent=!!s&&m.week_number===rollingWeekNumber(s);
+   const isOpen=priorState.has(m.id)?priorState.get(m.id):isCurrent;
+   const opponent=m.player1_id===currentUserId?m.player2_id:m.player1_id;
+   const dateRange=s?weekDates(s,m.week_number):'';
+   const weekLabel=isCurrent?'Current week':'Upcoming · play ahead available';
+   const statusLabel=finished?'Results recorded':esc(matchStatus(m));
+   return `<details class="tsg-week-matchup" data-match-id="${esc(m.id)}" ${isOpen?'open':''}><summary><span class="tsg-week-title"><strong>Week ${m.week_number} — ${esc(playerName(opponent))}</strong><small>${esc(dateRange)} · ${weekLabel} · ${statusLabel}</small></span></summary><div class="tsg-week-body"><div class="match-card" data-match-id="${esc(m.id)}"><div class="match-head"><strong>Week ${m.week_number}: ${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}</strong><span class="tag ${future?'warning':''}">${esc(matchStatus(m))}</span></div>
    <div class="match-sports">${esc(gs.map(g=>`${sportIcon[g.discipline]||''} ${g.discipline}`).join(' · '))}</div>${summary}
    ${meetupControls(m)}
    <div class="tsg-report-wrap"><button type="button" class="secondary" data-report-issue="${esc(m.id)}">⚑ Report a scheduling issue</button></div>
    ${m.submitted_at?`<div class="notice">Submitted ${new Date(m.submitted_at).toLocaleString()} by ${esc(playerName(m.submitted_by))}</div>`:''}
-   ${canSubmit?`<div class="notice">${future?'Playing early? You can submit now. The result will count when Week '+m.week_number+' starts.':'Enter the winner of each assigned game.'}</div><form class="score-form" data-match-id="${esc(m.id)}">${gs.map(g=>`<div class="score-row"><label for="winner-${esc(g.id)}">${sportIcon[g.discipline]||''} ${esc(g.discipline)}</label><select required id="winner-${esc(g.id)}" data-game-id="${esc(g.id)}"><option value="">Choose winner</option><option value="${esc(m.player1_id)}">${esc(playerName(m.player1_id))}</option><option value="${esc(m.player2_id)}">${esc(playerName(m.player2_id))}</option></select></div>`).join('')}<button type="submit" style="margin-top:12px">Submit all 3 games</button></form>`:!finished?`<div class="notice">${expired?'Deadline passed. Contact an administrator.':gs.length!==3?'Matchup is missing its three assigned games. Contact an administrator.':'Score entry is closed.'}</div>`:''}</div>`;
+   ${canSubmit?`<div class="notice">${future?'Playing early? You can submit now. The result will count when Week '+m.week_number+' starts.':'Enter the winner of each assigned game.'}</div><form class="score-form" data-match-id="${esc(m.id)}">${gs.map(g=>`<div class="score-row"><label for="winner-${esc(g.id)}">${sportIcon[g.discipline]||''} ${esc(g.discipline)}</label><select required id="winner-${esc(g.id)}" data-game-id="${esc(g.id)}"><option value="">Choose winner</option><option value="${esc(m.player1_id)}">${esc(playerName(m.player1_id))}</option><option value="${esc(m.player2_id)}">${esc(playerName(m.player2_id))}</option></select></div>`).join('')}<button type="submit" style="margin-top:12px">Submit all 3 games</button></form>`:!finished?`<div class="notice">${expired?'Deadline passed. Contact an administrator.':gs.length!==3?'Matchup is missing its three assigned games. Contact an administrator.':'Score entry is closed.'}</div>`:''}</div></div></details>`;
  }).join('');
 }
 $('my-matchups').addEventListener('click',async e=>{
