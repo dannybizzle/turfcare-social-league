@@ -1997,8 +1997,11 @@ function tsgTVOfficialKey(i){return 'Official schedule '+(i+1);}
 
 function renderPotentialSchedule(){
  const root=$('tsg-potential-schedule');if(!root)return;
- const preview=tsgPotentialDraw();root.hidden=!preview;
- if(!preview)return;
+ // For every season, this homepage teaser ends when that season's public
+ // registration window ends. Late registration never extends the teaser.
+ const preview=tsgPotentialDraw();
+ root.hidden=!preview;
+ if(!preview){const content=$('tsg-potential-content');if(content)content.replaceChildren();return;}
  const count=$('tsg-potential-count');
  if(count)count.textContent=`${preview.participants.length} approved player${preview.participants.length===1?'':'s'}`;
  const content=$('tsg-potential-content');
@@ -4113,10 +4116,29 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  const seasonMap=new Map();
  function todayCalgary(){const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'America/Edmonton',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));return `${p.year}-${p.month}-${p.day}`;}
  function publicOpen(){const today=todayCalgary();return Array.isArray(seasons)&&seasons.some(s=>s.registration_opens_on&&s.registration_closes_on&&s.registration_opens_on<=today&&today<=s.registration_closes_on);}
- window.tsgV57RegistrationOpen=publicOpen;
+ // Late signup remains available after the advertised window closes, but only
+ // while the relevant upcoming/active season has not finished. Registration
+ // previews and TV teaser slides use publicOpen/tsgRegistrationSeason instead.
+ function lateOpen(){
+  const today=todayCalgary();
+  return Array.isArray(seasons)&&seasons.some(s=>
+   s.registration_closes_on&&s.registration_closes_on<today&&s.ends_on>=today&&
+   (s.status==='active'||s.status==='upcoming'));
+ }
+ function canRegister(){return publicOpen()||lateOpen();}
+ window.tsgV57RegistrationOpen=canRegister;
+ window.tsgV57PublicWindowOpen=publicOpen;
  function refresh(){
-  const allowed=publicOpen();const guest=!currentUserId;
-  if(registerLink)registerLink.hidden=!allowed||!guest;
+  const normal=publicOpen(),late=!normal&&lateOpen();
+  const allowed=normal||late,guest=!currentUserId;
+  if(registerLink){
+   registerLink.hidden=!allowed||!guest;
+   registerLink.textContent=late?'Late Registration — Join the League':'Register for the League';
+  }
+  const signupIntro=panel?.querySelector('p');
+  if(signupIntro)signupIntro.textContent=late?
+   'Late registration is available. Request an account; an administrator must approve you before you can participate or receive a matchup.':
+   'New to the Turfcare Social League? Register for an account. League participation requires administrator approval.';
   if(panel&&!allowed){panel.dataset.open='false';panel.classList.add('hidden');}
   if(!allowed&&status&&status.textContent==='')status.textContent='';
   if(select&&Array.isArray(seasons)){
