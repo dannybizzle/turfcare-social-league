@@ -1068,40 +1068,6 @@ body.display-mode .tsg-highlight-log-item strong{display:block;color:#fff}
 body.display-mode .tsg-highlight-log-item small{display:block;color:#e8d3a0;overflow-wrap:anywhere}
 body.display-mode #tv-clip-log-count{color:#f1d59a}
 
-
-/* V60j: distinct published-week containers on Matchups, mobile and desktop. */
-body:not(.display-mode) .tsg-matchup-week-list{display:grid;gap:22px}
-body:not(.display-mode) .tsg-matchups-week{
- overflow:hidden;border:1px solid #c8b17a;border-left:5px solid #bc9551;
- border-radius:15px;background:#fff;box-shadow:0 6px 20px #0b31150b;
-}
-body:not(.display-mode) .tsg-matchups-week-heading{
- display:flex;align-items:center;justify-content:space-between;gap:14px;
- padding:15px 19px;background:linear-gradient(110deg,#113d2f,#27614a);color:#fff4d9;
-}
-body:not(.display-mode) .tsg-week-eyebrow{display:block;font-size:10px;font-weight:800;letter-spacing:.12em;color:#ebcb88}
-body:not(.display-mode) .tsg-matchups-week-heading h3{margin:3px 0 0;color:#fff4d9;font-size:clamp(18px,2.4vw,23px)}
-body:not(.display-mode) .tsg-matchups-week-heading h3 small{font-size:.67em;font-weight:500;color:#e7e4d5;margin-left:7px}
-body:not(.display-mode) .tsg-week-matchup-count{white-space:nowrap;padding:6px 10px;border:1px solid #d9bb7a7d;border-radius:99px;color:#ffe4a4;font-size:12px;font-weight:700}
-body:not(.display-mode) .tsg-matchups-week .table-scroll{padding:0 15px 9px}
-body:not(.display-mode) .tsg-matchups-week table{min-width:620px}
-body:not(.display-mode) .tsg-matchups-week thead th{background:#f5f1e6}
-body:not(.display-mode) .tsg-matchups-week tbody tr:last-child td{border-bottom:0}
-@media(max-width:640px){
- body:not(.display-mode) .tsg-matchup-week-list{gap:17px}
- body:not(.display-mode) .tsg-matchups-week-heading{padding:14px 12px}
- body:not(.display-mode) .tsg-matchups-week-heading h3 small{display:block;margin:2px 0 0}
- body:not(.display-mode) .tsg-week-matchup-count{font-size:10px}
- body:not(.display-mode) .tsg-matchups-week .table-scroll{padding:0 8px 8px}
-}
-/* Launch poster: discreet separate late-registration notice, not over the QR or player instructions. */
-body.display-mode .tsg-launch-2026{position:relative}
-body.display-mode .tsg-launch-late-reg{
- position:absolute;right:1.5%;top:1.4%;padding:5px 10px;
- color:#fff0c6;background:#09281ddf;border:1px solid #cdae68;border-radius:7px;
- font:800 clamp(9px,.8vw,15px)/1.2 'Manrope',sans-serif;
-}
-
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -2043,26 +2009,7 @@ function renderPotentialSchedule(){
  if(preview.participants.length<2){content.innerHTML='<p class="tsg-potential-empty">The draw will appear once two players have been approved.</p>';return;}
  content.innerHTML=tsgPreviewMatchupRows(preview.weeks)||'<p class="tsg-potential-empty">These weeks already have official matchups. See Weekly Matchups below.</p>';
 }
-function renderMatchups(){
- const list=matchups.filter(inRollingWindow).sort((a,b)=>a.week_number-b.week_number||new Date(a.deadline)-new Date(b.deadline));
- const box=$('matchups');
- if(!list.length){box.innerHTML='<div class="empty">No matchups have been published yet.</div>';return;}
- const groups=new Map();
- list.forEach(m=>{
-  const key=m.season_id+':'+m.week_number;
-  if(!groups.has(key))groups.set(key,[]);
-  groups.get(key).push(m);
- });
- box.innerHTML='<div class="tsg-matchup-week-list">'+[...groups.values()].map(items=>{
-  const sample=items[0],season=seasons.find(s=>s.id===sample.season_id);
-  const current=season&&rollingWeekNumber(season)===sample.week_number;
-  const range=season?weekDates(season,sample.week_number):'';
-  return `<section class="tsg-matchups-week" aria-label="Week ${sample.week_number} matchups">
-    <div class="tsg-matchups-week-heading"><div><span class="tsg-week-eyebrow">${current?'CURRENT WEEK':'UPCOMING WEEK'}</span><h3>Week ${sample.week_number} <small>${esc(range)}</small></h3></div><span class="tsg-week-matchup-count">${items.length} matchup${items.length===1?'':'s'}</span></div>
-    <div class="table-scroll"><table><thead><tr><th>Matchup</th><th>3 sports</th><th>Deadline</th><th>Status</th></tr></thead><tbody>${items.map(m=>`<tr><td>${playerLink(m.player1_id)} vs ${playerLink(m.player2_id)}</td><td>${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' '))}</td><td>${m.deadline?new Date(m.deadline).toLocaleString():'—'}</td><td>${appointmentFor(m.id)?.confirmed_at?`<span class="tag">📅 ${esc(meetupWhen(appointmentFor(m.id).starts_at))}</span> · `:''}${esc(matchStatus(m))}${m.resolution==='normal'&&countsInStandings(m)?` · ${matchupScore(m).a}–${matchupScore(m).b}`:''}</td></tr>`).join('')}</tbody></table></div>
-   </section>`;
- }).join('')+'</div>';
-}
+function renderMatchups(){const list=matchups.filter(inRollingWindow).sort((a,b)=>a.week_number-b.week_number||new Date(a.deadline)-new Date(b.deadline));$('matchups').innerHTML=list.length?`<div class="table-scroll"><table><thead><tr><th>Week</th><th>Matchup</th><th>3 sports</th><th>Deadline</th><th>Status</th></tr></thead><tbody>${list.map(m=>`<tr><td>${m.week_number}</td><td>${playerLink(m.player1_id)} vs ${playerLink(m.player2_id)}</td><td>${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' '))}</td><td>${m.deadline?new Date(m.deadline).toLocaleString():'—'}</td><td>${appointmentFor(m.id)?.confirmed_at?`<span class="tag">📅 ${esc(meetupWhen(appointmentFor(m.id).starts_at))}</span> · `:''}${esc(matchStatus(m))}${m.resolution==='normal'&&countsInStandings(m)?` · ${matchupScore(m).a}–${matchupScore(m).b}`:''}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No matchups have been published yet.</div>';}
 function renderProfile(){if(!selectedProfileId)return;const p=profiles.find(p=>p.id===selectedProfileId);if(!p){$('profile-content').textContent='Player is no longer registered.';return;}
   const mine=matchups.filter(m=>countsInStandings(m)&&(m.player1_id===p.id||m.player2_id===p.id));const stats=SPORTS.map(s=>{const gs=mine.flatMap(m=>matchupGames(m)).filter(g=>g.discipline===s);return {sport:s,w:gs.filter(g=>g.winner_id===p.id).length,l:gs.filter(g=>g.winner_id&&g.winner_id!==p.id).length};});
   const row=leaderboard().find(x=>x.id===p.id);$('profile-content').innerHTML=`<h3>${esc(p.display_name)}</h3><p class="muted">${row.wins} matchup wins (${row.freebies} freebies) · ${row.losses} losses · ${row.gameWins} game wins</p><div class="player-stats">${stats.map(st=>`<div class="stat-tile"><div>${sportIcon[st.sport]} ${esc(st.sport)}</div><strong>${st.w}–${st.l}</strong><small>Wins – losses</small></div>`).join('')}</div>`;}
@@ -2781,17 +2728,13 @@ if(homeSlogan)homeSlogan.textContent=leagueTagline();
 setInterval(advanceLeagueTagline,14500);
 setInterval(()=>{if(!document.body.classList.contains('display-mode')&&tsgRegistrationSeason())loadPublic().catch(console.warn);else renderPotentialSchedule();},120000);
 
-// Show this announcement on Friday, November 20 (Calgary time), then retire it automatically.
-function tsgLaunchDayActive(){return tvLocalISO(new Date())==='2026-11-20';}
 const PRELAUNCH_CARD_DURATION_MS=45*1000;
 function tvSequence(){
  const prelaunch=Date.now()<SEASON_KICKOFF_AT;
  const slides=[];
- if(tsgLaunchDayActive())slides.push('Launch day poster');
  for(let i=0;i<5;i++){
   slides.push('Highlights','Weather 24h');
   if(prelaunch)slides.push(i===2?'Crew mottos':i%2===0?'Launch countdown':'League QR');
-  if(tsgLaunchDayActive()&&i===2)slides.push('Launch day poster');
  }
  if(tsgRegistrationSeason()){
   const potential=tsgTVPreviewPages().map((_,i)=>tsgTVPageKey(i));
@@ -3406,8 +3349,6 @@ function renderLunchroom(){
   const headline=date===ACCESS_UNLOCK_AT?'WEEK 1 SCHEDULE RELEASE · NOV 20':'SEASON KICKOFF · NOV 23';
   const next=date===ACCESS_UNLOCK_AT?'Week 1 schedule released November 20 · Season begins November 23':'Week 1 schedule released · The competition starts Monday, November 23 at 7:00 AM MST';
   html=`<div class="lb-launch-slide lb-launch-with-crest"><div class="lb-launch-league-lockup" aria-label="The Glencoe Turfcare Social League"><img class="lb-launch-crest" src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><div class="lb-launch-league-wordmark"><span class="lb-launch-glencoe">THE GLENCOE</span><strong>TURFCARE</strong><span class="lb-launch-social">SOCIAL LEAGUE</span></div></div><h2 class="lb-launch-title">${headline}</h2><div class="lb-launch-countdown" id="lb-launch-countdown" data-target="${date}">${lbClock(date)}</div><div class="lb-launch-desc">${esc(leagueTagline())}</div><div class="lb-launch-secondary">${next}</div><div class="tsg-registration-deadline">${registrationNotice()}</div></div>`;
- }else if(page==='Launch day poster'){
-  html=`<div class="lb-launch-slide tsg-promo-poster-slide tsg-launch-2026"><img class="tsg-promo-poster" src="assets/launch-day-2026.jpg" alt="Launch Day is Here! Player access is now open. Sign in or register, check Week 1 matchups, set availability and propose your playing day. Season starts November 23. Scan the QR code to open the league site."><div class="tsg-launch-late-reg">Late registration available · Admin approval required</div></div>`;
  }else if(page==='Crew mottos'){
   html=`<div class="lb-launch-slide lb-crew-slide"><div class="lb-launch-eyebrow">THE GLENCOE PRESENTS · 2026–2027 INAUGURAL SEASON</div><div class="tsg-sport-strip"><div style="background-image:url('assets/ping-pong.jpg')"><span>PING PONG</span></div><div style="background-image:url('assets/darts.jpg')"><span>DARTS</span></div><div style="background-image:url('assets/pool.jpg')"><span>POOL</span></div><div style="background-image:url('assets/air-hockey.jpg')"><span>AIR HOCKEY</span></div></div><h2 class="tsg-crew-quote">${esc(leagueTagline())}</h2><div class="lb-launch-secondary">Four disciplines. One legendary season.</div><div class="tsg-registration-deadline">${registrationNotice()}</div></div>`;
  }else if(page==='League QR'){
@@ -3416,7 +3357,7 @@ function renderLunchroom(){
   if(Date.now()<REGISTRATION_CLOSE_AT){
    html=`<div class="lb-launch-slide tsg-promo-poster-slide"><img class="tsg-promo-poster" src="assets/registration-promo.jpg" alt="The Glencoe Turfcare Social League. Registration opening soon; registration closes November 19, player access and Week 1 schedule November 20, league play starts November 23. QR links to public league website."><div class="tsg-promo-bottom-note">Scan to visit the league website · Registration opens soon</div></div>`;
   }else{
-   html=`<div class="lb-launch-slide lb-launch-with-crest"><div class="lb-launch-league-lockup"><img class="lb-launch-crest" src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><div class="lb-launch-league-wordmark"><span class="lb-launch-glencoe">THE GLENCOE</span><strong>TURFCARE</strong><span class="lb-launch-social">SOCIAL LEAGUE</span></div></div><div class="lb-launch-eyebrow">PLAYER ACCESS OPEN · LATE REGISTRATION AVAILABLE</div><h2 class="lb-launch-title">${preAccess?'WEEK 1 SCHEDULE RELEASE':'LEAGUE PLAY BEGINS'}</h2><div class="lb-launch-desc">${preAccess?'Player access, league functions and the Week 1 schedule release November 20.':'November 23 at 7:00 AM MST · Clock out. Game on.'}</div><div class="lb-launch-secondary">${preAccess?'NOVEMBER 20, 2026':'NOVEMBER 23, 2026'}</div></div>`;
+   html=`<div class="lb-launch-slide lb-launch-with-crest"><div class="lb-launch-league-lockup"><img class="lb-launch-crest" src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><div class="lb-launch-league-wordmark"><span class="lb-launch-glencoe">THE GLENCOE</span><strong>TURFCARE</strong><span class="lb-launch-social">SOCIAL LEAGUE</span></div></div><div class="lb-launch-eyebrow">REGISTRATION CLOSED NOVEMBER 19</div><h2 class="lb-launch-title">${preAccess?'WEEK 1 SCHEDULE RELEASE':'LEAGUE PLAY BEGINS'}</h2><div class="lb-launch-desc">${preAccess?'Player access, league functions and the Week 1 schedule release November 20.':'November 23 at 7:00 AM MST · Clock out. Game on.'}</div><div class="lb-launch-secondary">${preAccess?'NOVEMBER 20, 2026':'NOVEMBER 23, 2026'}</div></div>`;
   }
  }else if(page.startsWith('Potential schedule ')){
   const pages=tsgTVPreviewPages();
@@ -3645,7 +3586,7 @@ if(new URLSearchParams(location.search).get('display')==='1'){
   $('lb-local-time').textContent=tvTime();
   const node=$('lb-ticking-clock'),next=tvScheduled()[0];if(node&&next)node.textContent=lbClock(next.deadline);
   const launchNode=$('lb-launch-countdown');if(launchNode)launchNode.textContent=lbClock(Number(launchNode.dataset.target));
-  if((Date.now()>=SEASON_KICKOFF_AT&&LB_TABS.some(t=>t==='League QR'))||(!tsgRegistrationSeason()&&LB_TABS.some(t=>t.startsWith('Potential schedule ')))||(LB_TABS.includes('Launch day poster')!==tsgLaunchDayActive())){LB_TABS=tvSequence();lbSlideIndex=LB_TABS.length-1;rotateTV();}
+  if((Date.now()>=SEASON_KICKOFF_AT&&LB_TABS.some(t=>t==='League QR'))||(!tsgRegistrationSeason()&&LB_TABS.some(t=>t.startsWith('Potential schedule ')))){LB_TABS=tvSequence();lbSlideIndex=LB_TABS.length-1;rotateTV();}
   updateClubhouseHeader(next?.deadline);
   const mode=sportsMode();if(mode.mode+'-'+mode.date!==sportsLastKey)refreshSportsWire(true);
  },1000);
