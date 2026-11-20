@@ -1037,6 +1037,37 @@ body.display-mode .lb-tv-primary .tsg-potential-fixture{padding:9px 2px 11px;}
 body.display-mode .lb-tv-primary .tsg-potential-pair{padding:2px 0 5px;}
 /* V60f official TV fixtures use the proven high-contrast, paginated preview design. */
 body.display-mode .tsg-tv-official-status{margin:8px 2px 0;color:#ffe6b2;font-weight:850;font-size:clamp(14px,1.1vw,20px);}
+
+/* V60g: official right-column cards are compact and high-contrast. */
+body.display-mode .tsg-tv-side-official{padding:11px 0;line-height:1.23;}
+body.display-mode .tsg-tv-side-official .tsg-side-week{font-size:clamp(11px,.78vw,15px);font-weight:850;color:#e5c979;margin-bottom:6px;}
+body.display-mode .tsg-tv-side-official .tsg-side-pair{font-size:clamp(14px,1.05vw,21px);font-weight:850;color:#fff;overflow-wrap:anywhere;}
+body.display-mode .tsg-tv-side-official small{color:#e3e8d1;line-height:1.32;font-size:clamp(11px,.76vw,15px);}
+
+
+/* V60h: opt-in diagnostic viewer; never displayed during normal slide rotation. */
+body.display-mode .tsg-highlight-log-panel[hidden]{display:none!important}
+body.display-mode .tsg-highlight-log-panel{
+ position:fixed;z-index:500;top:10%;left:50%;transform:translateX(-50%);
+ width:min(850px,94vw);max-height:82vh;overflow:auto;padding:22px;
+ background:#102b23;color:#fff;border:2px solid #e0bd73;border-radius:15px;
+ box-shadow:0 20px 80px #000d;font:15px/1.5 system-ui,sans-serif;
+}
+body.display-mode .tsg-highlight-log-head{display:flex;justify-content:space-between;align-items:center;gap:15px}
+body.display-mode .tsg-highlight-log-head h2{font-size:clamp(20px,2.3vw,30px);color:#fff;margin:0}
+body.display-mode .tsg-highlight-log-panel p{margin:10px 0;color:#d5e7db}
+body.display-mode .tsg-highlight-log-actions{display:flex;gap:9px;flex-wrap:wrap;margin:16px 0}
+body.display-mode .tsg-highlight-log-panel button{
+ padding:9px 12px;color:#102b23;background:#e0bd73;border:0;border-radius:8px;
+ font:700 13px system-ui,sans-serif;cursor:pointer;
+}
+body.display-mode .tsg-highlight-log-panel button.secondary{background:#d5e7db}
+body.display-mode .tsg-highlight-log-list{display:grid;gap:7px;margin-top:12px}
+body.display-mode .tsg-highlight-log-item{background:#1e4939;padding:12px;border-radius:9px}
+body.display-mode .tsg-highlight-log-item strong{display:block;color:#fff}
+body.display-mode .tsg-highlight-log-item small{display:block;color:#e8d3a0;overflow-wrap:anywhere}
+body.display-mode #tv-clip-log-count{color:#f1d59a}
+
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1808,11 +1839,23 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
      <button type="button" id="tv-prev-slide" title="Previous slide (Left Arrow)" aria-label="Previous slide">❮ <span>Previous</span></button>
      <button type="button" id="tv-next-slide" title="Next slide (Right Arrow)" aria-label="Next slide"><span>Next</span> ❯</button>
     </div>
+    <button type="button" id="tv-clip-log" class="tsg-fullscreen" title="Review highlight playback failures">⚠ Clip log <span id="tv-clip-log-count"></span></button>
     <button type="button" id="tv-fullscreen" class="tsg-fullscreen" aria-pressed="false">⛶ Full display</button>
    </div>
   </div>
   
  </div>
+ <section id="tsg-highlight-log-panel" class="tsg-highlight-log-panel" hidden aria-label="Highlight playback failure report">
+   <div class="tsg-highlight-log-head"><h2>Highlight playback log</h2><button id="tsg-highlight-log-close" type="button" aria-label="Close highlight log">✕</button></div>
+   <p>Only recorded playback errors and clips that did not start within 30 seconds appear here. Reports are stored in this browser, not on the server.</p>
+   <div class="tsg-highlight-log-actions">
+     <button id="tsg-highlight-log-copy" type="button">Copy report</button>
+     <button id="tsg-highlight-log-download" type="button">Download CSV</button>
+     <button id="tsg-highlight-log-clear" type="button" class="secondary">Clear log</button>
+   </div>
+   <div id="tsg-highlight-log-status" role="status" aria-live="polite"></div>
+   <div id="tsg-highlight-log-list" class="tsg-highlight-log-list"></div>
+ </section>
  <div class="lb-tv-main">
   <section class="lb-tv-primary"><div class="lb-tv-eyebrow" id="lb-eyebrow">LEAGUE LIVE</div><div id="lb-slide" class="lb-tv-slide"></div></section>
   <aside class="lb-tv-secondary"><div class="lb-tv-side-head"><span class="tsg-season-star">✦</span> 2026–2027 INAUGURAL SEASON</div><div id="lb-side-fixtures" aria-live="off"></div><div class="lb-side-pips" id="lb-side-pips"></div><button type="button" class="tsg-side-tap tsg-side-tap-prev" id="tv-side-prev" aria-label="Previous right-panel slide" title="Previous right-panel slide"></button><button type="button" class="tsg-side-tap tsg-side-tap-next" id="tv-side-next" aria-label="Next right-panel slide" title="Next right-panel slide"></button><div class="clubhouse-stats-footer" id="lb-side-summary"><div><small>PLAYERS</small><strong id="lb-side-players">—</strong></div><div><small>MATCHUPS</small><strong id="lb-side-matchups">—</strong></div><div><small>RESULTS</small><strong id="lb-side-results">—</strong></div></div></aside>
@@ -2704,18 +2747,8 @@ function tvSequence(){
   });
  }
 
- // Official pairings take over the same TV slots when public registration ends.
- if(!tsgRegistrationSeason()){
-  const official=tsgTVOfficialPages().map((_,i)=>tsgTVOfficialKey(i));
-  official.forEach((name,i)=>{
-   const afterWeather=Math.floor(i*5/official.length);
-   const weatherIndices=slides.map((x,j)=>x==='Weather 24h'?j:-1).filter(j=>j>=0);
-   const target=weatherIndices[Math.min(afterWeather,weatherIndices.length-1)];
-   let insertAt=target+1;
-   while(insertAt<slides.length&&slides[insertAt].startsWith('Official schedule '))insertAt++;
-   slides.splice(insertAt,0,name);
-  });
- }
+ // After registration ends, official fixtures move to the dedicated right panel.
+ // Keep the main TV rotation for highlights, weather, league content and standings.
  slides.push('Standings');
  return slides;
 }
@@ -2748,7 +2781,7 @@ function tvFixture(m){const sports=matchupGames(m).map(g=>`${sportIcon[g.discipl
 // YouTube playback availability depends on each video's creator and the browser.
 const FALLBACK_HIGHLIGHTS=[
  {sport:'Ping Pong',id:'7x0SO0o8lps',title:'Top table tennis rallies',credit:'ITTFWorld'},
- {sport:'Darts',id:'wceKkSwrSn4',title:'World Championship best moments',credit:'Professional Darts Corporation'},
+ {sport:'Darts',id:'TEWSUUAamDo',title:'Best moments of the 2025 World Darts Championship',credit:'Sky Sports Darts'},
  {sport:'Pool',id:'WdwpBJ2TlYE',title:'European Open top shots',credit:'Matchroom Pool'},
  {sport:'Air Hockey',id:'U_m09J-m4Nc',title:'Carter Cup highlights',credit:'Centerline Pro Air Hockey'}
 ];
@@ -2757,21 +2790,166 @@ let highlightCatalog=FALLBACK_HIGHLIGHTS.slice();
 let activeHighlight=null, highlightSoundOn=false,sideSlideIndex=0;
 // A provider may restrict embedding after a clip was originally listed.
 // Failed IDs are skipped for this page session; they are never shown as playable.
-const unavailableHighlightIds=new Set();
+// Persistent, local-only failures: no player data or Supabase writes.
+const TSG_HIGHLIGHT_LOG_KEY='turfcare-highlight-failure-log-v1';
+function getHighlightFailures(){
+ try{
+  const list=JSON.parse(localStorage.getItem(TSG_HIGHLIGHT_LOG_KEY)||'[]');
+  if(!Array.isArray(list))return [];
+  return list.filter(e=>e&&typeof e==='object'&&
+    Number(e.time)>Date.now()-30*86400000&&
+    /^[A-Za-z0-9_-]{11}$/.test(String(e.id||''))).slice(-200);
+ }catch{return [];}
+}
+function saveHighlightFailures(list){
+ try{localStorage.setItem(TSG_HIGHLIGHT_LOG_KEY,JSON.stringify(list.slice(-200)));}
+ catch(error){console.warn('Highlight diagnostics cannot be stored:',error);}
+}
+function recordHighlightFailure(clip,reason,code=''){
+ if(!clip||!/^[A-Za-z0-9_-]{11}$/.test(String(clip.id||'')))return;
+ const list=getHighlightFailures();
+ const last=list[list.length-1];
+ // Ignore duplicate player messages for the same failure.
+ if(last&&last.id===clip.id&&last.reason===reason&&Date.now()-last.time<10000)return;
+ list.push({
+  time:Date.now(),id:clip.id,sport:String(clip.sport||''),
+  title:String(clip.title||''),reason:String(reason),code:String(code||'')
+ });
+ saveHighlightFailures(list);
+ updateHighlightLogCount();
+}
+function updateHighlightLogCount(){
+ const label=document.getElementById('tv-clip-log-count');
+ if(label){const n=getHighlightFailures().length;label.textContent=n?`(${n})`:'';}
+}
+function highlightFailureCsv(){
+ const rows=[['Local time','Sport','Title','YouTube ID','Failure','YouTube error']];
+ getHighlightFailures().forEach(e=>rows.push([
+  new Date(e.time).toLocaleString('en-CA',{timeZone:'America/Edmonton'}),
+  e.sport,e.title,e.id,e.reason,e.code]));
+ const quoted=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+ return rows.map(row=>row.map(quoted).join(',')).join('\r\n');
+}
+function renderHighlightFailureLog(){
+ updateHighlightLogCount();
+ const list=document.getElementById('tsg-highlight-log-list');
+ if(!list)return;
+ const rows=getHighlightFailures().slice().reverse();
+ list.innerHTML=rows.length?rows.map(e=>
+  `<div class="tsg-highlight-log-item"><strong>${esc(e.title||e.id)} · ${esc(e.sport)}</strong>`+
+  `<small>${esc(new Date(e.time).toLocaleString('en-CA',{timeZone:'America/Edmonton'}))} · ${esc(e.reason)}`+
+  `${e.code?' (error '+esc(e.code)+')':''}</small>`+
+  `<small>https://www.youtube.com/watch?v=${esc(e.id)}</small></div>`).join(''):
+  '<p>No highlight playback failures have been recorded in this browser.</p>';
+}
+function setupHighlightFailureLog(){
+ const panel=document.getElementById('tsg-highlight-log-panel');
+ const status=document.getElementById('tsg-highlight-log-status');
+ document.getElementById('tv-clip-log')?.addEventListener('click',()=>{
+  panel.hidden=false;renderHighlightFailureLog();
+ });
+ document.getElementById('tsg-highlight-log-close')?.addEventListener('click',()=>{panel.hidden=true;});
+ document.getElementById('tsg-highlight-log-copy')?.addEventListener('click',async()=>{
+  try{
+   await navigator.clipboard.writeText(highlightFailureCsv());
+   status.textContent='Report copied. Paste it into our chat for review.';
+  }catch(error){
+   status.textContent='Copy not available in this browser. Use Download CSV instead.';
+  }
+ });
+ document.getElementById('tsg-highlight-log-download')?.addEventListener('click',()=>{
+  const blob=new Blob(['\ufeff'+highlightFailureCsv()],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='turfcare-highlight-failures.csv';
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),10000);
+  status.textContent='CSV report downloaded.';
+ });
+ document.getElementById('tsg-highlight-log-clear')?.addEventListener('click',()=>{
+  if(!confirm('Clear the saved highlight failure history on this device?'))return;
+  saveHighlightFailures([]);renderHighlightFailureLog();status.textContent='Local highlight failure history cleared.';
+ });
+ updateHighlightLogCount();
+}
+const HIGHLIGHT_BAD_IDS_KEY='turfcare-highlight-unplayable-v2';
+function readBadHighlightIds(){
+ try{const raw=JSON.parse(localStorage.getItem(HIGHLIGHT_BAD_IDS_KEY)||'{}');
+  return new Set(Object.entries(raw).filter(([id,time])=>/^[\w-]{11}$/.test(id)&&Date.now()-Number(time)<24*3600000).map(([id])=>id));
+ }catch{return new Set();}
+}
+const unavailableHighlightIds=readBadHighlightIds();
+function markHighlightUnavailable(id){
+ if(!id||!/^[\w-]{11}$/.test(id))return;
+ unavailableHighlightIds.add(id);
+ try{const raw=JSON.parse(localStorage.getItem(HIGHLIGHT_BAD_IDS_KEY)||'{}');raw[id]=Date.now();
+  const cleaned=Object.fromEntries(Object.entries(raw).filter(([,t])=>Date.now()-Number(t)<24*3600000));
+  localStorage.setItem(HIGHLIGHT_BAD_IDS_KEY,JSON.stringify(cleaned));
+ }catch{}
+}
+let highlightWatchdog=null;
+let highlightStarted=false;
+function clearHighlightWatchdog(){if(highlightWatchdog){clearTimeout(highlightWatchdog);highlightWatchdog=null;}}
+function startHighlightWatchdog(){
+ clearHighlightWatchdog();highlightStarted=false;
+ const id=activeHighlight?.id;
+ if(!id)return;
+ // Missing player errors / unresponsive embeds may never send onError.
+ // Skip only while the Highlights panel is actually visible.
+ highlightWatchdog=setTimeout(()=>{
+  if(!tvLastHighlightPage||highlightStarted||activeHighlight?.id!==id)return;
+  console.warn('Highlight did not begin playing in 30 seconds, skipping:',id);
+  recordHighlightFailure(activeHighlight,'Did not start within 30 seconds');
+  markHighlightUnavailable(id);
+  const pane=$('tv-highlight-pane');if(pane){pane.innerHTML=highlightMarkup();listenToHighlightIframe();}
+ },30000);
+}
+
 let highlightErrorBurst=0, highlightLastErrorAt=0;
 
 let tvVideoPlaying=false,tvVideoInitialized=false,tvLastHighlightPage=false;
 const HIGHLIGHT_HISTORY_KEY='turfcare-highlight-history-by-sport-v1';
-const SIDE_SECTIONS=['Leaderboard','Overall leaders','Ping Pong','Darts','Today confirmed','Pool','Air Hockey','Beer Pong','Leaderboard','Overall leaders','Upcoming confirmed','Matchups'];
-const SIDE_SECTION_DURATIONS={'Leaderboard':30000,'Overall leaders':25000,'Ping Pong':15000,'Darts':15000,'Pool':15000,'Air Hockey':15000,'Beer Pong':15000,'Today confirmed':16000,'Upcoming confirmed':16000,'Matchups':16000};
+const SIDE_SECTIONS=['Leaderboard','Overall leaders','Ping Pong','Darts','Today confirmed','Pool','Air Hockey','Beer Pong','Leaderboard','Overall leaders','Upcoming confirmed','Official fixtures'];
+const SIDE_SECTION_DURATIONS={'Leaderboard':30000,'Overall leaders':25000,'Ping Pong':15000,'Darts':15000,'Pool':15000,'Air Hockey':15000,'Beer Pong':15000,'Today confirmed':16000,'Upcoming confirmed':16000,'Official fixtures':20000};
 const sideSectionDuration=()=>SIDE_SECTION_DURATIONS[SIDE_SECTIONS[sideSlideIndex%SIDE_SECTIONS.length]]||15000;
 let sideRotateTimer=null;
+let tvOfficialSidebarPage=0;
+function tvSidebarFixtures(){
+ const season=tvCurrentSeason();if(!season)return [];
+ const weeks=rollingWeeks(season);
+ return matchups.filter(m=>m.season_id===season.id&&weeks.includes(m.week_number))
+  .sort((a,b)=>a.week_number-b.week_number||String(a.id).localeCompare(String(b.id)));
+}
+function tvOfficialSidebarPages(){
+ const items=tvSidebarFixtures(),size=2,pages=[];
+ for(let i=0;i<items.length;i+=size)pages.push(items.slice(i,i+size));
+ return pages;
+}
+function tvOfficialSidebarMarkup(){
+ const pages=tvOfficialSidebarPages();
+ if(!pages.length)return '<div class="lb-side-kicker">OFFICIAL MATCHUPS</div><div class="lb-side-empty">The published schedule will appear here when available.</div>';
+ const index=tvOfficialSidebarPage%pages.length;
+ const rows=pages[index];
+ return `<div class="lb-side-kicker">OFFICIAL MATCHUPS <span class="tsg-demo-flag">PUBLISHED</span></div>`+
+  `<div class="lb-side-detail">${esc(tvCurrentSeason()?.name||'Current season')} · Page ${index+1} of ${pages.length}</div>`+
+  rows.map(m=>{
+   const sports=matchupGames(m).map(g=>`${sportIcon[g.discipline]||'🏆'} ${esc(g.discipline)}`).join(' · ');
+   const status=countsInStandings(m)||m.resolution==='freebie'||m.resolution==='double_forfeit'?matchStatus(m):'Scheduled';
+   return `<div class="lb-side-upcoming tsg-tv-side-official"><div class="tsg-side-week">WEEK ${m.week_number} · ${esc(status)}</div><div class="tsg-side-pair">${esc(playerName(m.player1_id))}<span class="gold-vs"> VS </span>${esc(playerName(m.player2_id))}</div><small>${sports||'Sport assignments pending'}</small></div>`;
+  }).join('');
+}
+
 function scheduleSidebarRotation(){
  clearTimeout(sideRotateTimer);
  sideRotateTimer=setTimeout(()=>advanceSidebarSlide(1),sideSectionDuration());
 }
 function advanceSidebarSlide(direction){
  if(!document.body.classList.contains('display-mode'))return;
+ const section=SIDE_SECTIONS[sideSlideIndex%SIDE_SECTIONS.length];
+ if(section==='Official fixtures'&&!tsgRegistrationSeason()&&tvOfficialSidebarPages().length>1&&direction>0){
+  tvOfficialSidebarPage++;
+  if(tvOfficialSidebarPage<tvOfficialSidebarPages().length){renderLeagueSidebar();scheduleSidebarRotation();return;}
+  tvOfficialSidebarPage=0;
+ }
  sideSlideIndex=(sideSlideIndex+direction+SIDE_SECTIONS.length)%SIDE_SECTIONS.length;
  renderLeagueSidebar();
  scheduleSidebarRotation();
@@ -2826,6 +3004,8 @@ async function loadHighlightPlaylist(){
   }).map(v=>({sport:v.sport,id:v.id,title:String(v.title||'Sports highlight'),credit:String(v.credit||'YouTube')}));
   if(!valid.length)throw new Error('Playlist has no valid entries');
   highlightCatalog=valid;
+  // Report only syntax-valid entries; actual playback is checked by the iframe.
+  console.info('Highlight catalog loaded:',valid.length,'items; previously failed:',[...unavailableHighlightIds]);
   // Keep per-sport play history; do not restart the current clip.
   console.info('Loaded',valid.length,'unique highlight entries:',Object.fromEntries(HIGHLIGHT_SPORTS.map(s=>[s,valid.filter(v=>v.sport===s).length])));
  }catch(e){console.warn('Using bundled highlight fallback:',e);}
@@ -2861,11 +3041,15 @@ window.addEventListener('message',event=>{
  if(!/^https:\/\/(www\.)?youtube(-nocookie)?\.com$/.test(event.origin))return;
  let message=event.data;
  try{if(typeof message==='string')message=JSON.parse(message);}catch(_e){return;}
- if(message?.event==='onStateChange'&&Number(message.info)===1)highlightErrorBurst=0;
+ const activeIframe=document.getElementById('clubhouse-highlight-iframe');
+ if(!activeIframe||event.source!==activeIframe.contentWindow)return;
+ if(message?.event==='onStateChange'&&Number(message.info)===1){highlightErrorBurst=0;highlightStarted=true;clearHighlightWatchdog();}
  if(message?.event==='onError' && activeHighlight){
+  clearHighlightWatchdog();
   const errorCode=Number(message.info);
   console.warn('Highlight playback unavailable:', activeHighlight.id, 'YouTube error', errorCode);
-  unavailableHighlightIds.add(activeHighlight.id);
+  recordHighlightFailure(activeHighlight,'YouTube playback error',errorCode);
+  markHighlightUnavailable(activeHighlight.id);
   const now=Date.now();
   highlightErrorBurst=(now-highlightLastErrorAt>30000)?1:highlightErrorBurst+1;
   highlightLastErrorAt=now;
@@ -2882,6 +3066,7 @@ window.addEventListener('message',event=>{
   return;
  }
  if(message?.event==='onStateChange'&&Number(message.info)===0&&activeHighlight){
+  clearHighlightWatchdog();
   // Ended: select the next shuffled clip; weather rotation is unaffected.
   const pane=document.getElementById('tv-highlight-pane');
   if(pane){pane.innerHTML=highlightMarkup();listenToHighlightIframe();}
@@ -2889,14 +3074,17 @@ window.addEventListener('message',event=>{
 });
 function setVideoPanelVisible(visible){
  if(visible===tvLastHighlightPage)return;
+ if(!visible)clearHighlightWatchdog();
  tvLastHighlightPage=visible;
  if(tvVideoInitialized){
-  if(visible){youtubeSoundCommand('playVideo');}
+  if(visible){youtubeSoundCommand('playVideo');if(!highlightStarted)startHighlightWatchdog();}
   else{youtubeSoundCommand('pauseVideo');}
  }
 }
 function highlightMarkup(sport=null){
+ clearHighlightWatchdog();
  activeHighlight=nextHighlight(sport);
+ if(tvLastHighlightPage&&activeHighlight)startHighlightWatchdog();
  highlightSoundOn=false;
  if(!activeHighlight)return '<div class="lb-tv-empty">No playable clips available right now. Please try again later.</div>';
  const h=activeHighlight;
@@ -3019,12 +3207,14 @@ function renderLeagueSidebar(){
   (countsInStandings(m)||m.resolution==='freebie'||m.resolution==='double_forfeit'));
  // During registration, and after it closes until there are real results,
  // show the approved crew rather than empty leaderboards or invented statistics.
- if((registrationOpen||!resultsRecorded)&&!['Today confirmed','Upcoming confirmed','Matchups'].includes(section)){
+ if((registrationOpen||!resultsRecorded)&&!['Today confirmed','Upcoming confirmed','Official fixtures'].includes(section)){
   $('lb-side-pips').innerHTML=SIDE_SECTIONS.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join('');
   tvRegisteredCrewSidebar(section,registrationOpen);return;
  }
  $('lb-side-pips').innerHTML=SIDE_SECTIONS.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join('');
- if(section==='Leaderboard'){
+ if(section==='Official fixtures'){
+  n.innerHTML=tsgRegistrationSeason()?'<div class="lb-side-kicker">POTENTIAL MATCHUPS</div><div class="lb-side-empty">See the registration preview in the main TV rotation.</div>':tvOfficialSidebarMarkup();
+ }else if(section==='Leaderboard'){
   const ranked=seasonId?tvSeasonRankings(seasonId).slice(0,5):[];
   n.innerHTML=`<div class="lb-side-kicker">LEAGUE STANDINGS${historyTag}</div>${ranked.length?ranked.map((p,i)=>`<div class="lb-side-upcoming" style="display:flex;gap:10px;justify-content:space-between;align-items:baseline"><span><span style="color:#d7b56d">${i+1}.</span> ${esc(p.display_name)}</span><small style="white-space:nowrap">${p.wins}W · ${p.losses}L</small></div>`).join(''):'<div class="lb-side-empty">Players will appear here soon.</div>'}`;
  }else if(section==='Today confirmed'||section==='Upcoming confirmed'){
@@ -3332,6 +3522,7 @@ document.addEventListener('keydown',event=>{
 });
 loadHighlightPlaylist();
 if(new URLSearchParams(location.search).get('display')==='1'){
+ setupHighlightFailureLog();
  document.body.classList.add('display-mode');
  // Highlights stay for five minutes; 24-hour weather for two. After five pairs,
  // show the overall leaderboard for one minute, then repeat.
@@ -3392,7 +3583,7 @@ if(new URLSearchParams(location.search).get('display')==='1'){
   $('lb-local-time').textContent=tvTime();
   const node=$('lb-ticking-clock'),next=tvScheduled()[0];if(node&&next)node.textContent=lbClock(next.deadline);
   const launchNode=$('lb-launch-countdown');if(launchNode)launchNode.textContent=lbClock(Number(launchNode.dataset.target));
-  if(Date.now()>=SEASON_KICKOFF_AT&&LB_TABS.some(t=>t==='League QR')){LB_TABS=tvSequence();lbSlideIndex=LB_TABS.length-1;rotateTV();}
+  if((Date.now()>=SEASON_KICKOFF_AT&&LB_TABS.some(t=>t==='League QR'))||(!tsgRegistrationSeason()&&LB_TABS.some(t=>t.startsWith('Potential schedule ')))){LB_TABS=tvSequence();lbSlideIndex=LB_TABS.length-1;rotateTV();}
   updateClubhouseHeader(next?.deadline);
   const mode=sportsMode();if(mode.mode+'-'+mode.date!==sportsLastKey)refreshSportsWire(true);
  },1000);
