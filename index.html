@@ -3044,39 +3044,21 @@ let highlightErrorBurst=0, highlightLastErrorAt=0;
 
 let tvVideoPlaying=false,tvVideoInitialized=false,tvLastHighlightPage=false;
 const HIGHLIGHT_HISTORY_KEY='turfcare-highlight-history-by-sport-v1';
-// V60n: right-hand matchup cards appear only for confirmed, upcoming playing days.
-// The full published schedule remains on the main (left-hand) TV slides.
-const SIDE_BASE_SECTIONS=['Leaderboard','Overall leaders','Ping Pong','Darts','Pool','Air Hockey','Beer Pong','Leaderboard','Overall leaders'];
-// Use each season's own start date; never wait for the first recorded score.
-function tvSeasonUnderway(){
- const season=tvCurrentSeason();
- return !!(season&&season.starts_on&&calDate(new Date())>=season.starts_on);
+// V60q: right TV panel has just two modes: confirmed upcoming matchups,
+// or the original plain season-information card if there are none.
+// Confirmed matchups are paginated so no player is hidden when many are scheduled.
+function tvConfirmedSidebarPages(){
+ const upcoming=confirmedSchedule();
+ const pageSize=3, pages=[];
+ for(let i=0;i<upcoming.length;i+=pageSize)pages.push(upcoming.slice(i,i+pageSize));
+ return pages;
 }
 function sideSections(){
- const confirmed=confirmedSchedule();
- const today=confirmed.some(x=>sameCalgaryDay(x.a.starts_at));
- const future=confirmed.some(x=>!sameCalgaryDay(x.a.starts_at));
- const season=tvCurrentSeason();
- let sections=SIDE_BASE_SECTIONS.slice();
- // Once a season starts, omit empty statistical slides rather than showing
- // roster placeholders or leaderboards with nothing to report.
- if(tvSeasonUnderway()){
-  const seasonId=season?.id;
-  const hasOverall=seasonId&&tvSeasonRankings(seasonId).length>0;
-  sections=hasOverall?['Leaderboard','Overall leaders']:['Season underway'];
-  for(const sport of SPORTS){
-   if(seasonId&&tvSeasonSportStats(sport,seasonId).length)sections.push(sport);
-  }
- }
- if(today)sections.push('Today confirmed');
- if(future)sections.push('Upcoming confirmed');
- return sections;
+ const pages=tvConfirmedSidebarPages();
+ return pages.length?pages.map((_,i)=>`Confirmed page ${i+1}`):['Season underway'];
 }
-const SIDE_SECTION_DURATIONS={'Season underway':20000,'Leaderboard':30000,'Overall leaders':25000,'Ping Pong':15000,'Darts':15000,'Pool':15000,'Air Hockey':15000,'Beer Pong':15000,'Today confirmed':16000,'Upcoming confirmed':16000};
-const sideSectionDuration=()=>{
- const sections=sideSections();
- return SIDE_SECTION_DURATIONS[sections[sideSlideIndex%sections.length]]||15000;
-};
+const SIDE_SECTION_DURATIONS={'Season underway':20000};
+const sideSectionDuration=()=>sideSections()[sideSlideIndex%sideSections().length]==='Season underway'?20000:18000;
 let sideRotateTimer=null;
 let tvOfficialSidebarPage=0;
 function tvSidebarFixtures(){
@@ -3359,6 +3341,25 @@ function renderLeagueSidebar(){
  const n=$('lb-side-fixtures');if(!n)return;
  const sections=sideSections();
  const index=sideSlideIndex%sections.length,section=sections[index];
+ // Only upcoming confirmed playing dates are shown on the right.
+ // When all are played, cancelled, or unconfirmed, show one quiet season card.
+ const confirmedPages=tvConfirmedSidebarPages();
+ $('lb-side-pips').innerHTML=sections.length>1?sections.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join(''):'';
+ if(confirmedPages.length){
+  const page=confirmedPages[index]||confirmedPages[0];
+  n.innerHTML=`<div class="lb-side-kicker">UPCOMING CONFIRMED MATCHUPS</div>`+
+   (confirmedPages.length>1?`<div class="lb-side-detail">Page ${index+1} of ${confirmedPages.length}</div>`:'')+
+   page.map(confirmedMatchupCard).join('');
+ }else{
+  const active=tvCurrentSeason();
+  const published=active?matchups.filter(m=>m.season_id===active.id).length:0;
+  n.innerHTML=`<div class="lb-side-kicker">${tvSeasonUnderway()?'SEASON UNDERWAY':'LEAGUE UPDATE'}</div>`+
+   `<div class="lb-side-focus">${esc(active?.name||'Turfcare Social League')}</div>`+
+   `<div class="lb-side-detail">No upcoming playing days have been confirmed yet. Players can arrange their games through My League.</div>`+
+   `<div class="lb-side-metric-grid"><div class="lb-side-stat"><b>${published}</b><small>Published matchups</small></div>`+
+   `<div class="lb-side-stat"><b>${confirmedSchedule().length}</b><small>Confirmed playing days</small></div></div>`;
+ }
+ return;
  const seasonInfo=tvSidebarSeason(), seasonId=seasonInfo?.season?.id, historical=!!seasonInfo?.history;
  const historyTag=historical?` <span class="tsg-demo-flag">${esc(seasonInfo.season.name)} · PREVIOUS SEASON</span>`:'';
  // During the registration window, showcase real approved participants instead
