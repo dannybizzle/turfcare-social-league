@@ -1894,7 +1894,7 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 </style>
 </head>
 <body>
-<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="tsg-v56c-navigation"><button id="tsg-v56c-menu-button" class="tsg-v56c-menu-button" type="button" aria-expanded="false" aria-controls="tsg-v56c-menu">☰ <span id="tsg-v56c-current">Menu</span> <span aria-hidden="true">▾</span></button><div id="tsg-v56c-menu" class="home-nav-links" hidden><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-rules">League Rules</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link">Admin</a></div></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><div class="tsg-v56g-entrance">
+<header id="home" class="home-relaunch"><nav class="home-topbar" aria-label="Main navigation"><a class="brand tsg-home-brand" href="#home" aria-label="Turfcare Social League home"><img alt="The Glencoe crest" src="assets/glencoe-crest.jpg"/><span><small>THE GLENCOE</small>TURFCARE <em>SOCIAL LEAGUE</em></span></a><div class="tsg-v56c-navigation"><button id="tsg-v56c-menu-button" class="tsg-v56c-menu-button" type="button" aria-expanded="false" aria-controls="tsg-v56c-menu">☰ <span id="tsg-v56c-current">Menu</span> <span aria-hidden="true">▾</span></button><div id="tsg-v56c-menu" class="home-nav-links" hidden><a href="#page-home">Home</a><a href="#page-standings">Standings</a><a href="#page-matchups">Matchups</a><a href="#page-rules">League Rules</a><a href="#page-player">My League</a><a href="#page-admin" class="tsg-admin-link" hidden aria-hidden="true">Admin</a></div></div><button id="tsg-top-auth" class="tsg-top-auth" type="button" aria-expanded="false" aria-controls="tsg-top-auth-menu">Sign in</button></nav><div class="hero home-hero"><div class="home-hero-content"><h1><span>Clock out.</span><br><em>Game on.</em></h1><p class="home-hero-lede">We maintain the greens. We settle scores indoors.</p><p class="home-rotating-slogan" id="tsg-home-slogan">Same crew. Different rivals. Endless bragging rights.</p><div class="tsg-v56g-entrance">
 <a aria-controls="tsg-registration" aria-expanded="false" class="tsg-home-registration-cta" href="#tsg-registration">Register for the League</a>
 <button class="tsg-v56g-login" id="tsg-v56g-login" type="button">Already a member? Sign in</button>
 
@@ -2135,7 +2135,7 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 <div id="season-management-message" class="notice" role="status"></div>
 </section>
 <section class="panel tsg-approval-panel" id="tsg-approval-panel" aria-labelledby="tsg-approval-heading">
-<h3 id="tsg-approval-heading">Pending Registrations <span id="tsg-approval-count" class="tag">0</span></h3>
+<h3 id="tsg-approval-heading">Pending Public Registrations & Invites <span id="tsg-approval-count" class="tag">0</span></h3>
 <p class="muted">Invited players become eligible only after they actually set a password. The system verifies a password-setup event, not an invitation timestamp or previous login. Once approved, current-week scheduling is checked automatically.</p>
 <div id="tsg-approval-list" aria-live="polite"><div class="notice">Loading registration requests…</div></div>
 <div id="tsg-approval-message" role="status" aria-live="polite" class="notice"></div>
@@ -2593,7 +2593,7 @@ async function refreshAuth(){
  $('auth-form').classList.toggle('hidden',!!session);$('signout').classList.toggle('hidden',!session);
  $('auth-state').textContent=session?'Signed in as '+session.user.email+'.':'Sign in to access your player tools and submit completed matchups.';
  isAdmin=false;isOwner=false;
- if(session){const {data:profile}=await client.from('profiles').select('role,is_owner,is_player,is_approved,display_name').eq('id',session.user.id).maybeSingle();isAdmin=profile?.role==='admin';isOwner=profile?.is_owner===true;const approved=profile?.is_approved===true&&(profile?.is_player===true||isAdmin);const cal=calDate(new Date());const unlocked=cal>='2026-11-20'||isAdmin;$('tsg-pending-approval').classList.toggle('hidden',approved&&unlocked);$('player-area').classList.toggle('hidden',!(approved&&unlocked));updatePlayerApprovalWelcome(approved&&unlocked);if(profile&&document.activeElement!==$('my-display-name'))$('my-display-name').value=profile.display_name||'';}else{$('tsg-pending-approval').classList.add('hidden');$('player-area').classList.add('hidden');updatePlayerApprovalWelcome(false);}
+ if(session){const {data:profile}=await client.from('profiles').select('role,is_owner,is_player,is_approved,display_name').eq('id',session.user.id).maybeSingle();isAdmin=profile?.role==='admin'||profile?.is_owner===true;isOwner=profile?.is_owner===true;const approved=profile?.is_approved===true&&(profile?.is_player===true||isAdmin);const cal=calDate(new Date());const unlocked=cal>='2026-11-20'||isAdmin;$('tsg-pending-approval').classList.toggle('hidden',approved&&unlocked);$('player-area').classList.toggle('hidden',!(approved&&unlocked));updatePlayerApprovalWelcome(approved&&unlocked);if(profile&&document.activeElement!==$('my-display-name'))$('my-display-name').value=profile.display_name||'';}else{$('tsg-pending-approval').classList.add('hidden');$('player-area').classList.add('hidden');updatePlayerApprovalWelcome(false);}
  $('tsg-registration').classList.toggle('hidden',!!session || !window.tsgV57RegistrationOpen?.() || $('tsg-registration').dataset.open!=='true');
  $('admin-area').classList.toggle('hidden',!isAdmin);
  if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();}
@@ -4455,7 +4455,7 @@ $('invite-player-button').onclick = async () => {
     if (error) throw error;
 
     message.className = 'status';
-    message.textContent = `Invitation sent to ${email}.`;
+    message.textContent = `Invitation sent to ${email}. Once they accept and set a password, access is approved automatically. No second approval is needed.`;
 
     $('invite-player-name').value = '';
     $('invite-player-email').value = '';
@@ -4951,7 +4951,7 @@ async function beginInvitation() {
     const invitedUser = await verifySessionForInvite();
     verifiedInviteUserId = invitedUser.id;
     heading.textContent = tsgInviteLink.authType === 'recovery' ? 'Reset Your Password' : 'Finish Your Player Registration';
-    explanatory.textContent = tsgInviteLink.authType === 'recovery' ? `Choose a new password for ${invitedUser.email || 'your account'}.` : `Set a password for ${invitedUser.email || 'your invited account'}. Your league administrator will approve you afterward.`;
+    explanatory.textContent = tsgInviteLink.authType === 'recovery' ? `Choose a new password for ${invitedUser.email || 'your account'}.` : `Set a password for ${invitedUser.email || 'your invited account'}. This administrator invitation already includes approval—your access will activate automatically when setup is complete.`;
     form.hidden = false;
     message.textContent = '';
     // Clear invite credentials from browser history after authentication.
@@ -4981,7 +4981,7 @@ form.addEventListener('submit', async (event) => {
       throw new Error('Your active session changed. Your password has NOT been updated. Please reopen your invitation.');
     const result = await client.auth.updateUser({password});
     if (result.error) throw result.error;
-    message.textContent = tsgInviteLink.authType === 'recovery' ? 'Password updated. You can sign in with your new password.' : 'Password saved. Your account is now awaiting administrator approval.';
+    message.textContent = tsgInviteLink.authType === 'recovery' ? 'Password updated. You can sign in with your new password.' : 'Password saved. Your administrator invitation is approved; your league access should be active now. Sign in to continue.';
     message.style.color = '#173d32';
     form.hidden = true;
     verifiedInviteUserId = null;
@@ -5068,7 +5068,7 @@ if (tsgInviteLink.isInvite) {
   if(key!=='home'&&key!=='rules'&&!signedIn)key='home';
   if(key==='admin' && !isAdmin)key='home';
   document.querySelectorAll('.tsg-admin-link,.tsg-page-tabs a[data-page="admin"]').forEach(a=>{a.hidden=!isAdmin;a.setAttribute('aria-hidden',String(!isAdmin));});
-  document.querySelectorAll('#tsg-v56c-menu a[href^="#page-"],.home-mobile-tabs a[href^="#page-"],.tsg-page-tabs a[href^="#page-"]').forEach(a=>{const restricted=!['#page-home','#page-rules'].includes(a.getAttribute('href'));a.hidden=restricted&&!signedIn;if(restricted)a.setAttribute('aria-hidden',String(!signedIn));});
+  document.querySelectorAll('#tsg-v56c-menu a[href^="#page-"],.home-mobile-tabs a[href^="#page-"],.tsg-page-tabs a[href^="#page-"]').forEach(a=>{const target=a.getAttribute('href');const adminOnly=target==='#page-admin'||a.classList.contains('tsg-admin-link')||a.dataset.page==='admin';const restricted=!['#page-home','#page-rules'].includes(target);const hide=adminOnly?!isAdmin:(restricted&&!signedIn);a.hidden=hide;a.setAttribute('aria-hidden',String(hide));});
   document.body.classList.toggle('tsg-v56g-guest',!signedIn);
   const quickNav=document.querySelector('.tsg-v59-bottom-nav');if(quickNav)quickNav.hidden=!signedIn;
   Object.entries(sections).forEach(([k,el])=>el.classList.toggle('tsg-page-active',k===key));
