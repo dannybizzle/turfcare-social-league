@@ -1133,6 +1133,97 @@ body.display-mode .tsg-tv-qr-frame strong{display:block;font-size:clamp(13px,1vw
 .tsg-v61b-two input{width:100%}.tsg-v61b-tv-rows{display:grid;grid-template-columns:minmax(0,1fr) 75px 50px;gap:12px;align-items:center}
 .tsg-v61b-tv-rows label{margin:0;display:flex;align-items:center;gap:8px}.tsg-v61b-tv-rows input[type="number"]{width:100%;box-sizing:border-box}
 @media(max-width:520px){.tsg-v61b-two{grid-template-columns:1fr}.tsg-v61b-tv-rows{grid-template-columns:minmax(0,1fr) 60px 45px;gap:6px}}
+
+/* V61c — desktop-first administration layout, with compact laptop/phone fallback.
+   Scope selectors to the TV panel; do not alter the dedicated TV presentation. */
+body:not(.display-mode) .tsg-v61c-tv-editor{
+  padding:28px 30px; margin-top:0!important;
+  max-width:none; border:1px solid #d9dfd3; border-radius:16px;
+  background:linear-gradient(135deg,#fff 0%,#fff 72%,#f8faf5 100%);
+  box-shadow:0 5px 20px rgba(20,53,40,.045);
+}
+body:not(.display-mode) .tsg-v61c-tv-heading{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:26px;
+}
+body:not(.display-mode) .tsg-v61c-tv-heading h3{margin:3px 0 8px;font-size:clamp(1.2rem,1.8vw,1.55rem)}
+body:not(.display-mode) .tsg-v61c-tv-heading p{max-width:700px;margin:0;font-size:.92rem}
+body:not(.display-mode) .tsg-v61c-eyebrow{color:#55715f;font-size:.68rem;font-weight:800;letter-spacing:.12em}
+body:not(.display-mode) .tsg-v61c-cycle{display:flex;flex-direction:column;align-items:center;min-width:112px;padding:12px 18px;background:#eaf0e5;border:1px solid #dbe5d7;border-radius:12px}
+body:not(.display-mode) .tsg-v61c-cycle strong{font-size:1.4rem;line-height:1.2;color:#17452f}
+body:not(.display-mode) .tsg-v61c-cycle span{white-space:nowrap;font-size:.71rem;color:#496451}
+body:not(.display-mode) .tsg-v61c-table-head,
+body:not(.display-mode) .tsg-v61c-tv-row{
+  display:grid;grid-template-columns:minmax(250px,1fr) 118px 142px;
+  column-gap:24px;align-items:center;
+}
+body:not(.display-mode) .tsg-v61c-table-head{padding:0 16px 11px;color:#64796a;font-size:.69rem;letter-spacing:.1em;font-weight:800}
+body:not(.display-mode) .tsg-v61c-table-head span:nth-child(2),
+body:not(.display-mode) .tsg-v61c-table-head span:nth-child(3){text-align:center}
+body:not(.display-mode) .tsg-v61c-tv-rows{border:1px solid #e0e5db;border-radius:13px;overflow:hidden;background:#fff}
+body:not(.display-mode) .tsg-v61c-tv-row{min-height:79px;padding:11px 16px;border-bottom:1px solid #e5e9e1}
+body:not(.display-mode) .tsg-v61c-tv-row:last-child{border-bottom:0}
+body:not(.display-mode) .tsg-v61c-tv-row:nth-child(even){background:#fbfcf9}
+body:not(.display-mode) .tsg-v61c-tv-label{display:flex;align-items:center;gap:13px;min-width:0}
+body:not(.display-mode) .tsg-v61c-tv-icon{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;background:#edf2e9;border-radius:11px;color:#245b49;font-size:1.2rem;font-weight:700}
+body:not(.display-mode) .tsg-v61c-tv-label strong{display:block;color:#183b2b;font-size:.93rem}
+body:not(.display-mode) .tsg-v61c-tv-label small{display:block;color:#68786b;font-size:.77rem;font-weight:400;margin-top:2px}
+body:not(.display-mode) .tsg-v61c-tv-toggle,
+body:not(.display-mode) .tsg-v61c-tv-duration,
+body:not(.display-mode) .tsg-v61c-stats-toggle{
+  margin:0!important;padding:0!important;display:flex!important;align-items:center;gap:9px!important;
+  justify-content:center;position:static!important;width:auto!important;
+  text-align:left!important;font:inherit;cursor:pointer;
+}
+body:not(.display-mode) .tsg-v61c-tv-toggle input,
+body:not(.display-mode) .tsg-v61c-stats-toggle input{
+  appearance:auto!important;-webkit-appearance:checkbox!important;
+  width:18px!important;height:18px!important;min-width:18px!important;
+  margin:0!important;padding:0!important;flex:0 0 18px!important;
+  accent-color:#245b49;
+}
+body:not(.display-mode) .tsg-v61c-tv-toggle span{font-size:.79rem;color:#496451;font-weight:600}
+body:not(.display-mode) .tsg-v61c-tv-duration input{
+  width:66px!important;min-width:0!important;max-width:66px!important;
+  padding:9px 7px!important;border:1px solid #d6ddd5!important;
+  border-radius:9px!important;text-align:center!important;
+  font:700 .94rem/1.2 system-ui,sans-serif!important;
+  background:white!important;color:#173d32!important;
+}
+body:not(.display-mode) .tsg-v61c-tv-duration span{font-size:.8rem;color:#58705f;font-weight:500}
+body:not(.display-mode) .tsg-v61c-sidebar-settings{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,375px);
+  align-items:center;gap:28px;margin-top:22px;padding:18px 20px;
+  background:#f1f5ee;border:1px solid #e0e7dc;border-radius:12px;
+}
+body:not(.display-mode) .tsg-v61c-sidebar-settings strong{color:#183b2b}
+body:not(.display-mode) .tsg-v61c-sidebar-settings p{margin:4px 0 0;color:#617164;font-size:.85rem}
+body:not(.display-mode) .tsg-v61c-stats-toggle{justify-content:flex-start!important;font-size:.82rem!important;font-weight:700}
+body:not(.display-mode) .tsg-v61c-actions{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:20px}
+body:not(.display-mode) .tsg-v61c-actions p{margin:0;max-width:530px}
+body:not(.display-mode) .tsg-v61c-actions button{margin:0!important;padding:12px 22px;white-space:nowrap}
+body:not(.display-mode) #tsg-v61b-tv-message:empty{display:none}
+@media(max-width:760px){
+ body:not(.display-mode) .tsg-v61c-tv-editor{padding:20px 16px}
+ body:not(.display-mode) .tsg-v61c-tv-heading{gap:12px;margin-bottom:18px}
+ body:not(.display-mode) .tsg-v61c-cycle{min-width:90px;padding:10px}
+ body:not(.display-mode) .tsg-v61c-table-head,
+ body:not(.display-mode) .tsg-v61c-tv-row{grid-template-columns:minmax(0,1fr) 75px 100px;column-gap:7px}
+ body:not(.display-mode) .tsg-v61c-tv-row{padding:12px 8px}
+ body:not(.display-mode) .tsg-v61c-table-head{padding:0 8px 9px;font-size:.58rem}
+ body:not(.display-mode) .tsg-v61c-tv-icon{width:30px;height:30px;flex-basis:30px;font-size:.95rem}
+ body:not(.display-mode) .tsg-v61c-tv-label{gap:7px}
+ body:not(.display-mode) .tsg-v61c-tv-label strong{font-size:.8rem}
+ body:not(.display-mode) .tsg-v61c-tv-label small{font-size:.68rem}
+ body:not(.display-mode) .tsg-v61c-tv-duration input{width:51px!important;max-width:51px!important}
+ body:not(.display-mode) .tsg-v61c-tv-toggle span{display:none}
+ body:not(.display-mode) .tsg-v61c-sidebar-settings{grid-template-columns:1fr;gap:15px;padding:15px}
+ body:not(.display-mode) .tsg-v61c-actions{align-items:stretch;flex-direction:column}
+ body:not(.display-mode) .tsg-v61c-actions button{align-self:flex-start}
+}
+@media(max-width:420px){
+ body:not(.display-mode) .tsg-v61c-cycle{display:none}
+ body:not(.display-mode) .tsg-v61c-tv-label small{display:none}
+}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1827,19 +1918,58 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 <p id="tsg-v61b-season-message" class="notice" role="status"></p>
 <p class="muted">Season status normally advances on its own at the scheduled start and end dates. A season with unresolved matchups will not be closed automatically.</p>
 </section>
-<section class="panel admin-form" id="tsg-v61b-tv-editor" style="margin-top:16px">
-<h3>TV Display Programming</h3>
-<p class="muted">Choose which main-screen sections rotate and how long each one stays visible. The TV checks for changes automatically. The right-hand sidebar retains this week's matchups, real leaderboards, and the statistics information card.</p>
-<div class="tsg-v61b-tv-rows">
-<label><input type="checkbox" id="tsg-v61b-highlights-on" checked> Highlights</label><input type="number" min="1" max="30" id="tsg-v61b-highlights-min" value="5" aria-label="Highlights minutes"><small>minutes</small>
-<label><input type="checkbox" id="tsg-v61b-weather-on" checked> Weather</label><input type="number" min="1" max="30" id="tsg-v61b-weather-min" value="3" aria-label="Weather minutes"><small>minutes</small>
-<label><input type="checkbox" id="tsg-v61b-matchups-on" checked> This Week's Matchups</label><input type="number" min="1" max="30" id="tsg-v61b-matchups-min" value="2" aria-label="Matchups minutes"><small>minutes</small>
-<label><input type="checkbox" id="tsg-v61b-qr-on" checked> Homepage QR Code</label><input type="number" min="1" max="30" id="tsg-v61b-qr-min" value="1" aria-label="QR code minutes"><small>minutes</small>
-</div>
-<label style="margin-top:16px"><input type="checkbox" id="tsg-v61b-stats-on" checked> Include the right-side Live League Statistics information card</label>
-<p class="notice">The initial 5 / 3 / 2 / 1-minute timing is preserved. Matchups still display only the current week on TV; My League and Matchups keep the look-ahead schedules.</p>
-<button type="button" id="tsg-v61b-save-tv">Save TV Settings</button>
-<p id="tsg-v61b-tv-message" class="notice" role="status"></p>
+<section class="panel admin-form tsg-v61c-tv-editor" id="tsg-v61b-tv-editor">
+  <div class="tsg-v61c-tv-heading">
+    <div>
+      <span class="tsg-v61c-eyebrow">LUNCHROOM DISPLAY · PROGRAMMING</span>
+      <h3>TV Display Settings</h3>
+      <p class="muted">Choose what appears on the main screen and how long each section plays. Changes are picked up by the TV automatically.</p>
+    </div>
+    <div class="tsg-v61c-cycle" aria-label="Default rotation is 11 minutes">
+      <strong>11 min</strong><span>Default cycle</span>
+    </div>
+  </div>
+
+  <div class="tsg-v61c-table-head" aria-hidden="true">
+    <span>MAIN SCREEN CONTENT</span><span>SHOW</span><span>DURATION</span>
+  </div>
+  <div class="tsg-v61c-tv-rows">
+    <div class="tsg-v61c-tv-row">
+      <div class="tsg-v61c-tv-label"><span class="tsg-v61c-tv-icon">▶</span><div><strong>Highlights</strong><small>Sports videos and clips</small></div></div>
+      <label class="tsg-v61c-tv-toggle" for="tsg-v61b-highlights-on"><input type="checkbox" id="tsg-v61b-highlights-on" checked><span>On</span></label>
+      <label class="tsg-v61c-tv-duration" for="tsg-v61b-highlights-min"><input type="number" min="1" max="30" id="tsg-v61b-highlights-min" value="5" aria-label="Highlights duration in minutes"><span>min</span></label>
+    </div>
+    <div class="tsg-v61c-tv-row">
+      <div class="tsg-v61c-tv-label"><span class="tsg-v61c-tv-icon">☁</span><div><strong>Weather</strong><small>Local weather and forecast</small></div></div>
+      <label class="tsg-v61c-tv-toggle" for="tsg-v61b-weather-on"><input type="checkbox" id="tsg-v61b-weather-on" checked><span>On</span></label>
+      <label class="tsg-v61c-tv-duration" for="tsg-v61b-weather-min"><input type="number" min="1" max="30" id="tsg-v61b-weather-min" value="3" aria-label="Weather duration in minutes"><span>min</span></label>
+    </div>
+    <div class="tsg-v61c-tv-row">
+      <div class="tsg-v61c-tv-label"><span class="tsg-v61c-tv-icon">⚔</span><div><strong>This Week's Matchups</strong><small>Current-week pairings only</small></div></div>
+      <label class="tsg-v61c-tv-toggle" for="tsg-v61b-matchups-on"><input type="checkbox" id="tsg-v61b-matchups-on" checked><span>On</span></label>
+      <label class="tsg-v61c-tv-duration" for="tsg-v61b-matchups-min"><input type="number" min="1" max="30" id="tsg-v61b-matchups-min" value="2" aria-label="Matchups duration in minutes"><span>min</span></label>
+    </div>
+    <div class="tsg-v61c-tv-row">
+      <div class="tsg-v61c-tv-label"><span class="tsg-v61c-tv-icon">▦</span><div><strong>Homepage QR Code</strong><small>Scan to open the league on a phone</small></div></div>
+      <label class="tsg-v61c-tv-toggle" for="tsg-v61b-qr-on"><input type="checkbox" id="tsg-v61b-qr-on" checked><span>On</span></label>
+      <label class="tsg-v61c-tv-duration" for="tsg-v61b-qr-min"><input type="number" min="1" max="30" id="tsg-v61b-qr-min" value="1" aria-label="QR duration in minutes"><span>min</span></label>
+    </div>
+  </div>
+  <div class="tsg-v61c-sidebar-settings">
+    <div>
+      <strong>Right-hand panel</strong>
+      <p>Current-week matchups and real leaderboards appear as data becomes available. Empty statistic cards are skipped.</p>
+    </div>
+    <label class="tsg-v61c-stats-toggle" for="tsg-v61b-stats-on">
+      <input type="checkbox" id="tsg-v61b-stats-on" checked>
+      <span>Show the Live League Statistics information card</span>
+    </label>
+  </div>
+  <div class="tsg-v61c-actions">
+    <p class="muted">Look-ahead matchups remain available on My League and Matchups, not on the TV.</p>
+    <button type="button" id="tsg-v61b-save-tv">Save TV Settings</button>
+  </div>
+  <p id="tsg-v61b-tv-message" class="notice" role="status" aria-live="polite"></p>
 </section>
 <section class="panel admin-form" style="margin-top:16px">
 <h3>Season Management</h3>
