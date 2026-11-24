@@ -1974,7 +1974,8 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 <button type="button" class="secondary" data-admin-category="scheduling">Scheduling</button>
 <button type="button" class="secondary" data-admin-category="availability">Availability</button>
 <button type="button" class="secondary" data-admin-category="results">Results</button>
-<button type="button" class="secondary" data-admin-category="seasons">New Season &amp; Registration</button>
+<button type="button" class="secondary" data-admin-category="seasons">Seasons &amp; Registration</button>
+<button type="button" class="secondary" data-admin-category="tv">TV Display</button>
 </nav>
 <div id="admin-category-inbox" class="admin-category"><section class="panel"><h3>Scheduling Inbox</h3><p class="muted">Reported matchup issues. Resolve or dismiss a report to remove it from the active inbox; history is preserved.</p><div class="tsg-inbox-tabs"><button type="button" id="tsg-inbox-open" class="secondary active">Open</button><button type="button" id="tsg-inbox-history" class="secondary">History</button><button type="button" id="tsg-inbox-refresh" class="secondary">Refresh</button></div><div id="tsg-inbox-items" role="region" aria-live="polite"><div class="empty">Loading reports…</div></div><div id="tsg-inbox-message" role="status" aria-live="polite"></div></section></div>
 <div id="admin-category-overview" class="admin-category hidden">
@@ -1986,6 +1987,7 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 <div id="admin-category-players" class="admin-category hidden"></div>
 <div id="admin-category-scheduling" class="admin-category hidden"></div>
 <div id="admin-category-seasons" class="admin-category hidden"></div>
+<div id="admin-category-tv" class="admin-category hidden"></div>
 <div id="admin-category-availability" class="admin-category hidden"></div>
 <div id="admin-category-results" class="admin-category hidden"></div>
 <div class="admin-grid" id="season-setup-grid">
@@ -2580,7 +2582,7 @@ async function refreshAuth(){
  else {leagueMatchupFlags=[];renderLeagueInbox();}
 }
 (function setupAdminCategories(){
- const places={inbox:$('admin-category-inbox'),overview:$('admin-category-overview'),players:$('admin-category-players'),scheduling:$('admin-category-scheduling'),seasons:$('admin-category-seasons'),availability:$('admin-category-availability'),results:$('admin-category-results')};
+ const places={inbox:$('admin-category-inbox'),overview:$('admin-category-overview'),players:$('admin-category-players'),scheduling:$('admin-category-scheduling'),seasons:$('admin-category-seasons'),tv:$('admin-category-tv'),availability:$('admin-category-availability'),results:$('admin-category-results')};
  const seasonGrid=$('season-setup-grid');
  const generator=$('rolling-generator');
  if(seasonGrid&&generator){seasonGrid.removeChild(generator);places.seasons.appendChild(seasonGrid);places.scheduling.appendChild(generator);}
@@ -2623,7 +2625,7 @@ async function refreshAuth(){
  const select=document.createElement('select');select.id='tsg-v61l-admin-category';
  for(const button of buttons){
   const option=document.createElement('option');option.value=button.dataset.adminCategory;
-  option.textContent=button.dataset.adminCategory==='seasons'?'Seasons & TV':button.dataset.adminCategory[0].toUpperCase()+button.dataset.adminCategory.slice(1);
+  option.textContent=button.dataset.adminCategory==='seasons'?'Seasons & Registration':button.dataset.adminCategory==='tv'?'TV Display':button.dataset.adminCategory[0].toUpperCase()+button.dataset.adminCategory.slice(1);
   select.appendChild(option);
   button.addEventListener('click',()=>{select.value=button.dataset.adminCategory;});
  }
@@ -2646,11 +2648,13 @@ async function refreshAuth(){
   ],
   seasons:[
     ['manage','Manage seasons','Edit season details and lifecycle', ['tsg-v61b-season-editor']],
-    ['tv','TV display','Set slide rotation and sections', ['tsg-v61b-tv-editor']],
-    ['media','TV media manager','Publish posters and announcements directly to the TV', ['tsg-v61d-media-admin']],
-    ['clips','Highlight videos','Add, organize and disable TV highlight clips', ['tsg-v61i-clips-admin']],
     ['setup','Create season & registration','Create a new season or edit public signup dates', ['season-setup-grid']],
     ['delete','Delete a season','Permanent deletion — use with care', ['tsg-v59b-season-delete']]
+  ],
+  tv:[
+    ['settings','Display settings','Control the TV slide rotation and durations', ['tsg-v61b-tv-editor']],
+    ['media','Posters & announcements','Publish and schedule TV posters and announcements', ['tsg-v61d-media-admin']],
+    ['clips','Highlight videos','Organize and manage TV highlight clips by sport', ['tsg-v61i-clips-admin']]
   ],
   results:[
     ['freebies','Freebies & missed games','Resolve incomplete matchups after their deadline', ['forfeit-panel']],
@@ -2692,7 +2696,7 @@ async function refreshAuth(){
    // Season/TV tasks have outgrown the horizontal tab row. Keep their existing
    // buttons as internal dispatchers and present one compact desktop selector.
    let seasonPicker=null;
-   if(['seasons','players','scheduling','results'].includes(category)){
+   if(['seasons','tv','players','scheduling','results'].includes(category)){
      const pickerWrap=document.createElement('div');
      pickerWrap.className='tsg-v61j-admin-picker';
      const label=document.createElement('label');
