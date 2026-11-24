@@ -2037,10 +2037,11 @@ function tsgTVPreviewPages(){
  return pages.length?pages:[{week:null,slots:[],part:1,totalParts:1}];
 }
 function tsgTVPageKey(index){return 'Potential schedule '+(index+1);}
+function tvDisplayWeeks(season){return season?[rollingWeekNumber(season)]:[];}
 function tsgTVOfficialPages(){
  const season=tvCurrentSeason();
  if(!season)return [];
- const weeks=rollingWeeks(season);
+ const weeks=tvDisplayWeeks(season);
  const eligible=matchups.filter(m=>m.season_id===season.id&&weeks.includes(m.week_number))
    .sort((a,b)=>a.week_number-b.week_number||String(a.id).localeCompare(String(b.id)));
  const pages=[];
@@ -2911,7 +2912,7 @@ function lbClock(deadline){const ms=Math.max(0,new Date(deadline).getTime()-Date
 function confirmedSchedule(){return matchups.filter(m=>inRollingWindow(m)&&m.status==='scheduled').map(m=>({m,a:appointmentFor(m.id)})).filter(x=>x.a?.confirmed_at&&meetupInputDate(x.a.starts_at)>=meetupInputDate(new Date().toISOString())).sort((x,y)=>new Date(x.a.starts_at)-new Date(y.a.starts_at));}
 function sameCalgaryDay(iso){const f=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Edmonton',year:'numeric',month:'2-digit',day:'2-digit'});return f.format(new Date(iso))===f.format(new Date());}
 function confirmedMatchupCard(x){return `<div class="lb-side-upcoming"><strong>${esc(playerName(x.m.player1_id))}</strong> <span class="gold-vs">VS</span> <strong>${esc(playerName(x.m.player2_id))}</strong><small>📅 ${esc(meetupWhen(x.a.starts_at))} · Week ${x.m.week_number}</small><small>${esc(matchupGames(x.m).map(g=>sportIcon[g.discipline]||'').join(' '))}</small></div>`;}
-function tvScheduled(){return matchups.filter(m=>inRollingWindow(m)&&m.status==='scheduled' && m.deadline && new Date(m.deadline)>new Date()).sort((a,b)=>a.week_number-b.week_number||new Date(a.deadline)-new Date(b.deadline));}
+function tvScheduled(){const season=tvCurrentSeason();return matchups.filter(m=>season&&m.season_id===season.id&&m.week_number===rollingWeekNumber(season)&&m.status==='scheduled'&&m.deadline&&new Date(m.deadline)>new Date()).sort((a,b)=>a.week_number-b.week_number||new Date(a.deadline)-new Date(b.deadline));}
 function tvFixture(m){const sports=matchupGames(m).map(g=>`${sportIcon[g.discipline]||''} ${g.discipline}`).join(' · ');return `<div class="lb-tv-fixture"><div class="lb-tv-fixture-top"><span>WEEK ${m.week_number}</span><span>${new Date(m.deadline).toLocaleDateString('en-CA',{timeZone:TV_TZ,month:'short',day:'numeric'})}</span></div><div class="lb-tv-fixture-names">${esc(playerName(m.player1_id))}<span class="lb-tv-versus">VS</span>${esc(playerName(m.player2_id))}</div><div class="lb-tv-fixture-sports">${esc(sports||'Three sports assigned at publish')}</div></div>`;}
 // Curated playlist is loaded from /highlights.json so it can grow without editing index.html.
 // YouTube playback availability depends on each video's creator and the browser.
@@ -3050,7 +3051,7 @@ const HIGHLIGHT_HISTORY_KEY='turfcare-highlight-history-by-sport-v1';
 function tvSidebarMatchupPages(){
  const season=tvCurrentSeason();
  if(!season)return [];
- const weeks=rollingWeeks(season);
+ const weeks=tvDisplayWeeks(season);
  const upcoming=matchups.filter(m=>
   m.season_id===season.id && weeks.includes(m.week_number) &&
   m.status==='scheduled' &&
@@ -3097,7 +3098,7 @@ let sideRotateTimer=null;
 let tvOfficialSidebarPage=0;
 function tvSidebarFixtures(){
  const season=tvCurrentSeason();if(!season)return [];
- const weeks=rollingWeeks(season);
+ const weeks=tvDisplayWeeks(season);
  return matchups.filter(m=>m.season_id===season.id&&weeks.includes(m.week_number))
   .sort((a,b)=>a.week_number-b.week_number||String(a.id).localeCompare(String(b.id)));
 }
@@ -3519,7 +3520,8 @@ function updateClubhouseHeader(deadline){
  // Pre-season sample standings remain clearly labelled within their own panels.
  const active=profiles.filter(p=>p.is_player===true&&p.is_approved===true).length;
  const seasonId=tvSidebarSeason()?.season?.id;
- const seasonMatchups=seasonId?matchups.filter(m=>m.season_id===seasonId):[];
+ const currentTvSeason=tvCurrentSeason();
+ const seasonMatchups=seasonId?matchups.filter(m=>m.season_id===seasonId&&(!currentTvSeason||m.week_number===rollingWeekNumber(currentTvSeason))):[];
  const finished=seasonMatchups.filter(m=>m.status==='completed'||m.status==='played_ahead'||m.resolution==='freebie'||m.resolution==='double_forfeit').length;
  if($('lb-side-players'))$('lb-side-players').textContent=active;
  if($('lb-side-matchups'))$('lb-side-matchups').textContent=seasonMatchups.length;
