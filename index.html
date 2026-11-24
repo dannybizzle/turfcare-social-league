@@ -1257,6 +1257,24 @@ body.display-mode .tsg-v61d-tv-poster h2{font-size:clamp(2rem,3.4vw,4rem);margin
 body.display-mode .tsg-v61d-tv-announcement{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:6%;text-align:center;gap:1.5rem}
 body.display-mode .tsg-v61d-tv-announcement h2{font-size:clamp(2rem,4vw,4.6rem);margin:0;color:#e8c77e}
 body.display-mode .tsg-v61d-tv-announcement p{font-size:clamp(1.25rem,2.5vw,2.6rem);line-height:1.35;white-space:pre-wrap;max-width:95%;margin:0}
+
+/* V61i: desktop-first video playlist manager */
+body:not(.display-mode) .tsg-v61i-clips-admin{padding:26px 30px;border-radius:16px;border:1px solid #d9dfd3;background:#fff}
+body:not(.display-mode) .tsg-v61i-clips-admin h3{margin:6px 0 8px}
+body:not(.display-mode) .tsg-v61i-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 22px;margin-top:18px}
+body:not(.display-mode) .tsg-v61i-fields label{display:flex;flex-direction:column;gap:7px;font-size:.85rem;font-weight:700;margin:0}
+body:not(.display-mode) .tsg-v61i-fields input,body:not(.display-mode) .tsg-v61i-fields select{width:100%;margin:0;min-width:0;border:1px solid #cbd9d0;border-radius:9px;padding:11px;font:inherit;background:#fff;color:#173d32}
+body:not(.display-mode) .tsg-v61i-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:19px}
+body:not(.display-mode) .tsg-v61i-toolbar button{margin:0}
+body:not(.display-mode) .tsg-v61i-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+body:not(.display-mode) .tsg-v61i-row{display:grid;grid-template-columns:90px minmax(0,1fr) auto;align-items:center;gap:14px;border:1px solid #e1e6db;border-radius:12px;padding:10px 13px;background:#fdfefb}
+body:not(.display-mode) .tsg-v61i-row img{width:90px;height:55px;object-fit:cover;border-radius:7px}
+body:not(.display-mode) .tsg-v61i-row strong{display:block;color:#173d32;font-size:.9rem}
+body:not(.display-mode) .tsg-v61i-row small{display:block;color:#67766a;font-size:.75rem;margin-top:3px}
+body:not(.display-mode) .tsg-v61i-row[data-enabled="false"]{opacity:.65}
+body:not(.display-mode) .tsg-v61i-controls{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+body:not(.display-mode) .tsg-v61i-controls button{padding:8px 11px;font-size:.77rem;margin:0}
+@media(max-width:800px){body:not(.display-mode) .tsg-v61i-clips-admin{padding:17px}body:not(.display-mode) .tsg-v61i-fields{grid-template-columns:1fr}body:not(.display-mode) .tsg-v61i-row{grid-template-columns:65px minmax(0,1fr)}body:not(.display-mode) .tsg-v61i-row img{width:65px;height:45px}body:not(.display-mode) .tsg-v61i-controls{grid-column:1/-1;justify-content:flex-start}}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -2027,6 +2045,20 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
  <div class="tsg-v61d-library-title"><h4>Scheduled TV media</h4><span class="muted">Newest first · On/off and delete controls</span></div>
  <div id="tsg-media-library" class="tsg-v61d-library"><p class="muted">Load the media list to manage your slides.</p></div>
 </section>
+<section class="panel tsg-v61i-clips-admin" id="tsg-v61i-clips-admin">
+ <div class="tsg-v61d-head"><span class="tsg-v61c-eyebrow">TV DISPLAY · VIDEO PLAYLIST</span><h3>Highlight Video Manager</h3><p class="muted">Manage YouTube highlights directly from Administration. The TV will use your saved active clips; until you import or add any, it keeps using the existing highlights.json playlist.</p></div>
+ <div class="tsg-v61i-fields">
+  <label>YouTube link or video ID<input id="tsg-v61i-url" type="text" placeholder="https://www.youtube.com/watch?v=..." maxlength="260"></label>
+  <label>Sport<select id="tsg-v61i-sport"><option>Ping Pong</option><option>Darts</option><option>Pool</option><option>Air Hockey</option></select></label>
+  <label>Video title<input id="tsg-v61i-title" type="text" maxlength="110" placeholder="e.g. Best table tennis rallies"></label>
+  <label>Creator / credit<input id="tsg-v61i-credit" type="text" maxlength="100" placeholder="e.g. ITTFWorld"></label>
+ </div>
+ <div class="tsg-v61i-toolbar"><button type="button" id="tsg-v61i-add">Add Video</button><button type="button" id="tsg-v61i-import" class="secondary">Import Existing Playlist</button><button type="button" id="tsg-v61i-refresh" class="secondary">Refresh List</button></div>
+ <p class="muted" style="margin:8px 0 16px">Only public YouTube videos that allow embedding will play on the TV. Importing reads your current highlights.json and skips any videos already in the managed list. No change is made to that file.</p>
+ <p id="tsg-v61i-message" role="status" aria-live="polite" class="notice"></p>
+ <div class="tsg-v61d-library-title"><h4>Managed highlight videos</h4><span id="tsg-v61i-count" class="muted"></span></div>
+ <div class="tsg-v61i-list" id="tsg-v61i-list"><p class="muted">Loading your saved clips…</p></div>
+</section>
 <section class="panel admin-form" style="margin-top:16px">
 <h3>Season Management</h3>
 <p class="muted">Remove a season and all its matchups and game results. This cannot be undone.</p>
@@ -2549,6 +2581,7 @@ async function refreshAuth(){
     ['manage','Manage seasons','Edit season details and lifecycle', ['tsg-v61b-season-editor']],
     ['tv','TV display','Set slide rotation and sections', ['tsg-v61b-tv-editor']],
     ['media','TV media manager','Publish posters and announcements directly to the TV', ['tsg-v61d-media-admin']],
+    ['clips','Highlight videos','Add, organize and disable TV highlight clips', ['tsg-v61i-clips-admin']],
     ['setup','Create season & registration','Create a new season or edit public signup dates', ['season-setup-grid']],
     ['delete','Delete a season','Permanent deletion — use with care', ['tsg-v59b-season-delete']]
   ],
@@ -2607,6 +2640,7 @@ async function refreshAuth(){
      host.appendChild(pane);
      panes.push({button,pane});
      button.addEventListener('click',()=>{
+       if(id==='clips')refreshHighlightAdmin().catch(console.warn);
        panes.forEach(entry=>{
          const active=entry===panes[index];
          entry.pane.hidden=!active;
@@ -3472,24 +3506,37 @@ function nextHighlight(sport=null){
  saveHighlightHistory(histories);
  return chosen;
 }
+let managedHighlightRows=[];
+function validHighlightVideo(v){return !!v&&['Ping Pong','Darts','Pool','Air Hockey'].includes(v.sport)&&typeof v.id==='string'&&/^[A-Za-z0-9_-]{11}$/.test(v.id);}
+function formatHighlightRows(rows){
+ const seen=new Set();return rows.filter(v=>validHighlightVideo(v)&&!seen.has(v.id)&&(seen.add(v.id),true))
+  .map(v=>({sport:v.sport,id:v.id,title:String(v.title||'Sports highlight'),credit:String(v.credit||'YouTube'),position:Number(v.position)||0}));
+}
+async function fetchLegacyHighlightPlaylist(){
+ const r=await fetch('/highlights.json',{cache:'no-store'});if(!r.ok)throw new Error('Playlist request failed');
+ const raw=await r.json();if(!Array.isArray(raw))throw new Error('Playlist must be an array');
+ return formatHighlightRows(raw);
+}
 async function loadHighlightPlaylist(){
  try{
-  const r=await fetch('/highlights.json',{cache:'no-store'});
-  if(!r.ok)throw new Error('Playlist request failed');
-  const raw=await r.json();
-  if(!Array.isArray(raw))throw new Error('Playlist must be an array');
-  const seen=new Set();
-  const valid=raw.filter(v=>{
-   if(!v||!['Ping Pong','Darts','Pool','Air Hockey'].includes(v.sport)||typeof v.id!=='string'||!/^[A-Za-z0-9_-]{11}$/.test(v.id)||seen.has(v.id))return false;
-   seen.add(v.id);return true;
-  }).map(v=>({sport:v.sport,id:v.id,title:String(v.title||'Sports highlight'),credit:String(v.credit||'YouTube')}));
-  if(!valid.length)throw new Error('Playlist has no valid entries');
-  highlightCatalog=valid;
-  // Report only syntax-valid entries; actual playback is checked by the iframe.
-  console.info('Highlight catalog loaded:',valid.length,'items; previously failed:',[...unavailableHighlightIds]);
-  // Keep per-sport play history; do not restart the current clip.
-  console.info('Loaded',valid.length,'unique highlight entries:',Object.fromEntries(HIGHLIGHT_SPORTS.map(s=>[s,valid.filter(v=>v.sport===s).length])));
+  const {data,error}=await client.from('league_highlight_videos')
+    .select('id,sport,youtube_id,title,credit,position,enabled')
+    .order('position',{ascending:true}).order('created_at',{ascending:true});
+  if(error)throw error;
+  managedHighlightRows=data||[];
+  if(managedHighlightRows.length){
+   const valid=formatHighlightRows(managedHighlightRows.filter(v=>v.enabled).map(v=>({...v,id:v.youtube_id})));
+   // Do not quietly reintroduce disabled clips from the old JSON file.
+   highlightCatalog=valid;
+   if(isAdmin)renderHighlightAdmin();
+   return;
+  }
+ }catch(e){console.warn('Managed highlight playlist unavailable; using existing playlist:',e.message||e);}
+ try{
+  const valid=await fetchLegacyHighlightPlaylist();
+  if(valid.length){highlightCatalog=valid;console.info('Using existing highlights.json:',valid.length,'clips');}
  }catch(e){console.warn('Using bundled highlight fallback:',e);}
+ if(isAdmin)renderHighlightAdmin();
 }
 function youtubeSoundCommand(command){
  const player=document.getElementById('clubhouse-highlight-iframe');
@@ -4329,6 +4376,99 @@ setInterval(()=>refreshTvSettings().catch(console.warn),60000);
 refreshTvSettings().catch(console.warn);
 
 
+// v61i — Admin-managed video playlist, backed by RLS-protected Supabase records.
+function parseVideoId(value){
+ const v=String(value||'').trim();if(/^[A-Za-z0-9_-]{11}$/.test(v))return v;
+ try{
+  const url=new URL(v),host=url.hostname.toLowerCase().replace(/^www\./,'');
+  if(host==='youtu.be')return /^[A-Za-z0-9_-]{11}$/.test(url.pathname.slice(1).split('/')[0])?url.pathname.slice(1).split('/')[0]:null;
+  if(['youtube.com','m.youtube.com','youtube-nocookie.com'].includes(host)){
+   const id=url.searchParams.get('v')||(url.pathname.match(/^\/(?:embed|shorts|live)\/([A-Za-z0-9_-]{11})/)||[])[1];
+   return id&&/^[A-Za-z0-9_-]{11}$/.test(id)?id:null;
+  }
+ }catch{}
+ return null;
+}
+function renderHighlightAdmin(){
+ const host=$('tsg-v61i-list'),count=$('tsg-v61i-count');if(!host)return;
+ const list=managedHighlightRows.slice().sort((a,b)=>a.position-b.position||String(a.id).localeCompare(String(b.id)));
+ if(count)count.textContent=list.length?`${list.filter(v=>v.enabled).length} active · ${list.length} saved`:'Current playlist still comes from highlights.json';
+ host.innerHTML=list.length?list.map((v,i)=>`<div class="tsg-v61i-row" data-enabled="${v.enabled}">
+  <img loading="lazy" src="https://i.ytimg.com/vi/${encodeURIComponent(v.youtube_id)}/mqdefault.jpg" alt="">
+  <div><strong>${esc(v.title)}</strong><small>${esc(v.sport)} · ${esc(v.credit)} · ${v.enabled?'Active':'Paused'} · Position ${i+1}</small></div>
+  <div class="tsg-v61i-controls"><button type="button" class="secondary" data-clip-action="up" data-clip-id="${esc(v.id)}" ${i===0?'disabled':''} title="Move earlier">↑</button>
+   <button type="button" class="secondary" data-clip-action="down" data-clip-id="${esc(v.id)}" ${i===list.length-1?'disabled':''} title="Move later">↓</button>
+   <button type="button" class="secondary" data-clip-action="toggle" data-clip-id="${esc(v.id)}">${v.enabled?'Pause':'Enable'}</button>
+   <button type="button" class="danger" data-clip-action="delete" data-clip-id="${esc(v.id)}">Remove</button></div></div>`).join(''):
+  '<p class="muted">No managed clips yet. Use <strong>Import Existing Playlist</strong> to bring your existing highlight videos into Administration without changing your original JSON file.</p>';
+}
+async function refreshHighlightAdmin(){await loadHighlightPlaylist();renderHighlightAdmin();}
+async function storeVideoPosition(rows){
+ // Position numbers use gaps for reordering; stage one update at a time.
+ for(let i=0;i<rows.length;i++){
+  const {error}=await client.from('league_highlight_videos').update({position:(i+1)*10}).eq('id',rows[i].id);
+  if(error)throw error;
+ }
+}
+$('tsg-v61i-list')?.addEventListener('click',async e=>{
+ const button=e.target.closest('[data-clip-action]');if(!button||!isAdmin)return;
+ const action=button.dataset.clipAction,id=button.dataset.clipId,clip=managedHighlightRows.find(x=>x.id===id);
+ const note=$('tsg-v61i-message');if(!clip)return;
+ if(action==='delete'&&!confirm(`Remove "${clip.title}" from the managed TV playlist?`))return;
+ button.disabled=true;note.textContent='Saving…';
+ try{
+  if(action==='toggle'){
+   const {error}=await client.from('league_highlight_videos').update({enabled:!clip.enabled}).eq('id',id);if(error)throw error;
+  }else if(action==='delete'){
+   const {error}=await client.from('league_highlight_videos').delete().eq('id',id);if(error)throw error;
+  }else{
+   const ordered=managedHighlightRows.slice().sort((a,b)=>a.position-b.position),index=ordered.findIndex(v=>v.id===id);
+   const next=index+(action==='up'?-1:1);
+   if(next<0||next>=ordered.length)return;
+   [ordered[index],ordered[next]]=[ordered[next],ordered[index]];
+   await storeVideoPosition(ordered);
+  }
+  await refreshHighlightAdmin();note.textContent='Playlist updated. TV devices will pick up the change automatically.';
+ }catch(err){note.textContent=err.message||'Could not update the playlist.';}finally{button.disabled=false;}
+});
+$('tsg-v61i-add')?.addEventListener('click',async function(){
+ const note=$('tsg-v61i-message');if(!isAdmin)return;
+ const id=parseVideoId($('tsg-v61i-url').value),sport=$('tsg-v61i-sport').value,
+ title=$('tsg-v61i-title').value.trim(),credit=$('tsg-v61i-credit').value.trim()||'YouTube';
+ if(!id){note.textContent='Enter a valid YouTube video link or 11-character ID.';return;}
+ if(!title){note.textContent='Enter a title.';return;}
+ this.disabled=true;note.textContent='Adding video…';
+ try{
+  const max=Math.max(0,...managedHighlightRows.map(v=>v.position||0));
+  const {error}=await client.from('league_highlight_videos').insert({youtube_id:id,sport,title,credit,position:max+10});
+  if(error)throw error;
+  $('tsg-v61i-url').value='';$('tsg-v61i-title').value='';$('tsg-v61i-credit').value='';
+  await refreshHighlightAdmin();note.textContent='Video added. YouTube may still restrict embedding; check playback on the TV.';
+ }catch(err){note.textContent=err.message||'Could not add video.';}finally{this.disabled=false;}
+});
+$('tsg-v61i-import')?.addEventListener('click',async function(){
+ const note=$('tsg-v61i-message');if(!isAdmin)return;
+ this.disabled=true;note.textContent='Reading the existing highlights.json…';
+ try{
+  const incoming=await fetchLegacyHighlightPlaylist();
+  if(!incoming.length)throw new Error('No valid clips found in highlights.json.');
+  const present=new Set(managedHighlightRows.map(v=>v.youtube_id));
+  let count=0,max=Math.max(0,...managedHighlightRows.map(v=>v.position||0));
+  // Preserve existing admin changes; insert only missing video IDs.
+  for(const v of incoming){
+   if(present.has(v.id))continue;
+   max+=10;
+   const {error}=await client.from('league_highlight_videos').insert({youtube_id:v.id,sport:v.sport,title:v.title.slice(0,110),credit:v.credit.slice(0,100),position:max});
+   if(error)throw error;
+   present.add(v.id);count++;
+  }
+  await refreshHighlightAdmin();note.textContent=`Imported ${count} videos; duplicates skipped. Your original highlights.json is unchanged.`;
+ }catch(err){await refreshHighlightAdmin();note.textContent=err.message||'Import failed.';}finally{this.disabled=false;}
+});
+$('tsg-v61i-refresh')?.addEventListener('click',async()=>{
+ const note=$('tsg-v61i-message');try{await refreshHighlightAdmin();note.textContent='Playlist refreshed.';}catch(err){note.textContent=err.message;}
+});
+setInterval(()=>{if(document.body.classList.contains('display-mode'))loadHighlightPlaylist().catch(console.warn);},60000);
 // v61d — secure TV image storage and scheduled TV media administration.
 function renderTvMediaSeasonOptions(){
  const sel=$('tsg-media-season');if(!sel)return;
