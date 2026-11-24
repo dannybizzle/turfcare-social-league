@@ -1224,6 +1224,35 @@ body:not(.display-mode) #tsg-v61b-tv-message:empty{display:none}
  body:not(.display-mode) .tsg-v61c-cycle{display:none}
  body:not(.display-mode) .tsg-v61c-tv-label small{display:none}
 }
+
+/* v61d TV media manager — desktop-first forms, isolated from TV design */
+body:not(.display-mode) .tsg-v61d-media-admin{padding:26px 30px;border-radius:16px;border:1px solid #d9dfd3;background:#fff}
+body:not(.display-mode) .tsg-v61d-media-admin h3{margin:6px 0 8px}
+body:not(.display-mode) .tsg-v61d-media-admin .tsg-v61d-head p{margin:0 0 20px;max-width:780px}
+body:not(.display-mode) .tsg-v61d-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px 22px}
+body:not(.display-mode) .tsg-v61d-fields label{display:flex;flex-direction:column;gap:6px;font-weight:700;color:#244c39;font-size:.85rem;margin:0}
+body:not(.display-mode) .tsg-v61d-fields input:not([type=checkbox]),body:not(.display-mode) .tsg-v61d-fields textarea,body:not(.display-mode) .tsg-v61d-fields select{width:100%;min-width:0;margin:0;box-sizing:border-box;border:1px solid #d3dcd0;background:#fff;border-radius:8px;padding:10px;font:inherit;color:#183b2b}
+body:not(.display-mode) .tsg-v61d-fields .tsg-v61d-wide{grid-column:1/-1}
+body:not(.display-mode) .tsg-v61d-fields #tsg-media-body-wrap[hidden],body:not(.display-mode) .tsg-v61d-fields #tsg-media-file-wrap[hidden]{display:none!important}
+body:not(.display-mode) .tsg-v61d-fields label.tsg-v61d-check{flex-direction:row;align-items:center;font-weight:600;gap:10px;min-height:42px}
+body:not(.display-mode) .tsg-v61d-fields .tsg-v61d-check input{appearance:auto;-webkit-appearance:checkbox;width:18px;height:18px;margin:0;accent-color:#245b49}
+body:not(.display-mode) .tsg-v61d-submit{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:20px 0 24px}
+body:not(.display-mode) .tsg-v61d-submit button{margin:0}
+body:not(.display-mode) .tsg-v61d-library-title{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #e4e9e1;padding-top:22px}
+body:not(.display-mode) .tsg-v61d-library-title h4{margin:0}
+body:not(.display-mode) .tsg-v61d-media-row{display:grid;grid-template-columns:80px minmax(0,1fr) auto;gap:16px;align-items:center;padding:15px 0;border-bottom:1px solid #e6eae3}
+body:not(.display-mode) .tsg-v61d-thumb{width:80px;height:60px;object-fit:cover;background:#e7efe6;border-radius:8px}
+body:not(.display-mode) .tsg-v61d-media-copy strong{display:block;color:#183b2b}
+body:not(.display-mode) .tsg-v61d-media-copy small{display:block;margin-top:4px;color:#67776c}
+body:not(.display-mode) .tsg-v61d-media-controls{display:flex;align-items:center;gap:8px}
+body:not(.display-mode) .tsg-v61d-media-controls button{margin:0;padding:8px 12px;font-size:.78rem}
+@media(max-width:700px){body:not(.display-mode) .tsg-v61d-media-admin{padding:18px}body:not(.display-mode) .tsg-v61d-fields{grid-template-columns:1fr}body:not(.display-mode) .tsg-v61d-media-row{grid-template-columns:60px 1fr}body:not(.display-mode) .tsg-v61d-thumb{width:60px;height:54px}body:not(.display-mode) .tsg-v61d-media-controls{grid-column:2}body:not(.display-mode) .tsg-v61d-library-title{align-items:start;flex-direction:column}}
+body.display-mode .tsg-v61d-tv-poster{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;text-align:center;padding:2%;}
+body.display-mode .tsg-v61d-tv-poster img{display:block;max-width:100%;max-height:75%;width:auto;height:auto;object-fit:contain;border-radius:12px}
+body.display-mode .tsg-v61d-tv-poster h2{font-size:clamp(2rem,3.4vw,4rem);margin:0}
+body.display-mode .tsg-v61d-tv-announcement{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:6%;text-align:center;gap:1.5rem}
+body.display-mode .tsg-v61d-tv-announcement h2{font-size:clamp(2rem,4vw,4.6rem);margin:0;color:#e8c77e}
+body.display-mode .tsg-v61d-tv-announcement p{font-size:clamp(1.25rem,2.5vw,2.6rem);line-height:1.35;white-space:pre-wrap;max-width:95%;margin:0}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1971,6 +2000,23 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
   </div>
   <p id="tsg-v61b-tv-message" class="notice" role="status" aria-live="polite"></p>
 </section>
+
+<section class="panel tsg-v61d-media-admin" id="tsg-v61d-media-admin">
+ <div class="tsg-v61d-head"><div><span class="tsg-v61c-eyebrow">TV DISPLAY · MEDIA MANAGER</span><h3>Posters & Announcements</h3><p class="muted">Upload a poster or publish a short announcement. Schedule when it appears on the TV's main screen. No GitHub edits needed.</p></div></div>
+ <div class="tsg-v61d-fields">
+  <label>Title <input id="tsg-media-title" type="text" maxlength="90" placeholder="e.g. Winter League Playoffs"></label>
+  <label>Media type <select id="tsg-media-kind"><option value="poster">Image poster</option><option value="announcement">Text announcement</option></select></label>
+  <label class="tsg-v61d-wide" id="tsg-media-file-wrap">Poster image <input id="tsg-media-file" type="file" accept="image/jpeg,image/png,image/webp"></label>
+  <label class="tsg-v61d-wide" id="tsg-media-body-wrap" hidden>Announcement message <textarea id="tsg-media-body" maxlength="450" rows="3" placeholder="Short message for the lunchroom TV"></textarea></label>
+  <label>Start date (Calgary) <input id="tsg-media-start" type="date"></label>
+  <label>End date (Calgary, inclusive) <input id="tsg-media-end" type="date"></label>
+  <label>On-screen time <select id="tsg-media-duration"><option value="15">15 seconds</option><option value="30" selected>30 seconds</option><option value="45">45 seconds</option><option value="60">1 minute</option><option value="90">90 seconds</option></select></label>
+  <label class="tsg-v61d-check"><input id="tsg-media-enabled" type="checkbox" checked> Publish to TV when scheduled</label>
+ </div>
+ <div class="tsg-v61d-submit"><button id="tsg-media-create" type="button">Add to TV Schedule</button><button id="tsg-media-refresh" type="button" class="secondary">Refresh List</button><span id="tsg-media-status" class="muted" role="status" aria-live="polite"></span></div>
+ <div class="tsg-v61d-library-title"><h4>Scheduled TV media</h4><span class="muted">Newest first · On/off and delete controls</span></div>
+ <div id="tsg-media-library" class="tsg-v61d-library"><p class="muted">Load the media list to manage your slides.</p></div>
+</section>
 <section class="panel admin-form" style="margin-top:16px">
 <h3>Season Management</h3>
 <p class="muted">Remove a season and all its matchups and game results. This cannot be undone.</p>
@@ -2492,6 +2538,7 @@ async function refreshAuth(){
   seasons:[
     ['manage','Manage seasons','Edit season details and lifecycle', ['tsg-v61b-season-editor']],
     ['tv','TV display','Set slide rotation and sections', ['tsg-v61b-tv-editor']],
+    ['media','TV media manager','Publish posters and announcements directly to the TV', ['tsg-v61d-media-admin']],
     ['setup','Create season & registration','Create a new season or edit public signup dates', ['season-setup-grid']],
     ['delete','Delete a season','Permanent deletion — use with care', ['tsg-v59b-season-delete']]
   ],
@@ -3074,6 +3121,22 @@ const TV_TZ='America/Edmonton';
 const TV_DEFAULTS={highlights_on:true,weather_on:true,matchups_on:true,qr_on:true,stats_info_on:true,
  highlights_minutes:5,weather_minutes:3,matchups_minutes:2,qr_minutes:1};
 let tvSettings={...TV_DEFAULTS};
+let tvMedia=[];
+const tvMediaKey=row=>'Media '+row.id;
+function tvActiveMedia(){if(!tvMedia.length)return [];const today=tvLocalISO();return tvMedia.filter(x=>x.enabled&&x.starts_on<=today&&x.ends_on>=today);}
+function tvMediaFromPage(page){return tvMedia.find(x=>tvMediaKey(x)===page);}
+async function refreshTvMedia(){
+ const {data,error}=await client.from('league_tv_media').select('id,title,kind,image_path,body,starts_on,ends_on,duration_seconds,enabled,created_at').order('created_at',{ascending:false});
+ if(error){console.warn('TV media unavailable:',error.message);return;}
+ const before=LB_TABS?.[lbSlideIndex%LB_TABS.length];
+ tvMedia=data||[];
+ LB_TABS=tvSequence();
+ const ix=LB_TABS.indexOf(before);lbSlideIndex=ix>=0?ix:0;
+ if(document.body.classList.contains('display-mode'))renderLunchroom();
+ if(isAdmin&&$('tsg-media-library'))renderTvMediaAdmin();
+}
+function tvMediaPublicUrl(path){return path?client.storage.from('league-tv-media').getPublicUrl(path).data.publicUrl:'';}
+
 async function refreshTvSettings(){
  const {data,error}=await client.from('league_tv_settings').select('*').eq('id',1).maybeSingle();
  if(error){console.warn('TV settings unavailable; using defaults:',error.message);return;}
@@ -3095,6 +3158,7 @@ function tvSequence(){
  if(tvSettings.weather_on)sequence.push('Weather 24h');
  if(tvSettings.matchups_on)sequence.push(...(official.length?official.map((_,i)=>tsgTVOfficialKey(i)):['Official schedule 1']));
  if(tvSettings.qr_on)sequence.push('League QR');
+ sequence.push(...tvActiveMedia().map(tvMediaKey));
  return sequence.length?sequence:['League QR'];
 }
 let LB_TABS=tvSequence();
@@ -3104,6 +3168,7 @@ const tvSlideDuration=page=>{
  if(page==='Weather 24h')return tvSettings.weather_minutes*60000;
  if(page.startsWith('Official schedule '))return tvSettings.matchups_minutes*60000/Math.max(1,tsgTVOfficialPages().length);
  if(page==='League QR')return tvSettings.qr_minutes*60000;
+ if(page.startsWith('Media '))return (tvMediaFromPage(page)?.duration_seconds||30)*1000;
  return 60000;
 };
 let lastRenderedMainPage=null;
@@ -3777,6 +3842,13 @@ function renderLunchroom(){
   html=`<div class="lb-launch-slide tsg-promo-poster-slide tsg-launch-2026"><img class="tsg-promo-poster" src="assets/launch-day-2026.jpg" alt="Launch Day is Here! Player access is now open. Sign in or register, check Week 1 matchups, set availability and propose your playing day. Season starts November 23. Scan the QR code to open the league site."><div class="tsg-launch-late-reg">Late registration available · Admin approval required</div></div>`;
  }else if(page==='Crew mottos'){
   html=`<div class="lb-launch-slide lb-crew-slide"><div class="lb-launch-eyebrow">THE GLENCOE PRESENTS · 2026–2027 INAUGURAL SEASON</div><div class="tsg-sport-strip"><div style="background-image:url('assets/ping-pong.jpg')"><span>PING PONG</span></div><div style="background-image:url('assets/darts.jpg')"><span>DARTS</span></div><div style="background-image:url('assets/pool.jpg')"><span>POOL</span></div><div style="background-image:url('assets/air-hockey.jpg')"><span>AIR HOCKEY</span></div></div><h2 class="tsg-crew-quote">${esc(leagueTagline())}</h2><div class="lb-launch-secondary">Four disciplines. One legendary season.</div><div class="tsg-registration-deadline">${registrationNotice()}</div></div>`;
+ }else if(page.startsWith('Media ')){
+  const media=tvMediaFromPage(page);
+  if(media){
+   html=media.kind==='poster'
+    ?`<div class="tsg-v61d-tv-poster"><h2>${esc(media.title)}</h2><img src="${esc(tvMediaPublicUrl(media.image_path))}" alt="${esc(media.title)}"></div>`
+    :`<div class="tsg-v61d-tv-announcement"><div class="tsg-tv-qr-kicker">TURFCARE SOCIAL LEAGUE · ANNOUNCEMENT</div><h2>${esc(media.title)}</h2><p>${esc(media.body)}</p></div>`;
+  }
  }else if(page==='League QR'){
   html=`<div class="tsg-tv-qr-feature"><div class="tsg-tv-qr-intro"><div class="tsg-tv-qr-kicker">THE GLENCOE · TURFCARE SOCIAL LEAGUE</div><h2>YOUR LEAGUE.<br>YOUR NEXT MATCH.</h2><p>Scan with your phone to see matchups, set your availability and report your results.</p><div class="tsg-tv-qr-link">turfcare-social-league.pages.dev</div><div class="tsg-tv-qr-note">Late registration available · Admin approval required</div></div><div class="tsg-tv-qr-frame"><img src="assets/league-home-qr.png" alt="QR code to the Turfcare Social League homepage"><strong>SCAN TO OPEN</strong></div></div>`;
  }else if(page.startsWith('Potential schedule ')){
@@ -4227,6 +4299,80 @@ $('tsg-v61b-save-tv')?.addEventListener('click',async function(){
 // updates without needing a page reload. Settings live in Supabase, not code.
 setInterval(()=>refreshTvSettings().catch(console.warn),60000);
 refreshTvSettings().catch(console.warn);
+
+
+// v61d — secure TV image storage and scheduled TV media administration.
+const mediaKind=$('tsg-media-kind');
+mediaKind?.addEventListener('change',()=>{
+ const image=mediaKind.value==='poster';
+ $('tsg-media-file-wrap').hidden=!image;
+ $('tsg-media-body-wrap').hidden=image;
+});
+function renderTvMediaAdmin(){
+ const host=$('tsg-media-library');if(!host)return;
+ host.innerHTML=tvMedia.length?tvMedia.map(item=>{
+  const today=tvLocalISO();
+  const status=!item.enabled?'Paused':today<item.starts_on?'Scheduled':today>item.ends_on?'Expired':'Live now';
+  const thumb=item.kind==='poster'?`<img class="tsg-v61d-thumb" src="${esc(tvMediaPublicUrl(item.image_path))}" alt="">`:'<div class="tsg-v61d-thumb" aria-hidden="true" style="display:grid;place-items:center;font-size:1.6rem">📢</div>';
+  return `<div class="tsg-v61d-media-row">${thumb}<div class="tsg-v61d-media-copy"><strong>${esc(item.title)}</strong><small>${esc(status)} · ${esc(item.starts_on)} to ${esc(item.ends_on)} · ${item.duration_seconds}s · ${esc(item.kind)}</small></div><div class="tsg-v61d-media-controls"><button type="button" class="secondary" data-media-toggle="${esc(item.id)}">${item.enabled?'Pause':'Enable'}</button><button type="button" class="danger" data-media-delete="${esc(item.id)}">Delete</button></div></div>`;
+ }).join(''):'<p class="muted">No posters or announcements yet. Add one above to get started.</p>';
+}
+async function tvMediaSetStatus(id,enabled){
+ if(!isAdmin)return;
+ const {error}=await client.from('league_tv_media').update({enabled}).eq('id',id);
+ if(error)throw error;
+ await refreshTvMedia();
+}
+$('tsg-media-library')?.addEventListener('click',async e=>{
+ const toggle=e.target.closest('[data-media-toggle]');
+ const del=e.target.closest('[data-media-delete]');
+ if(!toggle&&!del)return;
+ const id=(toggle||del).dataset.mediaToggle||(toggle||del).dataset.mediaDelete;
+ const item=tvMedia.find(x=>x.id===id),note=$('tsg-media-status');if(!item||!isAdmin)return;
+ if(del&&!confirm(`Permanently remove "${item.title}" from the TV schedule?`))return;
+ const btn=toggle||del;btn.disabled=true;note.textContent='Updating…';
+ try{
+  if(toggle)await tvMediaSetStatus(id,!item.enabled);
+  else{
+   const {error}=await client.from('league_tv_media').delete().eq('id',id);if(error)throw error;
+   if(item.image_path){const r=await client.storage.from('league-tv-media').remove([item.image_path]);if(r.error)console.warn('Old media file could not be removed:',r.error.message);}
+   await refreshTvMedia();
+  }
+  note.textContent=toggle?'Media status updated.':'Media removed.';
+ }catch(err){note.textContent=err.message||'Could not update media.';}finally{btn.disabled=false;}
+});
+$('tsg-media-refresh')?.addEventListener('click',()=>refreshTvMedia().catch(e=>{$('tsg-media-status').textContent=e.message;}));
+$('tsg-media-create')?.addEventListener('click',async function(){
+ const note=$('tsg-media-status');if(!isAdmin){note.textContent='Administrator access required.';return;}
+ const title=$('tsg-media-title').value.trim(),kind=mediaKind.value,body=$('tsg-media-body').value.trim();
+ const start=$('tsg-media-start').value,end=$('tsg-media-end').value;
+ const file=$('tsg-media-file').files?.[0], duration=Number($('tsg-media-duration').value),enabled=$('tsg-media-enabled').checked;
+ if(!title||!start||!end||end<start){note.textContent='Enter a title and valid start/end dates.';return;}
+ if(kind==='announcement'&&!body){note.textContent='Enter an announcement message.';return;}
+ if(kind==='poster'){
+  if(!file){note.textContent='Choose a PNG, JPEG or WebP image.';return;}
+  if(!['image/jpeg','image/png','image/webp'].includes(file.type)){note.textContent='Only JPEG, PNG and WebP images are supported.';return;}
+  if(file.size>8*1024*1024){note.textContent='Poster must be 8 MB or smaller.';return;}
+ }
+ let uploadedPath=null;this.disabled=true;note.textContent='Publishing…';
+ try{
+  if(kind==='poster'){
+   const ext={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[file.type];
+   uploadedPath=`posters/${crypto.randomUUID()}.${ext}`;
+   const res=await client.storage.from('league-tv-media').upload(uploadedPath,file,{cacheControl:'3600',upsert:false,contentType:file.type});
+   if(res.error)throw res.error;
+  }
+  const {error}=await client.from('league_tv_media').insert({title,kind,image_path:uploadedPath,body:kind==='announcement'?body:null,starts_on:start,ends_on:end,duration_seconds:duration,enabled});
+  if(error)throw error;
+  $('tsg-media-title').value='';$('tsg-media-file').value='';$('tsg-media-body').value='';
+  await refreshTvMedia();note.textContent='Published! Your slide will appear automatically during its scheduled dates.';
+ }catch(err){
+  if(uploadedPath)await client.storage.from('league-tv-media').remove([uploadedPath]).catch(()=>{});
+  note.textContent=err.message||'Unable to publish media.';
+ }finally{this.disabled=false;}
+});
+setInterval(()=>refreshTvMedia().catch(console.warn),60000);
+refreshTvMedia().catch(console.warn);
 
 $('create-season').onclick=async()=>{
   const name=$('season-name').value.trim(),start=$('season-start').value,end=$('season-end').value,regOpen=$('registration-opens').value,regClose=$('registration-closes').value;
