@@ -1324,6 +1324,14 @@ body:not(.display-mode) .tsg-v61j-admin-picker{max-width:660px}
 body:not(.display-mode) .tsg-v61j-admin-picker select{max-width:480px!important;width:100%!important}
 body:not(.display-mode) .tsg-approval-actions button:disabled{opacity:.48;cursor:not-allowed}
 @media(max-width:620px){body:not(.display-mode) .tsg-v61l-main-nav{flex-direction:column;align-items:stretch;gap:7px}}
+
+/* V61o – private Admin-only clip failure history. TV controls stay uncluttered. */
+body:not(.display-mode) .tsg-v61o-diagnostics{margin-top:16px}
+body:not(.display-mode) .tsg-v61o-actions{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+body:not(.display-mode) .tsg-v61o-list{display:grid;gap:10px;margin-top:15px}
+body:not(.display-mode) .tsg-v61o-entry{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fbfaf5;overflow-wrap:anywhere}
+body:not(.display-mode) .tsg-v61o-entry strong{display:block;color:var(--green)}
+body:not(.display-mode) .tsg-v61o-entry small{display:block;margin:3px 0;color:var(--muted)}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -2110,6 +2118,14 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
  <div class="tsg-v61d-library-title"><h4>Managed highlight videos</h4><span id="tsg-v61i-count" class="muted"></span></div><p class="muted tsg-v61j-group-hint">Organized by sport. Select a heading to expand or collapse its videos; arrows change order within that sport. <strong>Beer Pong:</strong> add short videos (ideally under 60 seconds). The TV switches to another sport when the clip ends, or after 60 seconds.</p>
  <div class="tsg-v61i-list" id="tsg-v61i-list"><p class="muted">Loading your saved clips…</p></div>
 </section>
+<section class="panel tsg-v61o-diagnostics" id="tsg-v61o-diagnostics">
+<h3>Highlight Playback Diagnostics</h3>
+<p class="muted">Review failed highlights reported by the lunchroom TV during the past 30 days. These reports are shared through Supabase, so you can inspect them from your computer. A clip that fails once may still work later.</p>
+<div class="tsg-v61o-actions"><button type="button" id="tsg-v61o-refresh">Refresh reports</button><button type="button" id="tsg-v61o-download" class="secondary">Download CSV</button><button type="button" id="tsg-v61o-clear" class="danger">Clear reports</button></div>
+<p class="muted">Reports are grouped to one occurrence per clip, failure type, and day. No viewer identities are collected. Previously stored browser-only Clip Logs cannot automatically be recovered from another device.</p>
+<div id="tsg-v61o-status" class="notice" role="status" aria-live="polite"></div>
+<div id="tsg-v61o-list" class="tsg-v61o-list"><p class="muted">Open this area to load diagnostics.</p></div>
+</section>
 <section class="panel admin-form" style="margin-top:16px">
 <h3>Season Management</h3>
 <p class="muted">Remove a season and all its matchups and game results. This cannot be undone.</p>
@@ -2208,23 +2224,11 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
      <button type="button" id="tv-prev-slide" title="Previous slide (Left Arrow)" aria-label="Previous slide">❮ <span>Previous</span></button>
      <button type="button" id="tv-next-slide" title="Next slide (Right Arrow)" aria-label="Next slide"><span>Next</span> ❯</button>
     </div>
-    <button type="button" id="tv-clip-log" class="tsg-fullscreen" title="Review highlight playback failures">⚠ Clip log <span id="tv-clip-log-count"></span></button>
     <button type="button" id="tv-fullscreen" class="tsg-fullscreen" aria-pressed="false">⛶ Full display</button>
    </div>
   </div>
   
  </div>
- <section id="tsg-highlight-log-panel" class="tsg-highlight-log-panel" hidden aria-label="Highlight playback failure report">
-   <div class="tsg-highlight-log-head"><h2>Highlight playback log</h2><button id="tsg-highlight-log-close" type="button" aria-label="Close highlight log">✕</button></div>
-   <p>Only recorded playback errors and clips that did not start within 30 seconds appear here. Reports are stored in this browser, not on the server.</p>
-   <div class="tsg-highlight-log-actions">
-     <button id="tsg-highlight-log-copy" type="button">Copy report</button>
-     <button id="tsg-highlight-log-download" type="button">Download CSV</button>
-     <button id="tsg-highlight-log-clear" type="button" class="secondary">Clear log</button>
-   </div>
-   <div id="tsg-highlight-log-status" role="status" aria-live="polite"></div>
-   <div id="tsg-highlight-log-list" class="tsg-highlight-log-list"></div>
- </section>
  <div class="lb-tv-main">
   <section class="lb-tv-primary"><div class="lb-tv-eyebrow" id="lb-eyebrow">LEAGUE LIVE</div><div id="lb-slide" class="lb-tv-slide"></div></section>
   <aside class="lb-tv-secondary"><div class="lb-tv-side-head"><span class="tsg-season-star">✦</span> 2026–2027 INAUGURAL SEASON</div><div id="lb-side-fixtures" aria-live="off"></div><div class="lb-side-pips" id="lb-side-pips"></div><button type="button" class="tsg-side-tap tsg-side-tap-prev" id="tv-side-prev" aria-label="Previous right-panel slide" title="Previous right-panel slide"></button><button type="button" class="tsg-side-tap tsg-side-tap-next" id="tv-side-next" aria-label="Next right-panel slide" title="Next right-panel slide"></button><div class="clubhouse-stats-footer" id="lb-side-summary"><div><small>PLAYERS</small><strong id="lb-side-players">—</strong></div><div><small>MATCHUPS</small><strong id="lb-side-matchups">—</strong></div><div><small>RESULTS</small><strong id="lb-side-results">—</strong></div></div></aside>
@@ -2654,7 +2658,8 @@ async function refreshAuth(){
   tv:[
     ['settings','Display settings','Control the TV slide rotation and durations', ['tsg-v61b-tv-editor']],
     ['media','Posters & announcements','Publish and schedule TV posters and announcements', ['tsg-v61d-media-admin']],
-    ['clips','Highlight videos','Organize and manage TV highlight clips by sport', ['tsg-v61i-clips-admin']]
+    ['clips','Highlight videos','Organize and manage TV highlight clips by sport', ['tsg-v61i-clips-admin']],
+    ['diagnostics','Playback diagnostics','Review TV video playback failures', ['tsg-v61o-diagnostics']]
   ],
   results:[
     ['freebies','Freebies & missed games','Resolve incomplete matchups after their deadline', ['forfeit-panel']],
@@ -3406,6 +3411,9 @@ function recordHighlightFailure(clip,reason,code=''){
  });
  saveHighlightFailures(list);
  updateHighlightLogCount();
+ // Log a limited, anonymized failure to Supabase for viewing in Administration.
+ // Duplicate (clip, reason, day) rows are intentionally ignored by the DB.
+ reportHighlightFailureToAdmin(clip,reason,code);
 }
 function updateHighlightLogCount(){
  const label=document.getElementById('tv-clip-log-count');
@@ -4236,7 +4244,7 @@ document.addEventListener('keydown',event=>{
 });
 loadHighlightPlaylist();
 if(new URLSearchParams(location.search).get('display')==='1'){
- setupHighlightFailureLog();
+ // Clip Log controls have moved to Administration. Browser-local recording remains available as a fallback.
  document.body.classList.add('display-mode');
  // Highlights stay for five minutes; 24-hour weather for two. After five pairs,
  // show the overall leaderboard for one minute, then repeat.
@@ -5198,6 +5206,56 @@ $('password-setup-form').addEventListener('submit', async (e) => {
  new MutationObserver(refresh).observe(form,{attributes:true,attributeFilter:['class']});
  refresh();
 })();
+
+// V61o: Shared, anonymized TV diagnostics (local log remains a fallback).
+async function reportHighlightFailureToAdmin(clip,reason,code){
+ try{
+  if(!client || !/^[A-Za-z0-9_-]{11}$/.test(String(clip.id||'')))return;
+  const allowed=['player_error','start_timeout','playback_error','embed_error','video_error','timeout'];
+  // Restrict to an enumerated description to prevent leaking arbitrary context.
+  const safeReason=String(reason||'').slice(0,100);
+  const {error}=await client.from('league_tv_clip_failures').insert({
+   youtube_id:clip.id,sport:String(clip.sport||'').slice(0,30),
+   title:String(clip.title||'').slice(0,110),reason:safeReason,
+   error_code:String(code||'').slice(0,30)
+  });
+  if(error&&error.code!=='23505'&&error.code!=='42P01')console.warn('TV clip report unavailable:',error.message);
+ }catch(e){console.warn('TV clip report unavailable:',e);}
+}
+let tsgSharedClipFailures=[];
+async function refreshSharedClipFailures(){
+ if(!isAdmin)return;
+ const status=$('tsg-v61o-status'),list=$('tsg-v61o-list');if(!status||!list)return;
+ status.textContent='Loading clip reports…';
+ try{
+  const cutoff=new Date(Date.now()-30*86400000).toISOString().slice(0,10);
+  const {data,error}=await client.from('league_tv_clip_failures').select('id,youtube_id,sport,title,reason,error_code,reported_on,created_at').gte('reported_on',cutoff).order('created_at',{ascending:false}).limit(300);
+  if(error)throw error;
+  tsgSharedClipFailures=data||[];
+  status.textContent=tsgSharedClipFailures.length?`${tsgSharedClipFailures.length} recorded clip failures (up to 300 recent reports).`:'No clip failures reported by the TV in the last 30 days.';
+  list.innerHTML=tsgSharedClipFailures.map(e=>`<div class="tsg-v61o-entry"><strong>${esc(e.title||e.youtube_id)} · ${esc(e.sport)}</strong><small>${esc(new Date(e.created_at).toLocaleString('en-CA',{timeZone:'America/Edmonton'}))} · ${esc(e.reason)}${e.error_code?' · Error '+esc(e.error_code):''}</small><a href="https://www.youtube.com/watch?v=${encodeURIComponent(e.youtube_id)}" target="_blank" rel="noopener noreferrer">Open video on YouTube</a></div>`).join('')||'<p class="muted">Nothing to review.</p>';
+ }catch(e){status.textContent='Could not load reports: '+(e.message||String(e));list.innerHTML='';}
+}
+$('tsg-v61o-refresh')?.addEventListener('click',refreshSharedClipFailures);
+$('tsg-v61o-download')?.addEventListener('click',()=>{
+ if(!tsgSharedClipFailures.length){$('tsg-v61o-status').textContent='Refresh the reports before downloading.';return;}
+ const rows=[['Calgary time','Sport','Video title','YouTube ID','Failure','Error code'],...tsgSharedClipFailures.map(e=>[
+  new Date(e.created_at).toLocaleString('en-CA',{timeZone:'America/Edmonton'}),e.sport,e.title,e.youtube_id,e.reason,e.error_code])];
+ const csv=rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
+ const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='turfcare-tv-clip-failures.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
+});
+$('tsg-v61o-clear')?.addEventListener('click',async function(){
+ if(!isAdmin||!confirm('Clear all recorded TV clip failure reports? This does not remove any videos.'))return;
+ this.disabled=true;
+ try{
+  const {error}=await client.from('league_tv_clip_failures').delete().gte('created_at','2000-01-01T00:00:00Z');if(error)throw error;
+  await refreshSharedClipFailures();$('tsg-v61o-status').textContent='TV clip failure reports cleared.';
+ }catch(e){$('tsg-v61o-status').textContent=e.message||'Could not clear reports.';}
+ finally{this.disabled=false;}
+});
+// Reports refresh when an administrator opens the diagnostics task.
+document.querySelector('#admin-category-tv [data-admin-task="diagnostics"]')?.addEventListener('click',()=>{refreshSharedClipFailures();});
 </script>
 </body>
 </html>
