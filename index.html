@@ -2244,6 +2244,22 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 // The publishable key is designed for browser use. Never put a Supabase secret/service-role key here.
 const SUPABASE_URL = 'https://ewjrwrezjrmyxekxcfuj.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_FykX_e9jJtcI63tyQXytxQ_FiCyIiyM';
+// Capture invitation credentials BEFORE Supabase consumes/removes them from the URL.
+const tsgInviteLink = (() => {
+  const url = new URL(window.location.href);
+  const hash = new URLSearchParams(url.hash.replace(/^#/, ''));
+  const query = url.searchParams;
+  const type = (hash.get('type') || query.get('type') || '').toLowerCase();
+  const hasAuthPayload = Boolean(hash.get('access_token') || query.get('token_hash') || query.get('code'));
+  return {
+    isInvite: ['invite','recovery'].includes(type) && hasAuthPayload,
+    authType: type,
+    tokenHash: ['invite','recovery'].includes(type) ? query.get('token_hash') : null,
+    accessToken: ['invite','recovery'].includes(type) ? hash.get('access_token') : null,
+    refreshToken: ['invite','recovery'].includes(type) ? hash.get('refresh_token') : null,
+    initialUrl: window.location.href
+  };
+})();
 const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -4876,52 +4892,111 @@ new MutationObserver(update).observe(form,{attributes:true,attributeFilter:['cla
   </div>
 </div>
 
-<script>
-const passwordSetup = $('password-setup');
+<script id="tsg-v61p-invitation-password-flow">
+// The owner may be signed in already. Never offer to update a password
+// unless the current Auth session has been explicitly tied to THIS invite.
+(function () {
+const modal = document.getElementById('password-setup');
+const form = document.getElementById('password-setup-form');
+const message = document.getElementById('password-setup-message');
+const submit = form.querySelector('[type="submit"]');
+const heading = modal.querySelector('h2');
+const explanatory = modal.querySelector('p');
+let verifiedInviteUserId = null;
+let inviteBusy = false;
 
-function showPasswordSetup() {
-  passwordSetup.style.display = 'flex';
+function show(messageText, failure = false) {
+  modal.style.display = 'flex';
+  if (messageText) { message.textContent = messageText; message.style.color = failure ? '#a12424' : '#173d32'; }
+}
+function rejectInvite(text) {
+  verifiedInviteUserId = null;
+  form.hidden = true;
+  heading.textContent = 'Invitation needs attention';
+  explanatory.textContent = 'This link could not securely open the invited player account.';
+  show(text, true);
+}
+async function verifySessionForInvite() {
+  // Fresh server validation prevents an older stored owner session from being used.
+  const { data, error } = await client.auth.getUser();
+  if (error || !data?.user) throw new Error('The invitation could not be authenticated. Request a fresh invitation link.');
+  const { data: sessionData } = await client.auth.getSession();
+  const session = sessionData?.session;
+  if (!session || session.user.id !== data.user.id) throw new Error('The invitation session is not valid.');
+  // For implicit links, the returned invite token must be the *current* session.
+  if (tsgInviteLink.accessToken && session.access_token !== tsgInviteLink.accessToken) {
+    throw new Error('The invitation was not activated. Open a fresh invitation in a private browser window.');
+  }
+  return data.user;
+}
+async function beginInvitation() {
+  if (inviteBusy || !tsgInviteLink.isInvite) return;
+  inviteBusy = true;
+  show('Verifying your player invitation…');
+  form.hidden = true;
+  try {
+    // token_hash invites require verifyOtp. Access-token invites are normally
+    // consumed by supabase-js automatically, but explicitly set that session
+    // if an existing browser login prevented automatic handling.
+    if (tsgInviteLink.tokenHash) {
+      const {error} = await client.auth.verifyOtp({type:tsgInviteLink.authType,token_hash:tsgInviteLink.tokenHash});
+      if (error) throw error;
+    } else if (tsgInviteLink.accessToken && tsgInviteLink.refreshToken) {
+      const {error} = await client.auth.setSession({
+        access_token:tsgInviteLink.accessToken,
+        refresh_token:tsgInviteLink.refreshToken
+      });
+      if (error) throw error;
+    }
+    const invitedUser = await verifySessionForInvite();
+    verifiedInviteUserId = invitedUser.id;
+    heading.textContent = tsgInviteLink.authType === 'recovery' ? 'Reset Your Password' : 'Finish Your Player Registration';
+    explanatory.textContent = tsgInviteLink.authType === 'recovery' ? `Choose a new password for ${invitedUser.email || 'your account'}.` : `Set a password for ${invitedUser.email || 'your invited account'}. Your league administrator will approve you afterward.`;
+    form.hidden = false;
+    message.textContent = '';
+    // Clear invite credentials from browser history after authentication.
+    const clean = new URL(location.href);
+    for (const key of ['token_hash','type','code']) clean.searchParams.delete(key);
+    if (clean.hash.includes('access_token=')) clean.hash = '#page-player';
+    history.replaceState(null, '', clean.pathname + clean.search + clean.hash);
+  } catch (err) {
+    rejectInvite(err.message || 'The invitation link has expired or has already been used. Please request a new invitation.');
+  } finally { inviteBusy = false; }
 }
 
-client.auth.onAuthStateChange((event, session) => {
-  const linkType = window.location.hash;
-
-  if (
-    event === 'PASSWORD_RECOVERY' ||
-    (session && /type=(invite|recovery)/i.test(linkType))
-  ) {
-    showPasswordSetup();
-  }
-});
-
-$('password-setup-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const password = $('new-player-password').value;
-  const confirmation = $('confirm-player-password').value;
-  const message = $('password-setup-message');
-
-  if (password !== confirmation) {
-    message.textContent = 'Your passwords do not match.';
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  if (!verifiedInviteUserId || inviteBusy) return;
+  const password = document.getElementById('new-player-password').value;
+  const confirmation = document.getElementById('confirm-player-password').value;
+  if (password.length < 8 || password !== confirmation) {
+    show('Choose at least eight characters and make sure the passwords match.', true);
     return;
   }
-
-  message.textContent = 'Saving your password...';
-
-  const { error } = await client.auth.updateUser({ password });
-
-  if (error) {
-    message.textContent = error.message;
-    return;
-  }
-
-  message.textContent = 'Password saved! Welcome to the league.';
-  $('password-setup-form').reset();
-
-  setTimeout(() => {
-    passwordSetup.style.display = 'none';
-  }, 2500);
+  inviteBusy = true; submit.disabled = true;
+  show('Saving your new password…');
+  try {
+    const {data, error} = await client.auth.getUser();
+    if (error || !data?.user || data.user.id !== verifiedInviteUserId)
+      throw new Error('Your active session changed. Your password has NOT been updated. Please reopen your invitation.');
+    const result = await client.auth.updateUser({password});
+    if (result.error) throw result.error;
+    message.textContent = tsgInviteLink.authType === 'recovery' ? 'Password updated. You can sign in with your new password.' : 'Password saved. Your account is now awaiting administrator approval.';
+    message.style.color = '#173d32';
+    form.hidden = true;
+    verifiedInviteUserId = null;
+    await client.auth.signOut();
+    setTimeout(() => { modal.style.display = 'none'; location.hash = '#page-player'; }, 2400);
+  } catch (err) { show(err.message || 'Could not save your password.', true); }
+  finally { inviteBusy = false; submit.disabled = false; }
 });
+
+// Auth SDK initialization is async; this works even if the SIGNED_IN event
+// was emitted before this script ran. No invitation token => no setup prompt.
+if (tsgInviteLink.isInvite) {
+  beginInvitation().catch(err => rejectInvite(err.message));
+}
+})();
 </script>
 
 <script>
