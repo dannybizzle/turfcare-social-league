@@ -3044,21 +3044,55 @@ let highlightErrorBurst=0, highlightLastErrorAt=0;
 
 let tvVideoPlaying=false,tvVideoInitialized=false,tvLastHighlightPage=false;
 const HIGHLIGHT_HISTORY_KEY='turfcare-highlight-history-by-sport-v1';
-// V60q: right TV panel has just two modes: confirmed upcoming matchups,
-// or the original plain season-information card if there are none.
-// Confirmed matchups are paginated so no player is hidden when many are scheduled.
-function tvConfirmedSidebarPages(){
- const upcoming=confirmedSchedule();
- const pageSize=3, pages=[];
- for(let i=0;i<upcoming.length;i+=pageSize)pages.push(upcoming.slice(i,i+pageSize));
+// V60r: right TV content is built only from genuinely available data.
+// Always rotate active matchup cards; introduce standings and sport leaders
+// only once the current season has completed results to support them.
+function tvSidebarMatchupPages(){
+ const season=tvCurrentSeason();
+ if(!season)return [];
+ const weeks=rollingWeeks(season);
+ const upcoming=matchups.filter(m=>
+  m.season_id===season.id && weeks.includes(m.week_number) &&
+  m.status==='scheduled' &&
+  m.resolution!=='freebie' && m.resolution!=='double_forfeit'
+ ).sort((a,b)=>{
+  const ca=appointmentFor(a.id), cb=appointmentFor(b.id);
+  const aConfirmed=!!ca?.confirmed_at, bConfirmed=!!cb?.confirmed_at;
+  // Show confirmed playing days first. Unconfirmed opponents follow.
+  return Number(bConfirmed)-Number(aConfirmed) ||
+   (aConfirmed&&bConfirmed?String(ca.starts_at).localeCompare(String(cb.starts_at)):0) ||
+   a.week_number-b.week_number ||
+   String(a.id).localeCompare(String(b.id));
+ });
+ const pages=[];
+ for(let i=0;i<upcoming.length;i+=3)pages.push(upcoming.slice(i,i+3));
  return pages;
 }
 function sideSections(){
- const pages=tvConfirmedSidebarPages();
- return pages.length?pages.map((_,i)=>`Confirmed page ${i+1}`):['Season underway'];
+ const season=tvCurrentSeason();
+ const pages=tvSidebarMatchupPages();
+ const sections=pages.map((_,i)=>`Matchups ${i+1}`);
+ if(season){
+  const rankings=tvSeasonRankings(season.id);
+  if(rankings.length){
+   sections.push('Leaderboard');
+   if(rankings.some(p=>p.wins+p.losses>0))sections.push('Overall leaders');
+  }
+  SPORTS.forEach(sport=>{
+   if(tvSeasonSportStats(sport,season.id).length)sections.push(sport);
+  });
+ }
+ return sections.length?sections:['Season overview'];
 }
-const SIDE_SECTION_DURATIONS={'Season underway':20000};
-const sideSectionDuration=()=>sideSections()[sideSlideIndex%sideSections().length]==='Season underway'?20000:18000;
+const SIDE_SECTION_DURATIONS={
+ 'Leaderboard':24000,'Overall leaders':20000,
+ 'Ping Pong':17000,'Darts':17000,'Pool':17000,
+ 'Air Hockey':17000,'Beer Pong':17000,'Season overview':18000
+};
+const sideSectionDuration=()=>{
+ const section=sideSections()[sideSlideIndex%sideSections().length];
+ return section.startsWith('Matchups ')?20000:(SIDE_SECTION_DURATIONS[section]||18000);
+};
 let sideRotateTimer=null;
 let tvOfficialSidebarPage=0;
 function tvSidebarFixtures(){
@@ -3338,65 +3372,66 @@ function tvRegisteredCrewSidebar(section,registrationOpen=true){
 }
 function renderLeagueSidebar(){
  if(!document.body.classList.contains('display-mode'))return;
- const n=$('lb-side-fixtures');if(!n)return;
+ const root=$('lb-side-fixtures');if(!root)return;
  const sections=sideSections();
- const index=sideSlideIndex%sections.length,section=sections[index];
- // Only upcoming confirmed playing dates are shown on the right.
- // When all are played, cancelled, or unconfirmed, show one quiet season card.
- const confirmedPages=tvConfirmedSidebarPages();
- $('lb-side-pips').innerHTML=sections.length>1?sections.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join(''):'';
- if(confirmedPages.length){
-  const page=confirmedPages[index]||confirmedPages[0];
-  n.innerHTML=`<div class="lb-side-kicker">UPCOMING CONFIRMED MATCHUPS</div>`+
-   (confirmedPages.length>1?`<div class="lb-side-detail">Page ${index+1} of ${confirmedPages.length}</div>`:'')+
-   page.map(confirmedMatchupCard).join('');
- }else{
-  const active=tvCurrentSeason();
-  const published=active?matchups.filter(m=>m.season_id===active.id).length:0;
-  n.innerHTML=`<div class="lb-side-kicker">${tvSeasonUnderway()?'SEASON UNDERWAY':'LEAGUE UPDATE'}</div>`+
-   `<div class="lb-side-focus">${esc(active?.name||'Turfcare Social League')}</div>`+
-   `<div class="lb-side-detail">No upcoming playing days have been confirmed yet. Players can arrange their games through My League.</div>`+
-   `<div class="lb-side-metric-grid"><div class="lb-side-stat"><b>${published}</b><small>Published matchups</small></div>`+
-   `<div class="lb-side-stat"><b>${confirmedSchedule().length}</b><small>Confirmed playing days</small></div></div>`;
- }
- return;
- const seasonInfo=tvSidebarSeason(), seasonId=seasonInfo?.season?.id, historical=!!seasonInfo?.history;
- const historyTag=historical?` <span class="tsg-demo-flag">${esc(seasonInfo.season.name)} · PREVIOUS SEASON</span>`:'';
- // During the registration window, showcase real approved participants instead
- // of fictional golfer stats. Confirmed and published matchups stay authentic.
- const registrationOpen=!!tsgRegistrationSeason();
- const activeSeason=tvCurrentSeason();
- const resultsRecorded=activeSeason&&matchups.some(m=>m.season_id===activeSeason.id&&
-  (countsInStandings(m)||m.resolution==='freebie'||m.resolution==='double_forfeit'));
- // Crew showcase belongs only before kickoff. After kickoff the right panel
- // always switches to league information, even when no games are finished yet.
- if(!tvSeasonUnderway()&&!['Today confirmed','Upcoming confirmed','Official fixtures'].includes(section)){
-  $('lb-side-pips').innerHTML=sections.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join('');
-  tvRegisteredCrewSidebar(section,registrationOpen);return;
- }
- $('lb-side-pips').innerHTML=sections.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join('');
- if(section==='Season underway'){
-  const active=tvCurrentSeason();
-  const upcoming=confirmedSchedule().length;
-  n.innerHTML=`<div class="lb-side-kicker">SEASON UNDERWAY</div><div class="lb-side-focus">${esc(active?.name||'Turfcare Social League')}</div><div class="lb-side-detail">Matchups are underway. Standings and sport leaders will appear here as scores are submitted.</div><div class="lb-side-metric-grid"><div class="lb-side-stat"><b>${matchups.filter(m=>m.season_id===active?.id).length}</b><small>Published matchups</small></div><div class="lb-side-stat"><b>${upcoming}</b><small>Confirmed playing days</small></div></div>`;
- }else if(section==='Official fixtures'){
-  n.innerHTML=tsgRegistrationSeason()?'<div class="lb-side-kicker">POTENTIAL MATCHUPS</div><div class="lb-side-empty">See the registration preview in the main TV rotation.</div>':tvOfficialSidebarMarkup();
+ const index=sideSlideIndex%sections.length, section=sections[index];
+ const dots=$('lb-side-pips');
+ if(dots)dots.innerHTML=sections.length>1?
+  sections.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join(''):'';
+ const season=tvCurrentSeason(), seasonId=season?.id;
+ if(section.startsWith('Matchups ')){
+  const pages=tvSidebarMatchupPages(),pageIndex=Number(section.slice(9))-1;
+  const page=pages[pageIndex]||[];
+  root.innerHTML='<div class="lb-side-kicker">UPCOMING MATCHUPS</div>'+
+   (pages.length>1?`<div class="lb-side-detail">Page ${pageIndex+1} of ${pages.length}</div>`:'')+
+   page.map(m=>{
+    const a=appointmentFor(m.id);
+    const confirmed=!!a?.confirmed_at;
+    const sports=matchupGames(m)
+      .map(g=>`${sportIcon[g.discipline]||'🏆'} ${esc(g.discipline)}`).join(' · ');
+    const when=confirmed
+      ?`Confirmed: ${esc(meetupInputDate(a.starts_at))}`
+      :'Playing day not confirmed';
+    return `<div class="lb-side-upcoming tsg-tv-side-official">`+
+      `<div class="tsg-side-week">WEEK ${m.week_number} · ${when}</div>`+
+      `<div class="tsg-side-pair">${esc(playerName(m.player1_id))}`+
+      `<span class="gold-vs"> VS </span>${esc(playerName(m.player2_id))}</div>`+
+      `<small>${sports||'Sports pending'}</small></div>`;
+   }).join('');
  }else if(section==='Leaderboard'){
-  const ranked=seasonId?tvSeasonRankings(seasonId).slice(0,5):[];
-  n.innerHTML=`<div class="lb-side-kicker">LEAGUE STANDINGS${historyTag}</div>${ranked.length?ranked.map((p,i)=>`<div class="lb-side-upcoming" style="display:flex;gap:10px;justify-content:space-between;align-items:baseline"><span><span style="color:#d7b56d">${i+1}.</span> ${esc(p.display_name)}</span><small style="white-space:nowrap">${p.wins}W · ${p.losses}L</small></div>`).join(''):'<div class="lb-side-empty">Players will appear here soon.</div>'}`;
- }else if(section==='Today confirmed'||section==='Upcoming confirmed'){
-  const rows=confirmedSchedule().filter(x=>section==='Today confirmed'?sameCalgaryDay(x.a.starts_at):!sameCalgaryDay(x.a.starts_at)).slice(0,3);
-  n.innerHTML=`<div class="lb-side-kicker">${section==='Today confirmed'?"TODAY'S CONFIRMED MATCHUPS":'UPCOMING CONFIRMED MATCHUPS'}</div>${rows.length?rows.map(confirmedMatchupCard).join(''):`<div class="lb-side-empty">${section==='Today confirmed'?'No confirmed matchups today.':'No future playing days confirmed yet.'}</div>`}`;
+  const ranked=tvSeasonRankings(seasonId).slice(0,5);
+  root.innerHTML=`<div class="lb-side-kicker">LEAGUE STANDINGS</div>`+
+   ranked.map((p,i)=>`<div class="lb-side-upcoming" style="display:flex;gap:10px;justify-content:space-between;align-items:baseline">`+
+    `<span><span style="color:#d7b56d">${i+1}.</span> ${esc(p.display_name)}</span>`+
+    `<small style="white-space:nowrap">${p.wins}W · ${p.losses}L</small></div>`).join('');
  }else if(section==='Overall leaders'){
-  const ranked=(seasonId?tvSeasonRankings(seasonId):[]).filter(p=>p.wins+p.losses>0).sort((a,b)=>b.wins/(b.wins+b.losses)-a.wins/(a.wins+a.losses)||b.wins-a.wins);
+  const ranked=tvSeasonRankings(seasonId)
+   .filter(p=>p.wins+p.losses>0)
+   .sort((a,b)=>b.wins/(b.wins+b.losses)-a.wins/(a.wins+a.losses)||b.wins-a.wins);
   const top=ranked[0];
-  n.innerHTML=top?`<div class="lb-side-kicker">OVERALL WIN PERCENTAGE${historyTag}</div><div class="lb-side-focus">${esc(top.display_name)}</div><div class="lb-side-detail">${Math.round(100*top.wins/(top.wins+top.losses))}% win rate · ${top.wins}W–${top.losses}L</div><div class="lb-side-bar"><i style="width:${Math.round(100*top.wins/(top.wins+top.losses))}%"></i></div><div class="lb-side-metric-grid"><div class="lb-side-stat"><b>${top.gameWins}</b><small>Sport wins</small></div><div class="lb-side-stat"><b>${top.freebies}</b><small>Freebie wins</small></div></div>`:`<div class="lb-side-kicker">OVERALL WIN PERCENTAGE</div><div class="lb-side-empty">Win percentages will appear when results are submitted.</div><div class="lb-side-metric-grid"><div class="lb-side-stat"><b>${profiles.filter(p=>p.is_player).length}</b><small>Active players</small></div><div class="lb-side-stat"><b>${matchups.length}</b><small>Matchups published</small></div></div>`;
+  root.innerHTML=top?
+   `<div class="lb-side-kicker">OVERALL WIN PERCENTAGE</div>`+
+   `<div class="lb-side-focus">${esc(top.display_name)}</div>`+
+   `<div class="lb-side-detail">${Math.round(100*top.wins/(top.wins+top.losses))}% win rate · ${top.wins}W–${top.losses}L</div>`+
+   `<div class="lb-side-bar"><i style="width:${Math.round(100*top.wins/(top.wins+top.losses))}%"></i></div>`+
+   `<div class="lb-side-metric-grid"><div class="lb-side-stat"><b>${top.gameWins}</b><small>Sport wins</small></div>`+
+   `<div class="lb-side-stat"><b>${top.freebies}</b><small>Freebie wins</small></div></div>`:'';
  }else if(SPORTS.includes(section)){
-  const icon=sportIcon[section]||'🏆',rows=seasonId?tvSeasonSportStats(section,seasonId):[],leader=rows[0];
-  n.innerHTML=leader?`<div class="lb-side-kicker">${icon} ${esc(section.toUpperCase())} LEADER${historyTag}</div><div class="lb-side-focus">${esc(leader.name)}</div><div class="lb-side-detail">${leader.pct}% win rate · ${leader.wins}W–${leader.losses}L</div><div class="lb-side-bar"><i style="width:${leader.pct}%"></i></div>${rows.slice(1,3).map(r=>`<div class="lb-side-upcoming">${esc(r.name)} · ${r.pct}% <small>${r.wins} wins · ${r.played} games played</small></div>`).join('')}`:`<div class="lb-side-kicker">${icon} ${esc(section.toUpperCase())}</div><div class="lb-side-focus">Stats coming soon</div><div class="lb-side-empty">Once ${esc(section)} games are recorded, this panel will show leaders and win percentages.</div>`;
+  const rows=tvSeasonSportStats(section,seasonId),leader=rows[0];
+  root.innerHTML=leader?
+   `<div class="lb-side-kicker">${sportIcon[section]||'🏆'} ${esc(section.toUpperCase())} LEADER</div>`+
+   `<div class="lb-side-focus">${esc(leader.name)}</div>`+
+   `<div class="lb-side-detail">${leader.pct}% win rate · ${leader.wins}W–${leader.losses}L</div>`+
+   `<div class="lb-side-bar"><i style="width:${leader.pct}%"></i></div>`+
+   rows.slice(1,3).map(r=>`<div class="lb-side-upcoming">${esc(r.name)} · ${r.pct}%`+
+    `<small>${r.wins} wins · ${r.played} games played</small></div>`).join(''):'';
  }else{
-  const upcoming=tvScheduled().slice(0,3);
-  n.innerHTML=`<div class="lb-side-kicker">UPCOMING MATCHUPS</div>${upcoming.length?upcoming.map(m=>`<div class="lb-side-upcoming">${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}<small>Week ${m.week_number} · ${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||'').join(' '))}</small></div>`).join(''):'<div class="lb-side-empty">No upcoming matches yet. The draw will show here once it is published.</div>'}`;
+  const published=season?matchups.filter(m=>m.season_id===season.id).length:0;
+  root.innerHTML=`<div class="lb-side-kicker">SEASON UPDATE</div>`+
+   `<div class="lb-side-focus">${esc(season?.name||'Turfcare Social League')}</div>`+
+   `<div class="lb-side-detail">Schedules and results will appear automatically as they become available.</div>`+
+   `<div class="lb-side-metric-grid"><div class="lb-side-stat"><b>${published}</b>`+
+   `<small>Published matchups</small></div></div>`;
  }
 }
 
