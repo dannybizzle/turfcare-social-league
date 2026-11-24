@@ -1311,6 +1311,19 @@ body:not(.display-mode) .tsg-v61j-sport-body>.muted{padding:4px 12px;margin:0}
  body:not(.display-mode) .tsg-v61j-sport-group summary{padding:14px 12px}
  body:not(.display-mode) .tsg-v61j-sport-count{font-size:.7rem}
 }
+
+/* V61l: desktop-oriented compact admin navigation, keeping all existing actions intact. */
+body:not(.display-mode) .tsg-v61l-main-nav{display:flex;align-items:center;gap:16px;padding:16px 20px;margin:0 0 16px;background:#fff;border:1px solid #d9e3d7;border-radius:13px}
+body:not(.display-mode) .tsg-v61l-main-nav label{font-size:.88rem;font-weight:800;color:#244635;min-width:115px}
+body:not(.display-mode) .tsg-v61l-main-nav select{width:min(100%,430px)!important;max-width:430px!important;margin:0!important;min-height:43px!important;padding:9px 13px!important;font-weight:700}
+body:not(.display-mode) .admin-category-nav.tsg-v61l-main-nav-hidden{display:none!important}
+body:not(.display-mode) #admin-category-players .tsg-admin-task-nav.tsg-v61j-hidden-nav,
+body:not(.display-mode) #admin-category-scheduling .tsg-admin-task-nav.tsg-v61j-hidden-nav,
+body:not(.display-mode) #admin-category-results .tsg-admin-task-nav.tsg-v61j-hidden-nav{display:none!important}
+body:not(.display-mode) .tsg-v61j-admin-picker{max-width:660px}
+body:not(.display-mode) .tsg-v61j-admin-picker select{max-width:480px!important;width:100%!important}
+body:not(.display-mode) .tsg-approval-actions button:disabled{opacity:.48;cursor:not-allowed}
+@media(max-width:620px){body:not(.display-mode) .tsg-v61l-main-nav{flex-direction:column;align-items:stretch;gap:7px}}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -2105,7 +2118,7 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 </section>
 <section class="panel tsg-approval-panel" id="tsg-approval-panel" aria-labelledby="tsg-approval-heading">
 <h3 id="tsg-approval-heading">Pending Registrations <span id="tsg-approval-count" class="tag">0</span></h3>
-<p class="muted">New accounts wait here until an administrator approves them. Approval also activates league participation. Current-week scheduling is attempted automatically.</p>
+<p class="muted">Invited players must accept their invitation and create a password before you can approve them. Completed registrations become eligible for approval; current-week scheduling is then checked automatically.</p>
 <div id="tsg-approval-list" aria-live="polite"><div class="notice">Loading registration requests…</div></div>
 <div id="tsg-approval-message" role="status" aria-live="polite" class="notice"></div>
 <button class="secondary" id="tsg-refresh-approvals" type="button">Refresh registrations</button>
@@ -2600,6 +2613,24 @@ async function refreshAuth(){
    });
  }));
 })();
+/* V61l: compact main Admin navigation. Existing category buttons still dispatch all actions. */
+(function compactAdminCategories(){
+ const nav=document.querySelector('#admin-area .admin-category-nav');
+ if(!nav)return;
+ const buttons=[...nav.querySelectorAll('button[data-admin-category]')];
+ const wrap=document.createElement('div');wrap.className='tsg-v61l-main-nav';
+ const label=document.createElement('label');label.htmlFor='tsg-v61l-admin-category';label.textContent='Administration';
+ const select=document.createElement('select');select.id='tsg-v61l-admin-category';
+ for(const button of buttons){
+  const option=document.createElement('option');option.value=button.dataset.adminCategory;
+  option.textContent=button.dataset.adminCategory==='seasons'?'Seasons & TV':button.dataset.adminCategory[0].toUpperCase()+button.dataset.adminCategory.slice(1);
+  select.appendChild(option);
+  button.addEventListener('click',()=>{select.value=button.dataset.adminCategory;});
+ }
+ select.addEventListener('change',()=>nav.querySelector('[data-admin-category="'+select.value+'"]')?.click());
+ wrap.append(label,select);nav.before(wrap);nav.classList.add('tsg-v61l-main-nav-hidden');
+ select.value=buttons.find(button=>button.classList.contains('active'))?.dataset.adminCategory||'inbox';
+})();
 /* V59b: one purpose per Admin screen. Reparent ORIGINAL elements so event listeners remain attached. */
 (function organizeAdminWorkflows(){
  const root=document.getElementById('admin-area');
@@ -2661,15 +2692,15 @@ async function refreshAuth(){
    // Season/TV tasks have outgrown the horizontal tab row. Keep their existing
    // buttons as internal dispatchers and present one compact desktop selector.
    let seasonPicker=null;
-   if(category==='seasons'){
+   if(['seasons','players','scheduling','results'].includes(category)){
      const pickerWrap=document.createElement('div');
      pickerWrap.className='tsg-v61j-admin-picker';
      const label=document.createElement('label');
-     label.setAttribute('for','tsg-v61j-season-task');
+     label.setAttribute('for','tsg-v61l-admin-task-'+category);
      label.textContent='Manage area';
      seasonPicker=document.createElement('select');
-     seasonPicker.id='tsg-v61j-season-task';
-     seasonPicker.setAttribute('aria-label','Choose season and TV administration area');
+     seasonPicker.id='tsg-v61l-admin-task-'+category;
+     seasonPicker.setAttribute('aria-label','Choose '+category+' administration task');
      pickerWrap.append(label,seasonPicker);
      nav.after(pickerWrap);
      nav.classList.add('tsg-v61j-hidden-nav');
@@ -2834,26 +2865,41 @@ $('tsg-fill-current-week')?.addEventListener('click',async e=>{
  catch(error){const el=$('tsg-fill-current-week-status');el.className='status error';el.textContent='Could not update the week: '+(error.message||error);}
  finally{button.disabled=false;}
 });
+// Invitation readiness is checked on the server, not inferred from public profile rows.
+let tsgInvitationReadiness=new Map();
 async function loadPendingRegistrations(){
  const list=$('tsg-approval-list'),count=$('tsg-approval-count');
  if(!list||!count)return;
  if(!isAdmin){list.textContent='Administrator access required.';count.textContent='0';return;}
- list.innerHTML='<div class="notice">Loading registration requests…</div>';
- const {data,error}=await client.from('profiles')
-   .select('id,display_name,role,is_owner,is_approved,is_player')
-   .eq('is_approved',false).eq('role','player').eq('is_owner',false)
-   .order('created_at',{ascending:true});
- if(error){list.textContent='Could not load requests: '+error.message;count.textContent='—';return;}
- const pending=data||[];
+ list.innerHTML='<div class="notice">Loading invitations and registration requests…</div>';
+ const [profilesResult,readinessResult]=await Promise.all([
+  client.from('profiles').select('id,display_name,role,is_owner,is_approved,is_player')
+    .eq('is_approved',false).eq('role','player').eq('is_owner',false).order('created_at',{ascending:true}),
+  client.rpc('league_pending_account_readiness')
+ ]);
+ if(profilesResult.error){list.textContent='Could not load requests: '+profilesResult.error.message;count.textContent='—';return;}
+ const pending=profilesResult.data||[];
  count.textContent=String(pending.length);
- if(!pending.length){list.innerHTML='<div class="notice">No pending registrations right now.</div>';return;}
- list.innerHTML=pending.map(p=>`<div class="tsg-approval-row">
-   <div><strong>${esc(p.display_name)}</strong><small>Awaiting administrator approval</small></div>
+ // Fail closed if the database guard/readiness function is not installed yet.
+ tsgInvitationReadiness=new Map();
+ if(!readinessResult.error){
+  for(const entry of readinessResult.data||[])tsgInvitationReadiness.set(entry.player_id,{ready:entry.is_ready===true,state:entry.readiness_state});
+ }
+ if(!pending.length){list.innerHTML='<div class="notice">No pending invitations or registrations.</div>';return;}
+ const readError=readinessResult.error;
+ list.innerHTML=(readError?`<div class="status error">Account readiness cannot be verified. Approval is temporarily disabled. Run the Version 61l SQL update. ${esc(readError.message)}</div>`:'')+
+ pending.map(p=>{
+  const readiness=tsgInvitationReadiness.get(p.id);
+  const ready=readiness?.ready===true&&!readError;
+  const status=ready?'Ready for approval':readiness?.state==='awaiting_player_setup'?'Invited — awaiting player password setup':readiness?.state==='awaiting_email_confirmation'?'Awaiting email confirmation':'Waiting for account setup verification';
+  return `<div class="tsg-approval-row">
+   <div><strong>${esc(p.display_name)}</strong><small>${esc(status)}</small></div>
    <div class="tsg-approval-actions">
-     <button type="button" data-approval-id="${esc(p.id)}" data-approval-name="${esc(p.display_name)}">Approve player</button>
-     <button type="button" class="danger" data-denial-id="${esc(p.id)}" data-denial-name="${esc(p.display_name)}">Deny access</button>
+    <button type="button" data-approval-id="${esc(p.id)}" data-approval-name="${esc(p.display_name)}" ${ready?'':'disabled title="Player must finish setting up their account first"'}>Approve player</button>
+    <button type="button" class="danger" data-denial-id="${esc(p.id)}" data-denial-name="${esc(p.display_name)}">Deny access</button>
    </div>
- </div>`).join('');
+  </div>`;
+ }).join('');
 }
 // Denial removes a *pending* account via the existing administrator-only
 // delete-player Edge Function so its Auth login is removed as well.
@@ -2892,6 +2938,13 @@ $('tsg-approval-list').addEventListener('click',async event=>{
  const button=event.target.closest('button[data-approval-id]');
  if(!button||button.disabled||!isAdmin)return;
  const id=button.dataset.approvalId,name=button.dataset.approvalName;
+ // A stale or manually enabled button is not sufficient: verify readiness again.
+ const {data:readinessRows,error:readinessError}=await client.rpc('league_pending_account_readiness');
+ if(readinessError||!readinessRows?.some(r=>r.player_id===id&&r.is_ready===true)){
+  const message=$('tsg-approval-message');message.className='status error';
+  message.textContent='The player has not completed their invitation and password setup yet. Refresh the pending list after they finish.';
+  await loadPendingRegistrations();return;
+ }
  if(!confirm(`Approve ${name} as a participating player?`))return;
  button.disabled=true;
  const message=$('tsg-approval-message');message.className='notice';message.textContent='Approving player…';
