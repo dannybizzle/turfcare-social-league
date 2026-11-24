@@ -2118,7 +2118,7 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 </section>
 <section class="panel tsg-approval-panel" id="tsg-approval-panel" aria-labelledby="tsg-approval-heading">
 <h3 id="tsg-approval-heading">Pending Registrations <span id="tsg-approval-count" class="tag">0</span></h3>
-<p class="muted">Invited players must accept their invitation and create a password before you can approve them. Completed registrations become eligible for approval; current-week scheduling is then checked automatically.</p>
+<p class="muted">Invited players become eligible only after they actually set a password. The system verifies a password-setup event, not an invitation timestamp or previous login. Once approved, current-week scheduling is checked automatically.</p>
 <div id="tsg-approval-list" aria-live="polite"><div class="notice">Loading registration requests…</div></div>
 <div id="tsg-approval-message" role="status" aria-live="polite" class="notice"></div>
 <button class="secondary" id="tsg-refresh-approvals" type="button">Refresh registrations</button>
@@ -2887,11 +2887,11 @@ async function loadPendingRegistrations(){
  }
  if(!pending.length){list.innerHTML='<div class="notice">No pending invitations or registrations.</div>';return;}
  const readError=readinessResult.error;
- list.innerHTML=(readError?`<div class="status error">Account readiness cannot be verified. Approval is temporarily disabled. Run the Version 61l SQL update. ${esc(readError.message)}</div>`:'')+
+ list.innerHTML=(readError?`<div class="status error">Account readiness cannot be verified. Approval is temporarily disabled. Run the Version 61m SQL update. ${esc(readError.message)}</div>`:'')+
  pending.map(p=>{
   const readiness=tsgInvitationReadiness.get(p.id);
   const ready=readiness?.ready===true&&!readError;
-  const status=ready?'Ready for approval':readiness?.state==='awaiting_player_setup'?'Invited — awaiting player password setup':readiness?.state==='awaiting_email_confirmation'?'Awaiting email confirmation':'Waiting for account setup verification';
+  const status=ready?'Ready for approval':readiness?.state==='awaiting_player_setup'?'Awaiting player password setup':readiness?.state==='awaiting_email_confirmation'?'Awaiting email confirmation':'Waiting for account setup verification';
   return `<div class="tsg-approval-row">
    <div><strong>${esc(p.display_name)}</strong><small>${esc(status)}</small></div>
    <div class="tsg-approval-actions">
@@ -2942,7 +2942,7 @@ $('tsg-approval-list').addEventListener('click',async event=>{
  const {data:readinessRows,error:readinessError}=await client.rpc('league_pending_account_readiness');
  if(readinessError||!readinessRows?.some(r=>r.player_id===id&&r.is_ready===true)){
   const message=$('tsg-approval-message');message.className='status error';
-  message.textContent='The player has not completed their invitation and password setup yet. Refresh the pending list after they finish.';
+  message.textContent='No verified password setup is recorded for this player. They must finish setting a password before approval.';
   await loadPendingRegistrations();return;
  }
  if(!confirm(`Approve ${name} as a participating player?`))return;
