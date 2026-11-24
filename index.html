@@ -1128,6 +1128,11 @@ body.display-mode .tsg-tv-qr-frame{flex:0 0 auto;max-width:36%;padding:15px;back
 body.display-mode .tsg-tv-qr-frame img{display:block;width:min(21vw,340px);height:auto;aspect-ratio:1;object-fit:contain}
 body.display-mode .tsg-tv-qr-frame strong{display:block;font-size:clamp(13px,1vw,22px);margin-top:8px;letter-spacing:.1em}
 
+
+.tsg-v61b-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tsg-v61b-two input{width:100%}.tsg-v61b-tv-rows{display:grid;grid-template-columns:minmax(0,1fr) 75px 50px;gap:12px;align-items:center}
+.tsg-v61b-tv-rows label{margin:0;display:flex;align-items:center;gap:8px}.tsg-v61b-tv-rows input[type="number"]{width:100%;box-sizing:border-box}
+@media(max-width:520px){.tsg-v61b-two{grid-template-columns:1fr}.tsg-v61b-tv-rows{grid-template-columns:minmax(0,1fr) 60px 45px;gap:6px}}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1809,6 +1814,33 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
  </details>
 </section>
 </div>
+
+<section class="panel admin-form" id="tsg-v61b-season-editor" style="margin-top:16px">
+<h3>Manage Existing Seasons</h3>
+<p class="muted">Review a season, edit its name, and control its lifecycle. Start and end dates can be changed until matchups are published; published schedules are protected.</p>
+<label for="tsg-v61b-season">Season</label><select id="tsg-v61b-season"></select>
+<label for="tsg-v61b-name">Season name</label><input id="tsg-v61b-name" maxlength="100">
+<div class="tsg-v61b-two"><div><label for="tsg-v61b-start">Starts</label><input id="tsg-v61b-start" type="date"></div><div><label for="tsg-v61b-end">Ends</label><input id="tsg-v61b-end" type="date"></div></div>
+<label for="tsg-v61b-status">Season status</label><select id="tsg-v61b-status"><option value="upcoming">Upcoming</option><option value="active">Active</option><option value="completed">Completed</option></select>
+<div id="tsg-v61b-season-summary" class="notice"></div>
+<button type="button" id="tsg-v61b-save-season">Save Season Changes</button>
+<p id="tsg-v61b-season-message" class="notice" role="status"></p>
+<p class="muted">Season status normally advances on its own at the scheduled start and end dates. A season with unresolved matchups will not be closed automatically.</p>
+</section>
+<section class="panel admin-form" id="tsg-v61b-tv-editor" style="margin-top:16px">
+<h3>TV Display Programming</h3>
+<p class="muted">Choose which main-screen sections rotate and how long each one stays visible. The TV checks for changes automatically. The right-hand sidebar retains this week's matchups, real leaderboards, and the statistics information card.</p>
+<div class="tsg-v61b-tv-rows">
+<label><input type="checkbox" id="tsg-v61b-highlights-on" checked> Highlights</label><input type="number" min="1" max="30" id="tsg-v61b-highlights-min" value="5" aria-label="Highlights minutes"><small>minutes</small>
+<label><input type="checkbox" id="tsg-v61b-weather-on" checked> Weather</label><input type="number" min="1" max="30" id="tsg-v61b-weather-min" value="3" aria-label="Weather minutes"><small>minutes</small>
+<label><input type="checkbox" id="tsg-v61b-matchups-on" checked> This Week's Matchups</label><input type="number" min="1" max="30" id="tsg-v61b-matchups-min" value="2" aria-label="Matchups minutes"><small>minutes</small>
+<label><input type="checkbox" id="tsg-v61b-qr-on" checked> Homepage QR Code</label><input type="number" min="1" max="30" id="tsg-v61b-qr-min" value="1" aria-label="QR code minutes"><small>minutes</small>
+</div>
+<label style="margin-top:16px"><input type="checkbox" id="tsg-v61b-stats-on" checked> Include the right-side Live League Statistics information card</label>
+<p class="notice">The initial 5 / 3 / 2 / 1-minute timing is preserved. Matchups still display only the current week on TV; My League and Matchups keep the look-ahead schedules.</p>
+<button type="button" id="tsg-v61b-save-tv">Save TV Settings</button>
+<p id="tsg-v61b-tv-message" class="notice" role="status"></p>
+</section>
 <section class="panel admin-form" style="margin-top:16px">
 <h3>Season Management</h3>
 <p class="muted">Remove a season and all its matchups and game results. This cannot be undone.</p>
@@ -2252,7 +2284,7 @@ async function loadPublic(){
  renderStandings();renderMatchups();renderPotentialSchedule();renderCountdown();renderProfile();renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
  if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();await loadScheduleLog();await loadPendingRegistrations();}else $('player-management-list').innerHTML='Administrator access required.';
  if(currentUserId)await loadLeagueFlags();
- updateV59Overview();
+ updateV59Overview();renderSeasonAdmin();
  if(document.body.classList.contains('display-mode')){const oldPage=LB_TABS[lbSlideIndex%LB_TABS.length];LB_TABS=tvSequence();const sameIndex=LB_TABS.indexOf(oldPage);if(sameIndex>=0)lbSlideIndex=sameIndex;else lbSlideIndex=0;renderLunchroom();}
 }
 function updatePlayerApprovalWelcome(approved){
@@ -2328,6 +2360,8 @@ async function refreshAuth(){
     ['weeks','Weekly schedules','View and manage weekly matchups', ['rolling-generator','schedule-preview-panel']]
   ],
   seasons:[
+    ['manage','Manage seasons','Edit season details and lifecycle', ['tsg-v61b-season-editor']],
+    ['tv','TV display','Set slide rotation and sections', ['tsg-v61b-tv-editor']],
     ['setup','Create season & registration','Create a new season or edit public signup dates', ['season-setup-grid']],
     ['delete','Delete a season','Permanent deletion — use with care', ['tsg-v59b-season-delete']]
   ],
@@ -2907,28 +2941,39 @@ setInterval(()=>{if(!document.body.classList.contains('display-mode')&&tsgRegist
 
 // Initialized before tvSequence calls tvDateParts during startup.
 const TV_TZ='America/Edmonton';
+const TV_DEFAULTS={highlights_on:true,weather_on:true,matchups_on:true,qr_on:true,stats_info_on:true,
+ highlights_minutes:5,weather_minutes:3,matchups_minutes:2,qr_minutes:1};
+let tvSettings={...TV_DEFAULTS};
+async function refreshTvSettings(){
+ const {data,error}=await client.from('league_tv_settings').select('*').eq('id',1).maybeSingle();
+ if(error){console.warn('TV settings unavailable; using defaults:',error.message);return;}
+ tvSettings={...TV_DEFAULTS,...(data||{})};
+ const current=LB_TABS?.[lbSlideIndex%LB_TABS.length];
+ LB_TABS=tvSequence();
+ const previous=LB_TABS.indexOf(current);
+ lbSlideIndex=previous>=0?previous:0;
+ renderTvAdminSettings();
+ if(document.body.classList.contains('display-mode'))renderLunchroom();
+}
+
 // Show this announcement on Friday, November 20 (Calgary time), then retire it automatically.
 function tsgLaunchDayActive(){return tvLocalISO(new Date())==='2026-11-20';}
 const PRELAUNCH_CARD_DURATION_MS=45*1000;
 function tvSequence(){
- // One complete TV cycle is 11 minutes. Matchups span two minutes in total,
- // divided evenly among published matchups (two per page). No roster omission.
- const official=tsgTVOfficialPages();
- return ['Highlights','Weather 24h',
-  ...(official.length?official.map((_,i)=>tsgTVOfficialKey(i)):['Official schedule 1']),
-  'League QR'];
+ const official=tsgTVOfficialPages(), sequence=[];
+ if(tvSettings.highlights_on)sequence.push('Highlights');
+ if(tvSettings.weather_on)sequence.push('Weather 24h');
+ if(tvSettings.matchups_on)sequence.push(...(official.length?official.map((_,i)=>tsgTVOfficialKey(i)):['Official schedule 1']));
+ if(tvSettings.qr_on)sequence.push('League QR');
+ return sequence.length?sequence:['League QR'];
 }
 let LB_TABS=tvSequence();
-const HIGHLIGHT_DURATION_MS=5*60*1000;
-const WEATHER_DURATION_MS=3*60*1000;
-const MATCHUPS_DURATION_MS=2*60*1000;
-const QR_DURATION_MS=60*1000;
-const WEATHER_PAGE_DURATION_MS=90*1000; // Two equal weather panels per 3-minute block.
+const weatherPageDurationMs=()=>tvSettings.weather_minutes*60000/2;
 const tvSlideDuration=page=>{
- if(page==='Highlights')return HIGHLIGHT_DURATION_MS;
- if(page==='Weather 24h')return WEATHER_DURATION_MS;
- if(page.startsWith('Official schedule '))return MATCHUPS_DURATION_MS/Math.max(1,tsgTVOfficialPages().length);
- if(page==='League QR')return QR_DURATION_MS;
+ if(page==='Highlights')return tvSettings.highlights_minutes*60000;
+ if(page==='Weather 24h')return tvSettings.weather_minutes*60000;
+ if(page.startsWith('Official schedule '))return tvSettings.matchups_minutes*60000/Math.max(1,tsgTVOfficialPages().length);
+ if(page==='League QR')return tvSettings.qr_minutes*60000;
  return 60000;
 };
 let lastRenderedMainPage=null;
@@ -3110,7 +3155,7 @@ function sideSections(){
  const sections=pages.map((_,i)=>`Matchups ${i+1}`);
  // A dedicated informational card stays in the rotation for every season,
  // explaining how live standings and sport statistics are generated.
- sections.push('Stats information');
+ if(tvSettings.stats_info_on)sections.push('Stats information');
  if(season){
   const rankings=tvSeasonRankings(season.id);
   if(rankings.length){
@@ -3980,6 +4025,79 @@ $('invite-player-button').onclick = async () => {
     button.textContent = 'Send Player Invitation';
   }
 };
+
+function renderSeasonAdmin(){
+ const select=$('tsg-v61b-season');if(!select)return;
+ const value=select.value;
+ select.innerHTML=seasons.slice().sort((a,b)=>b.starts_on.localeCompare(a.starts_on))
+ .map(x=>`<option value="${esc(x.id)}">${esc(x.name)} · ${esc(x.status)}</option>`).join('')||'<option value="">No seasons yet</option>';
+ if(seasons.some(x=>x.id===value))select.value=value;
+ else {const current=tvCurrentSeason();if(current)select.value=current.id;}
+ fillSeasonAdmin();
+}
+function fillSeasonAdmin(){
+ const season=seasons.find(x=>x.id===$('tsg-v61b-season')?.value);if(!season)return;
+ $('tsg-v61b-name').value=season.name;
+ $('tsg-v61b-start').value=season.starts_on;
+ $('tsg-v61b-end').value=season.ends_on;
+ $('tsg-v61b-status').value=season.status;
+ const rows=matchups.filter(m=>m.season_id===season.id);
+ const locked=rows.length>0;
+ $('tsg-v61b-start').disabled=locked;$('tsg-v61b-end').disabled=locked;
+ $('tsg-v61b-season-summary').textContent=`${rows.length} published matchups · ${rows.filter(m=>m.status==='scheduled').length} still scheduled. `+
+  (locked?'Dates locked after publishing; name and status can still be edited.':'Dates can be edited until the first matchup is published.');
+}
+$('tsg-v61b-season')?.addEventListener('change',fillSeasonAdmin);
+$('tsg-v61b-save-season')?.addEventListener('click',async function(){
+ const id=$('tsg-v61b-season').value,s=seasons.find(x=>x.id===id);
+ const note=$('tsg-v61b-season-message');if(!isAdmin||!s){note.textContent='Choose a season as an administrator.';return;}
+ const name=$('tsg-v61b-name').value.trim(),start=$('tsg-v61b-start').value,end=$('tsg-v61b-end').value,status=$('tsg-v61b-status').value;
+ if(!name||!start||!end||end<start){note.textContent='Provide a season name and valid dates.';return;}
+ if(status==='completed'&&s.status!=='completed'&&!confirm(`Close season "${name}"? Only do this when its games are finished.`))return;
+ this.disabled=true;note.textContent='Saving…';
+ try{
+  const {error}=await client.rpc('league_admin_update_season',{p_season_id:id,p_name:name,p_start:start,p_end:end,p_status:status});
+  if(error)throw error;
+  await loadPublic();note.textContent='Season updated. The TV and public pages now use the revised season information.';
+ }catch(e){note.textContent=e.message||'Could not update season.';}
+ finally{this.disabled=false;}
+});
+function renderTvAdminSettings(){
+ if(!$('tsg-v61b-highlights-on'))return;
+ if($('tsg-v61b-tv-editor').contains(document.activeElement))return;
+ for(const [key,slug] of [['highlights','highlights'],['weather','weather'],['matchups','matchups'],['qr','qr']]){
+  $(`tsg-v61b-${slug}-on`).checked=tvSettings[`${key}_on`];
+  $(`tsg-v61b-${slug}-min`).value=tvSettings[`${key}_minutes`];
+ }
+ $('tsg-v61b-stats-on').checked=tvSettings.stats_info_on;
+}
+$('tsg-v61b-save-tv')?.addEventListener('click',async function(){
+ const note=$('tsg-v61b-tv-message');if(!isAdmin){note.textContent='Administrator access required.';return;}
+ const o=slug=>$(`tsg-v61b-${slug}-on`).checked;
+ const mins=slug=>Number($(`tsg-v61b-${slug}-min`).value);
+ const enabled=['highlights','weather','matchups','qr'].some(o);
+ const durations=['highlights','weather','matchups','qr'].map(mins);
+ if(!enabled){note.textContent='At least one main TV section must stay enabled.';return;}
+ if(durations.some(n=>!Number.isInteger(n)||n<1||n>30)){note.textContent='Set each duration between 1 and 30 minutes.';return;}
+ this.disabled=true;note.textContent='Saving…';
+ try{
+  const {error}=await client.rpc('league_admin_update_tv',{
+   p_highlights:o('highlights'),p_weather:o('weather'),p_matchups:o('matchups'),p_qr:o('qr'),
+   p_stats:$('tsg-v61b-stats-on').checked,
+   p_highlights_minutes:mins('highlights'),p_weather_minutes:mins('weather'),
+   p_matchups_minutes:mins('matchups'),p_qr_minutes:mins('qr')
+  });
+  if(error)throw error;
+  await refreshTvSettings();
+  note.textContent='Saved! TV devices will load these settings automatically.';
+ }catch(e){note.textContent=e.message||'Could not save TV configuration.';}
+ finally{this.disabled=false;}
+});
+// Refresh TV programming separately from league data so a public display
+// updates without needing a page reload. Settings live in Supabase, not code.
+setInterval(()=>refreshTvSettings().catch(console.warn),60000);
+refreshTvSettings().catch(console.warn);
+
 $('create-season').onclick=async()=>{
   const name=$('season-name').value.trim(),start=$('season-start').value,end=$('season-end').value,regOpen=$('registration-opens').value,regClose=$('registration-closes').value;
   if(!name||!start||!end)return showCreateSeasonMessage('Enter a season name, start date, and end date.',true);
