@@ -1102,6 +1102,32 @@ body.display-mode .tsg-launch-late-reg{
  font:800 clamp(9px,.8vw,15px)/1.2 'Manrope',sans-serif;
 }
 
+
+/* V60l: keep the pending registration decision buttons together. */
+body:not(.display-mode) .tsg-approval-actions{display:flex;flex-wrap:wrap;gap:9px;align-items:center;justify-content:flex-end}
+body:not(.display-mode) .tsg-approval-actions button.danger{background:#fff0ec;color:#8b2424;border:1px solid #c87973}
+body:not(.display-mode) .tsg-approval-actions button.danger:hover{background:#f9dedb}
+@media(max-width:540px){body:not(.display-mode) .tsg-approval-actions{flex-direction:column;align-items:stretch}body:not(.display-mode) .tsg-approval-actions button{width:100%}}
+
+/* V60m: self-service approval welcome notification. */
+body:not(.display-mode) .tsg-approved-welcome[hidden]{display:none!important}
+body:not(.display-mode) .tsg-approved-welcome{position:relative;padding:20px 45px 19px 20px;margin:14px 0 24px;border:1px solid #a7bb81;border-radius:14px;background:#eaf1db;color:#183e2c}
+body:not(.display-mode) .tsg-approved-welcome h3{font-size:23px;color:#183e2c;margin:6px 0}
+body:not(.display-mode) .tsg-approved-welcome p{margin:7px 0}
+body:not(.display-mode) .tsg-welcome-overline{color:#365f35;font-size:12px;font-weight:900;letter-spacing:.1em}
+body:not(.display-mode) #tsg-welcome-dismiss{position:absolute;right:12px;top:12px;padding:3px 8px;background:transparent;color:#173d32;border:1px solid #adbba4}
+/* TV QR is the dedicated one-minute left-side slide; no changes to sidebar. */
+body.display-mode .tsg-tv-qr-feature{width:100%;height:100%;min-height:0;display:flex;align-items:center;justify-content:space-evenly;gap:3vw;padding:2vw 3vw;color:#fff;background:linear-gradient(130deg,#0f352b,#205541)}
+body.display-mode .tsg-tv-qr-intro{flex:1;min-width:0}
+body.display-mode .tsg-tv-qr-kicker{font-size:clamp(13px,1.15vw,24px);font-weight:800;letter-spacing:.07em;color:#eacb80}
+body.display-mode .tsg-tv-qr-feature h2{font-size:clamp(34px,4.2vw,78px);line-height:1.08;color:white;margin:14px 0}
+body.display-mode .tsg-tv-qr-feature p{font-size:clamp(17px,1.8vw,32px);line-height:1.35;color:#eaf5eb;max-width:740px}
+body.display-mode .tsg-tv-qr-link{font-weight:800;overflow-wrap:anywhere;font-size:clamp(16px,1.4vw,26px);color:#eacb80;margin-top:15px}
+body.display-mode .tsg-tv-qr-note{color:#e8efde;font-size:clamp(14px,1.1vw,22px);margin-top:16px}
+body.display-mode .tsg-tv-qr-frame{flex:0 0 auto;max-width:36%;padding:15px;background:white;border:6px solid #eacb80;border-radius:18px;color:#123e2e;text-align:center}
+body.display-mode .tsg-tv-qr-frame img{display:block;width:min(21vw,340px);height:auto;aspect-ratio:1;object-fit:contain}
+body.display-mode .tsg-tv-qr-frame strong{display:block;font-size:clamp(13px,1vw,22px);margin-top:8px;letter-spacing:.1em}
+
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1696,6 +1722,13 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 </section>
 <div id="tsg-pending-approval" class="tsg-pending-panel hidden" role="status"><strong>Account awaiting approval</strong>Your email is signed in, but league participation has not yet been approved. Please check back after an administrator approves your account and player access opens.</div>
 <section id="player-area" class="hidden">
+<section class="tsg-approved-welcome" id="tsg-approved-welcome" hidden aria-label="League access approved" role="status">
+ <button type="button" id="tsg-welcome-dismiss" aria-label="Dismiss welcome message">✕</button>
+ <div class="tsg-welcome-overline">WELCOME TO THE LEAGUE</div>
+ <h3>You're approved — you're in!</h3>
+ <p>Your Turfcare Social League access is active. Visit <strong>My League</strong> to see your opponents, update your unavailable days, and propose a playing day. After all three assigned sports are played, submit your results there too.</p>
+ <p><strong>All skill levels welcome. Good attitudes required.</strong></p>
+</section>
 <div class="section-head"><div><div class="eyebrow" style="color:var(--green2)">Your league</div><h2>My Player Tools</h2></div></div>
 <section class="panel player-tools">
 <h3>Choose your display name</h3><p class="muted">Pick the name other players see on the board. Your sign-in email stays the same.</p>
@@ -2022,7 +2055,7 @@ function tsgTVOfficialRows(items){
  return `<div class="tsg-potential-week">${items.map(m=>{
    const assigned=matchupGames(m);
    const result=countsInStandings(m)||m.resolution==='freebie'||m.resolution==='double_forfeit';
-   const state=result?matchStatus(m):m.status==='played_ahead'?'Played ahead':appointmentFor(m.id)?.confirmed_at?'Playing day confirmed':'Scheduled';
+   const state=result?matchStatus(m):m.status==='played_ahead'?'Played ahead':appointmentFor(m.id)?.confirmed_at?'Confirmed · '+(meetupInputDate(appointmentFor(m.id).starts_at)||'playing day set'):appointmentFor(m.id)?.starts_at?'Day proposed · Awaiting confirmation':'Day not confirmed';
    const score=result&&m.resolution==='normal'?` · ${matchupScore(m).a}–${matchupScore(m).b}`:'';
    return `<div class="tsg-potential-fixture"><div class="tsg-potential-pair"><span class="tsg-preview-player-name">${esc(playerName(m.player1_id))}</span><b>VS</b><span class="tsg-preview-player-name">${esc(playerName(m.player2_id))}</span></div><div class="tsg-potential-sports"><small>ASSIGNED SPORTS</small><div>${assigned.length?assigned.map(g=>`<span>${sportIcon[g.discipline]||'🏆'} ${esc(g.discipline)}</span>`).join(''):'<span>Awaiting sport assignments</span>'}</div></div><div class="tsg-tv-official-status">${esc(state+score)}</div></div>`;
   }).join('')}</div>`;
@@ -2220,12 +2253,24 @@ async function loadPublic(){
  updateV59Overview();
  if(document.body.classList.contains('display-mode')){const oldPage=LB_TABS[lbSlideIndex%LB_TABS.length];LB_TABS=tvSequence();const sameIndex=LB_TABS.indexOf(oldPage);if(sameIndex>=0)lbSlideIndex=sameIndex;else lbSlideIndex=0;renderLunchroom();}
 }
+function updatePlayerApprovalWelcome(approved){
+ const banner=$('tsg-approved-welcome');
+ if(!banner)return;
+ if(!approved||!currentUserId){banner.hidden=true;return;}
+ const key='tsg-approved-welcome-dismissed-v1-'+currentUserId;
+ try{banner.hidden=localStorage.getItem(key)==='yes';}
+ catch{banner.hidden=false;}
+}
+$('tsg-welcome-dismiss').addEventListener('click',()=>{
+ if(currentUserId){try{localStorage.setItem('tsg-approved-welcome-dismissed-v1-'+currentUserId,'yes');}catch{}}
+ $('tsg-approved-welcome').hidden=true;
+});
 async function refreshAuth(){
  const {data:{session}}=await client.auth.getSession();currentUserId=session?.user?.id||null;
  $('auth-form').classList.toggle('hidden',!!session);$('signout').classList.toggle('hidden',!session);
  $('auth-state').textContent=session?'Signed in as '+session.user.email+'.':'Sign in to access your player tools and submit completed matchups.';
  isAdmin=false;isOwner=false;
- if(session){const {data:profile}=await client.from('profiles').select('role,is_owner,is_player,is_approved,display_name').eq('id',session.user.id).maybeSingle();isAdmin=profile?.role==='admin';isOwner=profile?.is_owner===true;const approved=profile?.is_approved===true&&(profile?.is_player===true||isAdmin);const cal=calDate(new Date());const unlocked=cal>='2026-11-20'||isAdmin;$('tsg-pending-approval').classList.toggle('hidden',approved&&unlocked);$('player-area').classList.toggle('hidden',!(approved&&unlocked));if(profile&&document.activeElement!==$('my-display-name'))$('my-display-name').value=profile.display_name||'';}else{$('tsg-pending-approval').classList.add('hidden');$('player-area').classList.add('hidden');}
+ if(session){const {data:profile}=await client.from('profiles').select('role,is_owner,is_player,is_approved,display_name').eq('id',session.user.id).maybeSingle();isAdmin=profile?.role==='admin';isOwner=profile?.is_owner===true;const approved=profile?.is_approved===true&&(profile?.is_player===true||isAdmin);const cal=calDate(new Date());const unlocked=cal>='2026-11-20'||isAdmin;$('tsg-pending-approval').classList.toggle('hidden',approved&&unlocked);$('player-area').classList.toggle('hidden',!(approved&&unlocked));updatePlayerApprovalWelcome(approved&&unlocked);if(profile&&document.activeElement!==$('my-display-name'))$('my-display-name').value=profile.display_name||'';}else{$('tsg-pending-approval').classList.add('hidden');$('player-area').classList.add('hidden');updatePlayerApprovalWelcome(false);}
  $('tsg-registration').classList.toggle('hidden',!!session || !window.tsgV57RegistrationOpen?.() || $('tsg-registration').dataset.open!=='true');
  $('admin-area').classList.toggle('hidden',!isAdmin);
  if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();}
@@ -2462,9 +2507,44 @@ async function loadPendingRegistrations(){
  if(!pending.length){list.innerHTML='<div class="notice">No pending registrations right now.</div>';return;}
  list.innerHTML=pending.map(p=>`<div class="tsg-approval-row">
    <div><strong>${esc(p.display_name)}</strong><small>Awaiting administrator approval</small></div>
-   <button type="button" data-approval-id="${esc(p.id)}" data-approval-name="${esc(p.display_name)}">Approve player</button>
+   <div class="tsg-approval-actions">
+     <button type="button" data-approval-id="${esc(p.id)}" data-approval-name="${esc(p.display_name)}">Approve player</button>
+     <button type="button" class="danger" data-denial-id="${esc(p.id)}" data-denial-name="${esc(p.display_name)}">Deny access</button>
+   </div>
  </div>`).join('');
 }
+// Denial removes a *pending* account via the existing administrator-only
+// delete-player Edge Function so its Auth login is removed as well.
+$('tsg-approval-list').addEventListener('click',async event=>{
+ const button=event.target.closest('button[data-denial-id]');
+ if(!button||button.disabled||!isAdmin)return;
+ const id=button.dataset.denialId,name=button.dataset.denialName;
+ const message=$('tsg-approval-message');
+ const {data:{user},error:userError}=await client.auth.getUser();
+ if(userError||!user)return;
+ if(id===user.id){message.className='status error';message.textContent='You cannot deny your own account.';return;}
+ // Recheck fresh database state, not the possibly stale pending list.
+ const {data:pending,error:lookupError}=await client.from('profiles')
+   .select('id,is_approved,role,is_owner,is_player').eq('id',id).maybeSingle();
+ if(lookupError){message.className='status error';message.textContent=lookupError.message;return;}
+ if(!pending||pending.is_approved!==false||pending.role!=='player'||pending.is_owner===true||pending.is_player===true){
+   message.className='status error';message.textContent='This request is no longer pending. Refresh registrations before making changes.';
+   await loadPendingRegistrations();return;
+ }
+ if(!confirm(`Deny access for ${name}? This permanently removes their pending account and login. They may register again with the same email unless separately blocked.`))return;
+ button.disabled=true;message.className='notice';message.textContent='Denying registration…';
+ try{
+   const {data,error}=await client.functions.invoke('delete-player',{body:{player_id:id}});
+   if(error){
+     let detail=error.message;
+     try{if(error.context?.json){const body=await error.context.json();detail=body.error||detail;}}catch(_e){}
+     throw new Error(detail||'Could not deny registration.');
+   }
+   if(data?.error)throw new Error(data.error);
+   await loadPublic();
+   message.className='status';message.textContent=`Registration denied for ${name}. Their pending account was removed.`;
+ }catch(error){message.className='status error';message.textContent=error.message||'Denial failed. No confirmation of deletion was received.';button.disabled=false;}
+});
 $('tsg-refresh-approvals').addEventListener('click',()=>{loadPendingRegistrations().catch(e=>{$('tsg-approval-message').textContent=e.message;});});
 $('tsg-approval-list').addEventListener('click',async event=>{
  const button=event.target.closest('button[data-approval-id]');
@@ -2779,6 +2859,14 @@ function advanceLeagueTagline(){
 const homeSlogan=document.getElementById('tsg-home-slogan');
 if(homeSlogan)homeSlogan.textContent=leagueTagline();
 setInterval(advanceLeagueTagline,14500);
+// Pending players receive an on-site approval notice without email delivery.
+setInterval(async()=>{
+ if(!currentUserId||document.body.classList.contains('display-mode')||!$('player-area').classList.contains('hidden'))return;
+ try{
+  const {data,error}=await client.from('profiles').select('is_approved,is_player,role').eq('id',currentUserId).maybeSingle();
+  if(!error&&data?.is_approved===true&&(data.is_player===true||data.role==='admin'))await refreshAuth();
+ }catch(e){console.warn('Approval check:',e);}
+},60000);
 setInterval(()=>{if(!document.body.classList.contains('display-mode')&&tsgRegistrationSeason())loadPublic().catch(console.warn);else renderPotentialSchedule();},120000);
 
 // Initialized before tvSequence calls tvDateParts during startup.
@@ -2787,39 +2875,26 @@ const TV_TZ='America/Edmonton';
 function tsgLaunchDayActive(){return tvLocalISO(new Date())==='2026-11-20';}
 const PRELAUNCH_CARD_DURATION_MS=45*1000;
 function tvSequence(){
- const prelaunch=Date.now()<SEASON_KICKOFF_AT;
- const slides=[];
- if(tsgLaunchDayActive())slides.push('Launch day poster');
- for(let i=0;i<5;i++){
-  slides.push('Highlights','Weather 24h');
-  if(prelaunch)slides.push(i===2?'Crew mottos':i%2===0?'Launch countdown':'League QR');
-  if(tsgLaunchDayActive()&&i===2)slides.push('Launch day poster');
- }
- if(tsgRegistrationSeason()){
-  const potential=tsgTVPreviewPages().map((_,i)=>tsgTVPageKey(i));
-  // Spread all preview cards through the usual rotation rather than blocking TV
-  // with one long stretch of schedules. All pages remain reachable by Next/Previous.
-  potential.forEach((name,i)=>{
-   const afterWeather=Math.floor(i*5/potential.length);
-   const weatherIndices=slides.map((x,j)=>x==='Weather 24h'?j:-1).filter(j=>j>=0);
-   const target=weatherIndices[Math.min(afterWeather,weatherIndices.length-1)];
-   let insertAt=target+1;
-   while(insertAt<slides.length&&slides[insertAt].startsWith('Potential schedule '))insertAt++;
-   slides.splice(insertAt,0,name);
-  });
- }
-
- // After registration ends, official fixtures move to the dedicated right panel.
- // Keep the main TV rotation for highlights, weather, league content and standings.
- slides.push('Standings');
- return slides;
+ // One complete TV cycle is 11 minutes. Matchups span two minutes in total,
+ // divided evenly among published matchups (two per page). No roster omission.
+ const official=tsgTVOfficialPages();
+ return ['Highlights','Weather 24h',
+  ...(official.length?official.map((_,i)=>tsgTVOfficialKey(i)):['Official schedule 1']),
+  'League QR'];
 }
 let LB_TABS=tvSequence();
 const HIGHLIGHT_DURATION_MS=5*60*1000;
-const WEATHER_DURATION_MS=2*60*1000;
-const LEADERBOARD_DURATION_MS=60*1000;
-const WEATHER_PAGE_DURATION_MS=60*1000; // Two 12-hour panels per 120-second weather view
-const tvSlideDuration=page=>page==='Highlights'?HIGHLIGHT_DURATION_MS:page==='Standings'?LEADERBOARD_DURATION_MS:page==='Weather 24h'?WEATHER_DURATION_MS:PRELAUNCH_CARD_DURATION_MS;
+const WEATHER_DURATION_MS=3*60*1000;
+const MATCHUPS_DURATION_MS=2*60*1000;
+const QR_DURATION_MS=60*1000;
+const WEATHER_PAGE_DURATION_MS=90*1000; // Two equal weather panels per 3-minute block.
+const tvSlideDuration=page=>{
+ if(page==='Highlights')return HIGHLIGHT_DURATION_MS;
+ if(page==='Weather 24h')return WEATHER_DURATION_MS;
+ if(page.startsWith('Official schedule '))return MATCHUPS_DURATION_MS/Math.max(1,tsgTVOfficialPages().length);
+ if(page==='League QR')return QR_DURATION_MS;
+ return 60000;
+};
 let lastRenderedMainPage=null;
 function tvDateParts(date=new Date()){
  const parts=new Intl.DateTimeFormat('en-CA',{timeZone:TV_TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date);
@@ -3412,13 +3487,7 @@ function renderLunchroom(){
  }else if(page==='Crew mottos'){
   html=`<div class="lb-launch-slide lb-crew-slide"><div class="lb-launch-eyebrow">THE GLENCOE PRESENTS · 2026–2027 INAUGURAL SEASON</div><div class="tsg-sport-strip"><div style="background-image:url('assets/ping-pong.jpg')"><span>PING PONG</span></div><div style="background-image:url('assets/darts.jpg')"><span>DARTS</span></div><div style="background-image:url('assets/pool.jpg')"><span>POOL</span></div><div style="background-image:url('assets/air-hockey.jpg')"><span>AIR HOCKEY</span></div></div><h2 class="tsg-crew-quote">${esc(leagueTagline())}</h2><div class="lb-launch-secondary">Four disciplines. One legendary season.</div><div class="tsg-registration-deadline">${registrationNotice()}</div></div>`;
  }else if(page==='League QR'){
-  const preAccess=Date.now()<ACCESS_UNLOCK_AT;
-  // The illustrated QR poster is pre-registration advertising only; after closing, show accurate next steps.
-  if(Date.now()<REGISTRATION_CLOSE_AT){
-   html=`<div class="lb-launch-slide tsg-promo-poster-slide"><img class="tsg-promo-poster" src="assets/registration-promo.jpg" alt="The Glencoe Turfcare Social League. Registration opening soon; registration closes November 19, player access and Week 1 schedule November 20, league play starts November 23. QR links to public league website."><div class="tsg-promo-bottom-note">Scan to visit the league website · Registration opens soon</div></div>`;
-  }else{
-   html=`<div class="lb-launch-slide lb-launch-with-crest"><div class="lb-launch-league-lockup"><img class="lb-launch-crest" src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><div class="lb-launch-league-wordmark"><span class="lb-launch-glencoe">THE GLENCOE</span><strong>TURFCARE</strong><span class="lb-launch-social">SOCIAL LEAGUE</span></div></div><div class="lb-launch-eyebrow">PLAYER ACCESS OPEN · LATE REGISTRATION AVAILABLE</div><h2 class="lb-launch-title">${preAccess?'WEEK 1 SCHEDULE RELEASE':'LEAGUE PLAY BEGINS'}</h2><div class="lb-launch-desc">${preAccess?'Player access, league functions and the Week 1 schedule release November 20.':'November 23 at 7:00 AM MST · Clock out. Game on.'}</div><div class="lb-launch-secondary">${preAccess?'NOVEMBER 20, 2026':'NOVEMBER 23, 2026'}</div></div>`;
-  }
+  html=`<div class="tsg-tv-qr-feature"><div class="tsg-tv-qr-intro"><div class="tsg-tv-qr-kicker">THE GLENCOE · TURFCARE SOCIAL LEAGUE</div><h2>YOUR LEAGUE.<br>YOUR NEXT MATCH.</h2><p>Scan with your phone to see matchups, set your availability and report your results.</p><div class="tsg-tv-qr-link">turfcare-social-league.pages.dev</div><div class="tsg-tv-qr-note">Late registration available · Admin approval required</div></div><div class="tsg-tv-qr-frame"><img src="assets/league-home-qr.png" alt="QR code to the Turfcare Social League homepage"><strong>SCAN TO OPEN</strong></div></div>`;
  }else if(page.startsWith('Potential schedule ')){
   const pages=tsgTVPreviewPages();
   const requested=Number(page.slice('Potential schedule '.length))-1;
@@ -3646,7 +3715,7 @@ if(new URLSearchParams(location.search).get('display')==='1'){
   $('lb-local-time').textContent=tvTime();
   const node=$('lb-ticking-clock'),next=tvScheduled()[0];if(node&&next)node.textContent=lbClock(next.deadline);
   const launchNode=$('lb-launch-countdown');if(launchNode)launchNode.textContent=lbClock(Number(launchNode.dataset.target));
-  if((Date.now()>=SEASON_KICKOFF_AT&&LB_TABS.some(t=>t==='League QR'))||(!tsgRegistrationSeason()&&LB_TABS.some(t=>t.startsWith('Potential schedule ')))||(LB_TABS.includes('Launch day poster')!==tsgLaunchDayActive())){LB_TABS=tvSequence();lbSlideIndex=LB_TABS.length-1;rotateTV();}
+  if(LB_TABS.filter(t=>t.startsWith('Official schedule ')).length!==Math.max(1,tsgTVOfficialPages().length)){LB_TABS=tvSequence();lbSlideIndex=LB_TABS.length-1;rotateTV();}
   updateClubhouseHeader(next?.deadline);
   const mode=sportsMode();if(mode.mode+'-'+mode.date!==sportsLastKey)refreshSportsWire(true);
  },1000);
