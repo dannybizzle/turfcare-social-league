@@ -1275,6 +1275,42 @@ body:not(.display-mode) .tsg-v61i-row[data-enabled="false"]{opacity:.65}
 body:not(.display-mode) .tsg-v61i-controls{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
 body:not(.display-mode) .tsg-v61i-controls button{padding:8px 11px;font-size:.77rem;margin:0}
 @media(max-width:800px){body:not(.display-mode) .tsg-v61i-clips-admin{padding:17px}body:not(.display-mode) .tsg-v61i-fields{grid-template-columns:1fr}body:not(.display-mode) .tsg-v61i-row{grid-template-columns:65px minmax(0,1fr)}body:not(.display-mode) .tsg-v61i-row img{width:65px;height:45px}body:not(.display-mode) .tsg-v61i-controls{grid-column:1/-1;justify-content:flex-start}}
+
+/* V61j — compact desktop season/TV admin navigation and grouped highlights. */
+body:not(.display-mode) .tsg-admin-task-nav.tsg-v61j-hidden-nav{display:none!important}
+body:not(.display-mode) .tsg-v61j-admin-picker{
+ display:flex;align-items:center;gap:16px;justify-content:space-between;
+ background:#eef2eb;border:1px solid #d9e1d6;border-radius:12px;
+ padding:13px 18px;margin:2px 0 20px;
+}
+body:not(.display-mode) .tsg-v61j-admin-picker label{font-weight:800;color:#173d32;margin:0;min-width:110px}
+body:not(.display-mode) .tsg-v61j-admin-picker select{
+ width:min(100%,460px);min-height:44px;margin:0!important;
+ border:1px solid #aebfb2;border-radius:9px;padding:9px 12px;
+ background:#fff;color:#173d32;font:600 .9rem system-ui,sans-serif;
+}
+body:not(.display-mode) .tsg-v61j-group-hint{margin:8px 0 16px;font-size:.82rem}
+body:not(.display-mode) .tsg-v61j-sport-group{border:1px solid #dce6dc;border-radius:12px;background:#fff;overflow:hidden;margin:0 0 11px}
+body:not(.display-mode) .tsg-v61j-sport-group summary{
+ display:flex;align-items:center;justify-content:space-between;gap:12px;
+ padding:17px 20px;cursor:pointer;list-style:none;background:#f2f5ef;
+}
+body:not(.display-mode) .tsg-v61j-sport-group summary::-webkit-details-marker{display:none}
+body:not(.display-mode) .tsg-v61j-sport-group summary:after{content:'▾';order:3;font-size:1rem;color:#526b5a}
+body:not(.display-mode) .tsg-v61j-sport-group:not([open]) summary:after{content:'▸'}
+body:not(.display-mode) .tsg-v61j-sport-group summary:hover{background:#e8efe5}
+body:not(.display-mode) .tsg-v61j-sport-title{font-weight:800;color:#173d32;font-size:1rem;margin-right:auto}
+body:not(.display-mode) .tsg-v61j-sport-count{color:#5e7565;font-size:.79rem;font-weight:600;white-space:nowrap}
+body:not(.display-mode) .tsg-v61j-sport-body{padding:12px 14px}
+body:not(.display-mode) .tsg-v61j-sport-body .tsg-v61i-row{margin-bottom:9px}
+body:not(.display-mode) .tsg-v61j-sport-body .tsg-v61i-row:last-child{margin-bottom:0}
+body:not(.display-mode) .tsg-v61j-sport-body>.muted{padding:4px 12px;margin:0}
+@media(max-width:650px){
+ body:not(.display-mode) .tsg-v61j-admin-picker{flex-direction:column;align-items:stretch;gap:6px;padding:12px}
+ body:not(.display-mode) .tsg-v61j-admin-picker select{width:100%}
+ body:not(.display-mode) .tsg-v61j-sport-group summary{padding:14px 12px}
+ body:not(.display-mode) .tsg-v61j-sport-count{font-size:.7rem}
+}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -2049,14 +2085,14 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
  <div class="tsg-v61d-head"><span class="tsg-v61c-eyebrow">TV DISPLAY · VIDEO PLAYLIST</span><h3>Highlight Video Manager</h3><p class="muted">Manage YouTube highlights directly from Administration. The TV will use your saved active clips; until you import or add any, it keeps using the existing highlights.json playlist.</p></div>
  <div class="tsg-v61i-fields">
   <label>YouTube link or video ID<input id="tsg-v61i-url" type="text" placeholder="https://www.youtube.com/watch?v=..." maxlength="260"></label>
-  <label>Sport<select id="tsg-v61i-sport"><option>Ping Pong</option><option>Darts</option><option>Pool</option><option>Air Hockey</option></select></label>
+  <label>Sport<select id="tsg-v61i-sport"><option>Ping Pong</option><option>Darts</option><option>Pool</option><option>Air Hockey</option><option>Beer Pong</option></select></label>
   <label>Video title<input id="tsg-v61i-title" type="text" maxlength="110" placeholder="e.g. Best table tennis rallies"></label>
   <label>Creator / credit<input id="tsg-v61i-credit" type="text" maxlength="100" placeholder="e.g. ITTFWorld"></label>
  </div>
  <div class="tsg-v61i-toolbar"><button type="button" id="tsg-v61i-add">Add Video</button><button type="button" id="tsg-v61i-import" class="secondary">Import Existing Playlist</button><button type="button" id="tsg-v61i-refresh" class="secondary">Refresh List</button></div>
  <p class="muted" style="margin:8px 0 16px">Only public YouTube videos that allow embedding will play on the TV. Importing reads your current highlights.json and skips any videos already in the managed list. No change is made to that file.</p>
  <p id="tsg-v61i-message" role="status" aria-live="polite" class="notice"></p>
- <div class="tsg-v61d-library-title"><h4>Managed highlight videos</h4><span id="tsg-v61i-count" class="muted"></span></div>
+ <div class="tsg-v61d-library-title"><h4>Managed highlight videos</h4><span id="tsg-v61i-count" class="muted"></span></div><p class="muted tsg-v61j-group-hint">Organized by sport. Select a heading to expand or collapse its videos; arrows change order within that sport. <strong>Beer Pong:</strong> add short videos (ideally under 60 seconds). The TV switches to another sport when the clip ends, or after 60 seconds.</p>
  <div class="tsg-v61i-list" id="tsg-v61i-list"><p class="muted">Loading your saved clips…</p></div>
 </section>
 <section class="panel admin-form" style="margin-top:16px">
@@ -2622,6 +2658,26 @@ async function refreshAuth(){
    nav.className='tsg-admin-task-nav';
    nav.setAttribute('aria-label',category+' tasks');
    host.prepend(nav);
+   // Season/TV tasks have outgrown the horizontal tab row. Keep their existing
+   // buttons as internal dispatchers and present one compact desktop selector.
+   let seasonPicker=null;
+   if(category==='seasons'){
+     const pickerWrap=document.createElement('div');
+     pickerWrap.className='tsg-v61j-admin-picker';
+     const label=document.createElement('label');
+     label.setAttribute('for','tsg-v61j-season-task');
+     label.textContent='Manage area';
+     seasonPicker=document.createElement('select');
+     seasonPicker.id='tsg-v61j-season-task';
+     seasonPicker.setAttribute('aria-label','Choose season and TV administration area');
+     pickerWrap.append(label,seasonPicker);
+     nav.after(pickerWrap);
+     nav.classList.add('tsg-v61j-hidden-nav');
+     seasonPicker.addEventListener('change',()=>{
+       const target=nav.querySelector('[data-admin-task="'+seasonPicker.value+'"]');
+       if(target)target.click();
+     });
+   }
    const panes=[];
    views.forEach(([id,label,description,ids],index)=>{
      const button=document.createElement('button');
@@ -2629,6 +2685,11 @@ async function refreshAuth(){
      button.textContent=label;button.dataset.adminTask=id;
      button.setAttribute('aria-controls','tsg-admin-task-'+category+'-'+id);
      nav.appendChild(button);
+     if(seasonPicker){
+       const option=document.createElement('option');
+       option.value=id;option.textContent=label;
+       seasonPicker.appendChild(option);
+     }
      const pane=document.createElement('section');
      pane.className='tsg-admin-task-pane';
      pane.id='tsg-admin-task-'+category+'-'+id;
@@ -2640,6 +2701,7 @@ async function refreshAuth(){
      host.appendChild(pane);
      panes.push({button,pane});
      button.addEventListener('click',()=>{
+       if(seasonPicker)seasonPicker.value=id;
        if(id==='clips')refreshHighlightAdmin().catch(console.warn);
        panes.forEach(entry=>{
          const active=entry===panes[index];
@@ -3255,7 +3317,7 @@ const FALLBACK_HIGHLIGHTS=[
  {sport:'Pool',id:'WdwpBJ2TlYE',title:'European Open top shots',credit:'Matchroom Pool'},
  {sport:'Air Hockey',id:'U_m09J-m4Nc',title:'Carter Cup highlights',credit:'Centerline Pro Air Hockey'}
 ];
-const HIGHLIGHT_ICONS={'Ping Pong':'🏓','Darts':'🎯','Pool':'🎱','Air Hockey':'🏒'};
+const HIGHLIGHT_ICONS={'Ping Pong':'🏓','Darts':'🎯','Pool':'🎱','Air Hockey':'🏒','Beer Pong':'🏆'};
 let highlightCatalog=FALLBACK_HIGHLIGHTS.slice();
 let activeHighlight=null, highlightSoundOn=false,sideSlideIndex=0;
 // A provider may restrict embedding after a clip was originally listed.
@@ -3377,6 +3439,26 @@ function startHighlightWatchdog(){
 let highlightErrorBurst=0, highlightLastErrorAt=0;
 
 let tvVideoPlaying=false,tvVideoInitialized=false,tvLastHighlightPage=false;
+// Beer Pong clips are intentionally brief and never hold the highlight screen
+// after finishing or exceeding one minute. Does not alter the 5-minute main segment.
+const BEER_PONG_MAX_CLIP_MS=60000;
+let beerPongClipTimer=null;
+function clearBeerPongClipTimer(){if(beerPongClipTimer!==null){clearTimeout(beerPongClipTimer);beerPongClipTimer=null;}}
+function nextHighlightSportAfterBeerPong(){
+ clearBeerPongClipTimer();
+ if(!tvLastHighlightPage||activeHighlight?.sport!=='Beer Pong')return;
+ const available=HIGHLIGHT_SPORTS.filter(s=>s!=='Beer Pong'&&highlightCatalog.some(v=>v.sport===s&&!unavailableHighlightIds.has(v.id)));
+ const pane=document.getElementById('tv-highlight-pane');if(!pane)return;
+ pane.innerHTML=highlightMarkup(available.length?chooseRandom(available):null);
+ listenToHighlightIframe();
+}
+function startBeerPongClipTimer(){
+ clearBeerPongClipTimer();
+ if(!tvLastHighlightPage||activeHighlight?.sport!=='Beer Pong')return;
+ const id=activeHighlight.id;
+ beerPongClipTimer=setTimeout(()=>{if(tvLastHighlightPage&&activeHighlight?.id===id&&activeHighlight?.sport==='Beer Pong')nextHighlightSportAfterBeerPong();},BEER_PONG_MAX_CLIP_MS);
+}
+
 const HIGHLIGHT_HISTORY_KEY='turfcare-highlight-history-by-sport-v1';
 // V60r: right TV content is built only from genuinely available data.
 // Always rotate active matchup cards; introduce standings and sport leaders
@@ -3470,7 +3552,7 @@ function advanceSidebarSlide(direction){
  scheduleSidebarRotation();
 }
 function startSidebarRotation(){scheduleSidebarRotation();}
-const HIGHLIGHT_SPORTS=['Ping Pong','Darts','Pool','Air Hockey'];
+const HIGHLIGHT_SPORTS=['Ping Pong','Darts','Pool','Air Hockey','Beer Pong'];
 function readHighlightHistory(){
  try {
   const state=JSON.parse(localStorage.getItem(HIGHLIGHT_HISTORY_KEY)||'{}');
@@ -3507,7 +3589,7 @@ function nextHighlight(sport=null){
  return chosen;
 }
 let managedHighlightRows=[];
-function validHighlightVideo(v){return !!v&&['Ping Pong','Darts','Pool','Air Hockey'].includes(v.sport)&&typeof v.id==='string'&&/^[A-Za-z0-9_-]{11}$/.test(v.id);}
+function validHighlightVideo(v){return !!v&&HIGHLIGHT_SPORTS.includes(v.sport)&&typeof v.id==='string'&&/^[A-Za-z0-9_-]{11}$/.test(v.id);}
 function formatHighlightRows(rows){
  const seen=new Set();return rows.filter(v=>validHighlightVideo(v)&&!seen.has(v.id)&&(seen.add(v.id),true))
   .map(v=>({sport:v.sport,id:v.id,title:String(v.title||'Sports highlight'),credit:String(v.credit||'YouTube'),position:Number(v.position)||0}));
@@ -3571,9 +3653,12 @@ window.addEventListener('message',event=>{
  try{if(typeof message==='string')message=JSON.parse(message);}catch(_e){return;}
  const activeIframe=document.getElementById('clubhouse-highlight-iframe');
  if(!activeIframe||event.source!==activeIframe.contentWindow)return;
- if(message?.event==='onStateChange'&&Number(message.info)===1){highlightErrorBurst=0;highlightStarted=true;clearHighlightWatchdog();}
+ if(message?.event==='onStateChange'&&Number(message.info)===1){
+  highlightErrorBurst=0;highlightStarted=true;clearHighlightWatchdog();startBeerPongClipTimer();
+ }
+ if(message?.event==='onStateChange'&&Number(message.info)===2){clearBeerPongClipTimer();}
  if(message?.event==='onError' && activeHighlight){
-  clearHighlightWatchdog();
+  clearHighlightWatchdog();clearBeerPongClipTimer();
   const errorCode=Number(message.info);
   console.warn('Highlight playback unavailable:', activeHighlight.id, 'YouTube error', errorCode);
   recordHighlightFailure(activeHighlight,'YouTube playback error',errorCode);
@@ -3595,14 +3680,16 @@ window.addEventListener('message',event=>{
  }
  if(message?.event==='onStateChange'&&Number(message.info)===0&&activeHighlight){
   clearHighlightWatchdog();
-  // Ended: select the next shuffled clip; weather rotation is unaffected.
+  // Finished Beer Pong: immediately switch to another sport, not a second
+  // consecutive Beer Pong clip. Other sports retain their original cycling.
+  if(activeHighlight.sport==='Beer Pong') {nextHighlightSportAfterBeerPong();return;}
   const pane=document.getElementById('tv-highlight-pane');
   if(pane){pane.innerHTML=highlightMarkup();listenToHighlightIframe();}
  }
 });
 function setVideoPanelVisible(visible){
  if(visible===tvLastHighlightPage)return;
- if(!visible)clearHighlightWatchdog();
+ if(!visible){clearHighlightWatchdog();clearBeerPongClipTimer();}
  tvLastHighlightPage=visible;
  if(tvVideoInitialized){
   if(visible){youtubeSoundCommand('playVideo');if(!highlightStarted)startHighlightWatchdog();}
@@ -3610,7 +3697,7 @@ function setVideoPanelVisible(visible){
  }
 }
 function highlightMarkup(sport=null){
- clearHighlightWatchdog();
+ clearHighlightWatchdog();clearBeerPongClipTimer();
  activeHighlight=nextHighlight(sport);
  if(tvLastHighlightPage&&activeHighlight)startHighlightWatchdog();
  highlightSoundOn=false;
@@ -4389,18 +4476,37 @@ function parseVideoId(value){
  }catch{}
  return null;
 }
+const TSG_CLIP_GROUPS=['Ping Pong','Darts','Pool','Air Hockey','Beer Pong'];
+const TSG_CLIP_ICONS={'Ping Pong':'🏓','Darts':'🎯','Pool':'🎱','Air Hockey':'🏒','Beer Pong':'🏆'};
+let tsgClipOpenGroups=new Set(TSG_CLIP_GROUPS);
 function renderHighlightAdmin(){
  const host=$('tsg-v61i-list'),count=$('tsg-v61i-count');if(!host)return;
+ // Preserve opened/collapsed sections across refresh and edits.
+ host.querySelectorAll('details[data-clip-sport]').forEach(group=>{
+  if(group.open)tsgClipOpenGroups.add(group.dataset.clipSport);
+  else tsgClipOpenGroups.delete(group.dataset.clipSport);
+ });
  const list=managedHighlightRows.slice().sort((a,b)=>a.position-b.position||String(a.id).localeCompare(String(b.id)));
  if(count)count.textContent=list.length?`${list.filter(v=>v.enabled).length} active · ${list.length} saved`:'Current playlist still comes from highlights.json';
- host.innerHTML=list.length?list.map((v,i)=>`<div class="tsg-v61i-row" data-enabled="${v.enabled}">
-  <img loading="lazy" src="https://i.ytimg.com/vi/${encodeURIComponent(v.youtube_id)}/mqdefault.jpg" alt="">
-  <div><strong>${esc(v.title)}</strong><small>${esc(v.sport)} · ${esc(v.credit)} · ${v.enabled?'Active':'Paused'} · Position ${i+1}</small></div>
-  <div class="tsg-v61i-controls"><button type="button" class="secondary" data-clip-action="up" data-clip-id="${esc(v.id)}" ${i===0?'disabled':''} title="Move earlier">↑</button>
-   <button type="button" class="secondary" data-clip-action="down" data-clip-id="${esc(v.id)}" ${i===list.length-1?'disabled':''} title="Move later">↓</button>
-   <button type="button" class="secondary" data-clip-action="toggle" data-clip-id="${esc(v.id)}">${v.enabled?'Pause':'Enable'}</button>
-   <button type="button" class="danger" data-clip-action="delete" data-clip-id="${esc(v.id)}">Remove</button></div></div>`).join(''):
-  '<p class="muted">No managed clips yet. Use <strong>Import Existing Playlist</strong> to bring your existing highlight videos into Administration without changing your original JSON file.</p>';
+ if(!list.length){
+  host.innerHTML='<p class="muted">No managed clips yet. Use <strong>Import Existing Playlist</strong> to bring your existing highlight videos into Administration without changing your original JSON file.</p>';
+  return;
+ }
+ host.innerHTML=TSG_CLIP_GROUPS.map(sport=>{
+  const clips=list.filter(v=>v.sport===sport);
+  const active=clips.filter(v=>v.enabled).length;
+  return `<details class="tsg-v61j-sport-group" data-clip-sport="${sport}" ${tsgClipOpenGroups.has(sport)?'open':''}>
+   <summary><span class="tsg-v61j-sport-title"><span aria-hidden="true">${TSG_CLIP_ICONS[sport]}</span> ${sport}</span>
+    <span class="tsg-v61j-sport-count">${active} active · ${clips.length} total</span></summary>
+   <div class="tsg-v61j-sport-body">${clips.length?clips.map((v,i)=>`<div class="tsg-v61i-row" data-enabled="${v.enabled}">
+    <img loading="lazy" src="https://i.ytimg.com/vi/${encodeURIComponent(v.youtube_id)}/mqdefault.jpg" alt="">
+    <div><strong>${esc(v.title)}</strong><small>${esc(v.credit)} · ${v.enabled?'Active':'Paused'} · Sport position ${i+1}</small></div>
+    <div class="tsg-v61i-controls"><button type="button" class="secondary" data-clip-action="up" data-clip-id="${esc(v.id)}" ${i===0?'disabled':''} title="Move earlier within ${sport}">↑</button>
+     <button type="button" class="secondary" data-clip-action="down" data-clip-id="${esc(v.id)}" ${i===clips.length-1?'disabled':''} title="Move later within ${sport}">↓</button>
+     <button type="button" class="secondary" data-clip-action="toggle" data-clip-id="${esc(v.id)}">${v.enabled?'Pause':'Enable'}</button>
+     <button type="button" class="danger" data-clip-action="delete" data-clip-id="${esc(v.id)}">Remove</button></div></div>`).join(''):
+     '<p class="muted">No highlight videos for this sport yet.</p>'}</div></details>`;
+ }).join('');
 }
 async function refreshHighlightAdmin(){await loadHighlightPlaylist();renderHighlightAdmin();}
 async function storeVideoPosition(rows){
@@ -4422,11 +4528,18 @@ $('tsg-v61i-list')?.addEventListener('click',async e=>{
   }else if(action==='delete'){
    const {error}=await client.from('league_highlight_videos').delete().eq('id',id);if(error)throw error;
   }else{
-   const ordered=managedHighlightRows.slice().sort((a,b)=>a.position-b.position),index=ordered.findIndex(v=>v.id===id);
+   const ordered=managedHighlightRows.slice().sort((a,b)=>a.position-b.position||String(a.id).localeCompare(String(b.id)));
+   const inSport=ordered.filter(v=>v.sport===clip.sport);
+   const index=inSport.findIndex(v=>v.id===id);
    const next=index+(action==='up'?-1:1);
-   if(next<0||next>=ordered.length)return;
-   [ordered[index],ordered[next]]=[ordered[next],ordered[index]];
-   await storeVideoPosition(ordered);
+   if(next<0||next>=inSport.length)return;
+   // Reorder only this sport. The TV's sport cycling remains unchanged.
+   [inSport[index],inSport[next]]=[inSport[next],inSport[index]];
+   // Sparse positions, assigned in the same global sequence, preserve relative
+   // placement of videos in other sport categories.
+   let sportIndex=0;
+   const adjusted=ordered.map(v=>v.sport===clip.sport?inSport[sportIndex++]:v);
+   await storeVideoPosition(adjusted);
   }
   await refreshHighlightAdmin();note.textContent='Playlist updated. TV devices will pick up the change automatically.';
  }catch(err){note.textContent=err.message||'Could not update the playlist.';}finally{button.disabled=false;}
