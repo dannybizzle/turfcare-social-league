@@ -1819,10 +1819,11 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 </section>
 <section class="panel tsg-approval-panel" id="tsg-approval-panel" aria-labelledby="tsg-approval-heading">
 <h3 id="tsg-approval-heading">Pending Registrations <span id="tsg-approval-count" class="tag">0</span></h3>
-<p class="muted">New accounts wait here until an administrator approves them. Approval also activates league participation; regular player tools open November 20.</p>
+<p class="muted">New accounts wait here until an administrator approves them. Approval also activates league participation. Current-week scheduling is attempted automatically.</p>
 <div id="tsg-approval-list" aria-live="polite"><div class="notice">Loading registration requests…</div></div>
 <div id="tsg-approval-message" role="status" aria-live="polite" class="notice"></div>
 <button class="secondary" id="tsg-refresh-approvals" type="button">Refresh registrations</button>
+<div class="notice" style="margin-top:15px"><strong>Mid-season additions</strong><p>Approving or activating a player attempts to pair available, previously unscheduled players in the current week without changing existing games. When only one player is waiting for an opponent, they remain unmatched and are flagged for review.</p><button type="button" class="secondary" id="tsg-fill-current-week">Check / add current-week matchups</button><div id="tsg-fill-current-week-status" class="status" role="status" aria-live="polite"></div></div>
 </section>
 <section class="panel" style="margin-top:16px">
 <h3>Player Management</h3>
@@ -2493,6 +2494,29 @@ function showPlayerMessage(msg,error=false){
 
 // Approval list is fetched only for the signed-in administrator.
 // The database RPC independently validates the caller's administrator privileges.
+async function fillCurrentWeekSchedule(showMessage=true){
+ if(!isAdmin)return;
+ const status=$('tsg-fill-current-week-status');
+ if(showMessage&&status){status.className='notice';status.textContent='Checking this week’s available players…';}
+ const {data,error}=await client.rpc('league_admin_fill_current_week');
+ if(error)throw error;
+ const created=Number(data?.pairs_created||0);
+ const waiting=Number(data?.unpaired_players||0);
+ const summary=data?.status==='no_active_season'?'No active season is currently running.':
+  data?.status==='week_not_published'?'This week has not been published yet.':
+  data?.status==='week_closed'?'The current week has ended. New participants will join the next published week.':
+  `${created} new matchup${created===1?'':'s'} added to this week.`+
+  (waiting?` ${waiting} eligible player${waiting===1?' is':'s are'} still without an opponent and need an admin decision.`:' All currently eligible players have a matchup.');
+ if(status){status.className=waiting?'status error':'status';status.textContent=summary;}
+ if(created)await loadPublic();
+ return data;
+}
+$('tsg-fill-current-week')?.addEventListener('click',async e=>{
+ const button=e.currentTarget;button.disabled=true;
+ try{await fillCurrentWeekSchedule();}
+ catch(error){const el=$('tsg-fill-current-week-status');el.className='status error';el.textContent='Could not update the week: '+(error.message||error);}
+ finally{button.disabled=false;}
+});
 async function loadPendingRegistrations(){
  const list=$('tsg-approval-list'),count=$('tsg-approval-count');
  if(!list||!count)return;
@@ -2558,6 +2582,11 @@ $('tsg-approval-list').addEventListener('click',async event=>{
    const {error}=await client.rpc('set_league_player_approval',{p_player_id:id,p_approved:true});
    if(error)throw error;
    message.className='status';message.textContent=`${name} approved successfully.`;
+   try{
+     const outcome=await fillCurrentWeekSchedule(false);
+     if(outcome?.status==='ok'&&Number(outcome?.unpaired_players||0)===0){message.textContent+=` Current-week scheduling checked.`;}
+     else if(Number(outcome?.unpaired_players||0)>0){message.textContent+=` Current-week opponent is not available yet; see Mid-season additions below.`;}
+   }catch(scheduleError){message.textContent+=` Scheduling needs attention: ${scheduleError.message}. Approval was saved.`;}
    await loadPublic();
    await loadPendingRegistrations();
  }catch(error){message.className='status error';message.textContent=error.message||'Approval failed.';button.disabled=false;}
@@ -2600,7 +2629,13 @@ $('player-management-list').addEventListener('click',async e=>{
       if(!confirm(`${newStatus?'Activate':'Deactivate'} ${player.display_name}?`))return;
       const {error}=await client.from('profiles').update({is_player:newStatus}).eq('id',playerId);
       if(error)throw error;
-      await loadPublic();showPlayerMessage(`${player.display_name} has been ${newStatus?'activated':'deactivated'}.`);
+      await loadPublic();
+      let extra='';
+      if(newStatus){
+       try{const result=await fillCurrentWeekSchedule(false);if(Number(result?.unpaired_players||0)>0)extra=' Unmatched players remain; see Mid-season additions.';}
+       catch(err){extra=' Current-week scheduling requires attention: '+err.message;}
+      }
+      showPlayerMessage(`${player.display_name} has been ${newStatus?'activated':'deactivated'}.${extra}`);
     }else if(action==='toggle-admin'){
       if(!isOwner)throw new Error('Only the League Owner can change administrator access.');
       const newRole=player.role==='admin'?'player':'admin';
