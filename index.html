@@ -3073,6 +3073,9 @@ function sideSections(){
  const season=tvCurrentSeason();
  const pages=tvSidebarMatchupPages();
  const sections=pages.map((_,i)=>`Matchups ${i+1}`);
+ // A dedicated informational card stays in the rotation for every season,
+ // explaining how live standings and sport statistics are generated.
+ sections.push('Stats information');
  if(season){
   const rankings=tvSeasonRankings(season.id);
   if(rankings.length){
@@ -3088,7 +3091,8 @@ function sideSections(){
 const SIDE_SECTION_DURATIONS={
  'Leaderboard':24000,'Overall leaders':20000,
  'Ping Pong':17000,'Darts':17000,'Pool':17000,
- 'Air Hockey':17000,'Beer Pong':17000,'Season overview':18000
+ 'Air Hockey':17000,'Beer Pong':17000,'Season overview':18000,
+ 'Stats information':20000
 };
 const sideSectionDuration=()=>{
  const section=sideSections()[sideSlideIndex%sideSections().length];
@@ -3399,6 +3403,17 @@ function renderLeagueSidebar(){
       `<span class="gold-vs"> VS </span>${esc(playerName(m.player2_id))}</div>`+
       `<small>${sports||'Sports pending'}</small></div>`;
    }).join('');
+ }else if(section==='Stats information'){
+  root.innerHTML=`<div class="lb-side-kicker">🏆 LIVE LEAGUE STATISTICS</div>`+
+   `<div class="lb-side-focus">The numbers update themselves.</div>`+
+   `<div class="lb-side-detail" style="line-height:1.55">`+
+   `Standings, win percentages and sport leaders appear automatically as `+
+   `players submit their completed matchup results.</div>`+
+   `<div class="lb-side-upcoming" style="margin-top:16px">`+
+   `<strong style="color:#f2d38c">Play all 3 assigned sports</strong>`+
+   `<small>Submit your results in My League. Every sport win counts toward the standings.</small></div>`+
+   `<div class="lb-side-detail" style="margin-top:15px">`+
+   `No manual updates needed — check back as the competition unfolds!</div>`;
  }else if(section==='Leaderboard'){
   const ranked=tvSeasonRankings(seasonId).slice(0,5);
   root.innerHTML=`<div class="lb-side-kicker">LEAGUE STANDINGS</div>`+
