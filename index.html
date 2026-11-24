@@ -3047,16 +3047,32 @@ const HIGHLIGHT_HISTORY_KEY='turfcare-highlight-history-by-sport-v1';
 // V60n: right-hand matchup cards appear only for confirmed, upcoming playing days.
 // The full published schedule remains on the main (left-hand) TV slides.
 const SIDE_BASE_SECTIONS=['Leaderboard','Overall leaders','Ping Pong','Darts','Pool','Air Hockey','Beer Pong','Leaderboard','Overall leaders'];
+// Use each season's own start date; never wait for the first recorded score.
+function tvSeasonUnderway(){
+ const season=tvCurrentSeason();
+ return !!(season&&season.starts_on&&calDate(new Date())>=season.starts_on);
+}
 function sideSections(){
  const confirmed=confirmedSchedule();
  const today=confirmed.some(x=>sameCalgaryDay(x.a.starts_at));
  const future=confirmed.some(x=>!sameCalgaryDay(x.a.starts_at));
- const sections=SIDE_BASE_SECTIONS.slice();
- if(today)sections.splice(4,0,'Today confirmed');
+ const season=tvCurrentSeason();
+ let sections=SIDE_BASE_SECTIONS.slice();
+ // Once a season starts, omit empty statistical slides rather than showing
+ // roster placeholders or leaderboards with nothing to report.
+ if(tvSeasonUnderway()){
+  const seasonId=season?.id;
+  const hasOverall=seasonId&&tvSeasonRankings(seasonId).length>0;
+  sections=hasOverall?['Leaderboard','Overall leaders']:['Season underway'];
+  for(const sport of SPORTS){
+   if(seasonId&&tvSeasonSportStats(sport,seasonId).length)sections.push(sport);
+  }
+ }
+ if(today)sections.push('Today confirmed');
  if(future)sections.push('Upcoming confirmed');
  return sections;
 }
-const SIDE_SECTION_DURATIONS={'Leaderboard':30000,'Overall leaders':25000,'Ping Pong':15000,'Darts':15000,'Pool':15000,'Air Hockey':15000,'Beer Pong':15000,'Today confirmed':16000,'Upcoming confirmed':16000};
+const SIDE_SECTION_DURATIONS={'Season underway':20000,'Leaderboard':30000,'Overall leaders':25000,'Ping Pong':15000,'Darts':15000,'Pool':15000,'Air Hockey':15000,'Beer Pong':15000,'Today confirmed':16000,'Upcoming confirmed':16000};
 const sideSectionDuration=()=>{
  const sections=sideSections();
  return SIDE_SECTION_DURATIONS[sections[sideSlideIndex%sections.length]]||15000;
@@ -3351,14 +3367,18 @@ function renderLeagueSidebar(){
  const activeSeason=tvCurrentSeason();
  const resultsRecorded=activeSeason&&matchups.some(m=>m.season_id===activeSeason.id&&
   (countsInStandings(m)||m.resolution==='freebie'||m.resolution==='double_forfeit'));
- // During registration, and after it closes until there are real results,
- // show the approved crew rather than empty leaderboards or invented statistics.
- if((registrationOpen||!resultsRecorded)&&!['Today confirmed','Upcoming confirmed','Official fixtures'].includes(section)){
+ // Crew showcase belongs only before kickoff. After kickoff the right panel
+ // always switches to league information, even when no games are finished yet.
+ if(!tvSeasonUnderway()&&!['Today confirmed','Upcoming confirmed','Official fixtures'].includes(section)){
   $('lb-side-pips').innerHTML=sections.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join('');
   tvRegisteredCrewSidebar(section,registrationOpen);return;
  }
  $('lb-side-pips').innerHTML=sections.map((_,i)=>`<span class="${i===index?'on':''}"></span>`).join('');
- if(section==='Official fixtures'){
+ if(section==='Season underway'){
+  const active=tvCurrentSeason();
+  const upcoming=confirmedSchedule().length;
+  n.innerHTML=`<div class="lb-side-kicker">SEASON UNDERWAY</div><div class="lb-side-focus">${esc(active?.name||'Turfcare Social League')}</div><div class="lb-side-detail">Matchups are underway. Standings and sport leaders will appear here as scores are submitted.</div><div class="lb-side-metric-grid"><div class="lb-side-stat"><b>${matchups.filter(m=>m.season_id===active?.id).length}</b><small>Published matchups</small></div><div class="lb-side-stat"><b>${upcoming}</b><small>Confirmed playing days</small></div></div>`;
+ }else if(section==='Official fixtures'){
   n.innerHTML=tsgRegistrationSeason()?'<div class="lb-side-kicker">POTENTIAL MATCHUPS</div><div class="lb-side-empty">See the registration preview in the main TV rotation.</div>':tvOfficialSidebarMarkup();
  }else if(section==='Leaderboard'){
   const ranked=seasonId?tvSeasonRankings(seasonId).slice(0,5):[];
