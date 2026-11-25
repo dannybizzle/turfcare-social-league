@@ -1960,7 +1960,7 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 </section>
 <section class="panel player-tools day-availability-panel" id="weekly-availability-panel">
 <h3>📅 My Playing Availability</h3>
-<p class="muted">Everyone is available by default. Tap only the days you cannot play. Your opponent can see these days; existing matchups stay in place.</p>
+<p class="muted">Everyone is available by default. Tap the days you cannot play. If you mark four or more days off in one week, you can choose to sit out that week instead. Existing matchups stay in place.</p>
 <div id="weekly-availability-list" class="day-calendar-shell"><div class="empty">Loading dates…</div></div>
 <div id="weekly-availability-message" role="status" aria-live="polite" class="notice"></div>
 </section>
@@ -4519,10 +4519,23 @@ function dayCalendarMarkup(s,kind,idx,pid){
  }
  return `<div class="day-week-head"><strong>${esc(dateLabel(start))} – ${esc(dateLabel(last))}</strong><div class="day-week-nav"><button type="button" class="secondary" aria-label="Previous week" data-day-prev="${kind}" ${index<=0?'disabled':''}>‹</button><button type="button" class="secondary" aria-label="Next week" data-day-next="${kind}" ${index>=weeks-1?'disabled':''}>›</button></div></div><div class="day-calendar-grid">${cells}</div><div class="day-calendar-key"><span><i></i>Available</span><span><i class="off"></i>Unavailable</span><span><i class="black"></i>League blackout</span></div>`;
 }
+function unavailableWeekNumber(season,date){
+ const days=Math.round((Date.parse(date+'T12:00:00Z')-Date.parse(season.starts_on+'T12:00:00Z'))/86400000);
+ return Math.floor(days/7)+1;
+}
+function unavailableDaysInWeek(season,week,pid){
+ const first=dayStart(season,week-1),last=dateAdd(first,6);
+ return playerUnavailableDates.filter(x=>x.season_id===season.id&&x.player_id===pid&&x.unavailable_on>=first&&x.unavailable_on<=last).length;
+}
+function playerSittingOutWeek(seasonId,week,pid){
+ return weeklyUnavailable.some(x=>x.season_id===seasonId&&Number(x.week_number)===week&&x.player_id===pid);
+}
 function renderWeeklyAvailability(){const n=$('weekly-availability-list');if(!n)return;
  if(!currentUserId){n.innerHTML='<p class="muted">Sign in to manage availability.</p>';return;}
  const s=activeDaySeason();if(!s){n.innerHTML='<p class="muted">No season yet.</p>';return;}
- n.innerHTML=`<h4>${esc(s.name)}</h4>`+dayCalendarMarkup(s,'player',dayWeekIndex.player,currentUserId);
+ const week=dayWeekIndex.player+1,offCount=unavailableDaysInWeek(s,week,currentUserId),sitting=playerSittingOutWeek(s.id,week,currentUserId);
+ const info=sitting?`<p class="status" role="status"><strong>Week ${week}: Sitting out.</strong> You will not be included in new matchups for this week.</p>`:offCount>3?`<p class="notice"><strong>${offCount} days unavailable this week.</strong> You can still play on your remaining days, unless you choose to sit out.</p>`:'';
+ n.innerHTML=`<h4>${esc(s.name)}</h4>`+dayCalendarMarkup(s,'player',dayWeekIndex.player,currentUserId)+info;
 }
 function populateBlackoutControl(){const n=$('blackout-season'),p=$('day-admin-player');if(!n||!p)return;
  const old=n.value,oldPlayer=p.value;
@@ -4553,6 +4566,25 @@ document.addEventListener('click',async e=>{
  const off=kind==='blackout'?dayIsBlack(sid,date):dayIsOff(sid,pid,date);
  if(kind==='blackout'&&!confirm(`${off?'Reopen':'Block'} ${dateLabel(date)} for the entire league? Existing confirmed matchups will not be deleted.`))return;
  if(kind==='adminPlayer'&&!pid)return;
+ // A fourth unavailable date should prompt the player, not automatically withdraw them.
+ // Respect existing published matchups; no silent deletion or forfeit bypass.
+ let sitOutRequested=false;
+ let sitOutWeek=null;
+ if(kind==='player'&&!off){
+   const season=seasons.find(x=>x.id===sid);
+   if(season){
+     const week=unavailableWeekNumber(season,date);
+     const currentCount=unavailableDaysInWeek(season,week,currentUserId);
+     if(currentCount>=3&&!playerSittingOutWeek(sid,week,currentUserId)){
+       sitOutWeek=week;
+       sitOutRequested=confirm(`You will have ${currentCount+1} unavailable days in Week ${week}, leaving ${6-currentCount} days to play.\n\nWould you prefer to SIT OUT the whole week?\n\nOK = Sit out this week (no new matchup).\nCancel = Stay in the schedule with your remaining available days.`);
+       if(sitOutRequested&&matchups.some(m=>m.season_id===sid&&Number(m.week_number)===week&&(m.player1_id===currentUserId||m.player2_id===currentUserId))){
+         alert('You already have a matchup for this week. It will stay scheduled under the league rules. Your unavailable day will still be saved, but you cannot automatically sit out an assigned matchup.');
+         sitOutRequested=false;
+       }
+     }
+   }
+ }
  btn.disabled=true;
  const args=kind==='blackout'?{p_season_id:sid,p_date:date,p_blocked:!off,p_reason:'League blackout'}:
    kind==='adminPlayer'?{p_season_id:sid,p_player_id:pid,p_date:date,p_unavailable:!off}:
@@ -4560,14 +4592,19 @@ document.addEventListener('click',async e=>{
  const rpc=kind==='blackout'?'set_league_blackout_day':kind==='adminPlayer'?'set_league_player_day_admin':'set_league_day_availability';
  const msg=kind==='blackout'?'blackout-week-message':kind==='adminPlayer'?'day-admin-player-message':'weekly-availability-message';
  try{
+   if(sitOutRequested){
+     const {error:sitError}=await client.rpc('tsg_player_sit_out_week',{p_season_id:sid,p_week_number:sitOutWeek});
+     if(sitError)throw sitError;
+   }
    const {error}=await client.rpc(rpc,args);if(error)throw error;
-   const [players,blacks]=await Promise.all([
+   const [players,blacks,weeksOff]=await Promise.all([
      client.from('league_player_unavailable_dates').select('season_id,player_id,unavailable_on,created_by,created_at'),
-     client.from('league_blackout_dates').select('season_id,blackout_on,reason,created_by,created_at')
+     client.from('league_blackout_dates').select('season_id,blackout_on,reason,created_by,created_at'),
+     client.from('league_weekly_unavailability').select('season_id,week_number,player_id')
    ]);
-   if(players.error)throw players.error;if(blacks.error)throw blacks.error;
-   playerUnavailableDates=players.data||[];leagueBlackoutDates=blacks.data||[];
-   renderAllDailyCalendars();showDailyMessage(msg,`${dateLabel(date)} ${off?'reopened / marked available':'marked unavailable'} successfully.`);
+   if(players.error)throw players.error;if(blacks.error)throw blacks.error;if(weeksOff.error)throw weeksOff.error;
+   playerUnavailableDates=players.data||[];leagueBlackoutDates=blacks.data||[];weeklyUnavailable=weeksOff.data||[];
+   renderAllDailyCalendars();showDailyMessage(msg,sitOutRequested?`Week ${sitOutWeek}: You are sitting out. ${dateLabel(date)} has been marked unavailable.`:`${dateLabel(date)} ${off?'reopened / marked available':'marked unavailable'} successfully.`);
  }catch(err){showDailyMessage(msg,err.message||'Could not update availability.',true);btn.disabled=false;}
 });
 async function loadScheduleLog(){const node=$('schedule-change-log');if(!node)return;
