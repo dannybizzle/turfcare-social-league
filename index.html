@@ -2069,6 +2069,12 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <div class="tsg-v61b-two"><div><label for="tsg-v61b-start">Starts</label><input id="tsg-v61b-start" type="date"></div><div><label for="tsg-v61b-end">Ends</label><input id="tsg-v61b-end" type="date"></div></div>
 <label for="tsg-v61b-status">Season status</label><select id="tsg-v61b-status"><option value="upcoming">Upcoming</option><option value="active">Active</option><option value="completed">Completed</option></select>
 <div id="tsg-v61b-season-summary" class="notice"></div>
+<div id="tsg-season-close-review" style="margin:16px 0;padding:18px;border:1px solid #cdbb8e;border-radius:12px;background:#fffdf6">
+  <h3 style="margin:0 0 7px">Season completion review</h3>
+  <p class="notice">Review the published matchups and remaining season dates before closing. Finishing a season does not delete scores or create the next schedule.</p>
+  <div id="tsg-season-close-details" role="status" aria-live="polite"></div>
+  <button type="button" id="tsg-season-close-refresh" class="secondary" style="margin-top:12px">Refresh completion review</button>
+</div>
 <div id="tsg-season-duration-editor" style="margin:18px 0;padding:18px;border:1px solid #cdbb8e;border-radius:12px;background:#f7f3e8">
   <h3 style="margin:0 0 7px">Extend or shorten this season</h3>
   <p class="notice">Change the end date without resetting scores. Preview the impact on each week before adjusting the end date. Published matchups and scores are protected, and nothing changes until you confirm.</p>
@@ -4782,6 +4788,34 @@ function renderSeasonAdmin(){
  else {const current=tvCurrentSeason();if(current)select.value=current.id;}
  fillSeasonAdmin();
 }
+// Closure readiness is a read-only preview of the loaded season. The server remains authoritative.
+function tsgSeasonClosureReadiness(season){
+ const rows=matchups.filter(m=>m.season_id===season.id);
+ const finalized=m=>m.status==='completed'||m.status==='played_ahead'||(m.status==='missed'&&['freebie','double_forfeit'].includes(m.resolution));
+ const outstanding=rows.filter(m=>!finalized(m));
+ const completed=rows.length-outstanding.length;
+ const byWeek=[...new Set(outstanding.map(m=>m.week_number))].sort((a,b)=>a-b);
+ const seasonEnded=calDate(new Date())>=season.ends_on;
+ const other=seasons.filter(s=>s.id!==season.id&&s.status!=='completed').sort((a,b)=>a.starts_on.localeCompare(b.starts_on));
+ return {rows,outstanding,completed,byWeek,seasonEnded,other,ready:outstanding.length===0&&seasonEnded};
+}
+function tsgRenderClosureReview(){
+ const target=$('tsg-season-close-details'),season=seasons.find(s=>s.id===$('tsg-v61b-season')?.value);
+ if(!target||!season)return;
+ const r=tsgSeasonClosureReadiness(season);
+ const summary=r.outstanding.length?`<strong style="color:#8b2d1d">${r.outstanding.length} unresolved matchup(s)</strong> across Week ${r.byWeek.join(', Week ')}.`:'<strong style="color:#18573c">No unresolved published matchups detected.</strong>';
+ const when=r.seasonEnded?'The scheduled end date has been reached.':`Season is scheduled through <strong>${esc(season.ends_on)}</strong>; wait until then or safely shorten it first.`;
+ const next=r.other.length?`Next available season: <strong>${esc(r.other[0].name)}</strong> (${esc(r.other[0].starts_on)} – ${esc(r.other[0].ends_on)}).`:'No additional upcoming or active season is currently listed. You can create one in Seasons & Registration.';
+ target.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin:14px 0">
+ <div style="padding:12px;background:#f5f2e8;border-radius:9px"><small>Published</small><strong style="display:block;font-size:1.4rem">${r.rows.length}</strong></div>
+ <div style="padding:12px;background:#f5f2e8;border-radius:9px"><small>Finalized</small><strong style="display:block;font-size:1.4rem">${r.completed}</strong></div>
+ <div style="padding:12px;background:#f5f2e8;border-radius:9px"><small>Outstanding</small><strong style="display:block;font-size:1.4rem">${r.outstanding.length}</strong></div></div>
+ <p class="notice">${summary} ${when}</p>
+ <p class="notice">${next}</p>
+ <p style="font-weight:750;color:${r.ready?'#18573c':'#8b2d1d'}">${season.status==='completed'?'Season already marked Completed.':r.ready?'Ready for an administrator to review and close.':'Not ready to complete. Resolve outstanding matchups and reach the end date first.'}</p>
+ <p class="notice">This review uses currently loaded records. A server-side rule must also enforce closure eligibility; this page alone cannot guarantee it.</p>`;
+}
+$('tsg-season-close-refresh')?.addEventListener('click',async()=>{const b=$('tsg-season-close-refresh');b.disabled=true;try{await loadPublic();tsgRenderClosureReview();}finally{b.disabled=false;}});
 function fillSeasonAdmin(){
  const season=seasons.find(x=>x.id===$('tsg-v61b-season')?.value);if(!season)return;
  $('tsg-v61b-name').value=season.name;
@@ -4797,8 +4831,10 @@ function fillSeasonAdmin(){
  $('tsg-v61b-start').disabled=locked;$('tsg-v61b-end').disabled=locked;
  $('tsg-v61b-season-summary').textContent=`${rows.length} published matchups · ${rows.filter(m=>m.status==='scheduled').length} still scheduled. `+
   (locked?'Dates locked after publishing; name and status can still be edited.':'Dates can be edited until the first matchup is published.');
+ tsgRenderClosureReview();
 }
 $('tsg-v61b-season')?.addEventListener('change',fillSeasonAdmin);
+$('tsg-v61b-status')?.addEventListener('change',tsgRenderClosureReview);
 
 // Date adjustments use a separate, owner/admin-only database function; never delete a published game.
 function tsgSeasonAdjustmentPreview(){
@@ -4822,7 +4858,7 @@ function tsgSeasonAdjustmentPreview(){
    const ws=weekDate(w),we=datePlus(ws,6),inside=ws<=end,previous=ws<=season.ends_on;
    const matches=all.filter(m=>m.week_number===w), risk=matches.some(m=>weekDate(m.week_number)>end||(m.deadline&&m.deadline.slice(0,10)>end));
    if(inside)kept++;else if(previous)removed++;
-   const kind=!inside?'Removed from season':!previous?'New scheduling space':risk?'Published conflict':'Retained';
+   const kind=!inside?'Removed from season':!previous?'New scheduling space':risk?'Published conflict':we>end?'Partially retained':'Retained';
    const color=risk?'#8b2d1d':!inside?'#795c2e':!previous?'#18573c':'#245b49';
    weekRows.push(`<tr><td>Week ${w}</td><td>${ed(ws)} – ${ed(we)}</td><td>${matches.length} published</td><td style="font-weight:750;color:${color}">${kind}</td></tr>`);
  }
@@ -4874,7 +4910,14 @@ $('tsg-v61b-save-season')?.addEventListener('click',async function(){
  const note=$('tsg-v61b-season-message');if(!isAdmin||!s){note.textContent='Choose a season as an administrator.';return;}
  const name=$('tsg-v61b-name').value.trim(),start=$('tsg-v61b-start').value,end=$('tsg-v61b-end').value,status=$('tsg-v61b-status').value;
  if(!name||!start||!end||end<start){note.textContent='Provide a season name and valid dates.';return;}
- if(status==='completed'&&s.status!=='completed'&&!confirm(`Close season "${name}"? Only do this when its games are finished.`))return;
+ if(status==='completed'&&s.status!=='completed'){
+   const r=tsgSeasonClosureReadiness(s);
+   if(!r.ready){
+     note.textContent=`Cannot complete this season yet: ${r.outstanding.length} unresolved matchup(s) and ${r.seasonEnded?'the end date has passed':'the end date has not been reached'}. Review the panel above.`;
+     tsgRenderClosureReview();return;
+   }
+   if(!confirm(`Mark "${name}" completed? ${r.completed} published matchup(s) are finalized. This does not delete results or automatically create the next season.`))return;
+ }
  this.disabled=true;note.textContent='Saving…';
  try{
   const {error}=await client.rpc('league_admin_update_season',{p_season_id:id,p_name:name,p_start:start,p_end:end,p_status:status});
