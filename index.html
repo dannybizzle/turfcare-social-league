@@ -2069,6 +2069,16 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <div class="tsg-v61b-two"><div><label for="tsg-v61b-start">Starts</label><input id="tsg-v61b-start" type="date"></div><div><label for="tsg-v61b-end">Ends</label><input id="tsg-v61b-end" type="date"></div></div>
 <label for="tsg-v61b-status">Season status</label><select id="tsg-v61b-status"><option value="upcoming">Upcoming</option><option value="active">Active</option><option value="completed">Completed</option></select>
 <div id="tsg-v61b-season-summary" class="notice"></div>
+<div id="tsg-season-duration-editor" style="margin:18px 0;padding:18px;border:1px solid #cdbb8e;border-radius:12px;background:#f7f3e8">
+  <h3 style="margin:0 0 7px">Extend or shorten this season</h3>
+  <p class="notice">Change the end date without resetting scores. Longer seasons have room for additional weeks; shortening is allowed only when it does not conflict with existing published matchups. Nothing changes until you confirm.</p>
+  <label for="tsg-season-new-end">New season end date</label>
+  <input id="tsg-season-new-end" type="date" style="max-width:320px">
+  <button type="button" id="tsg-season-preview" class="secondary" style="margin:12px 0">Preview change</button>
+  <div id="tsg-season-impact" class="notice" role="status" aria-live="polite">Select a new end date to see its impact.</div>
+  <button type="button" id="tsg-season-apply" class="hidden">Confirm end date change</button>
+  <div id="tsg-season-adjust-message" class="notice" role="status"></div>
+</div>
 <button type="button" id="tsg-v61b-save-season">Save Season Changes</button>
 <p id="tsg-v61b-season-message" class="notice" role="status"></p>
 <p class="muted">Season status normally advances on its own at the scheduled start and end dates. A season with unresolved matchups will not be closed automatically.</p>
@@ -4777,6 +4787,10 @@ function fillSeasonAdmin(){
  $('tsg-v61b-start').value=season.starts_on;
  $('tsg-v61b-end').value=season.ends_on;
  $('tsg-v61b-status').value=season.status;
+ const proposedEnd=$('tsg-season-new-end');if(proposedEnd)proposedEnd.value=season.ends_on;
+ $('tsg-season-impact').textContent='Select a new end date to see its impact.';
+ $('tsg-season-apply').classList.add('hidden');
+ $('tsg-season-adjust-message').textContent='';
  const rows=matchups.filter(m=>m.season_id===season.id);
  const locked=rows.length>0;
  $('tsg-v61b-start').disabled=locked;$('tsg-v61b-end').disabled=locked;
@@ -4784,6 +4798,46 @@ function fillSeasonAdmin(){
   (locked?'Dates locked after publishing; name and status can still be edited.':'Dates can be edited until the first matchup is published.');
 }
 $('tsg-v61b-season')?.addEventListener('change',fillSeasonAdmin);
+
+// Date adjustments use a separate, owner/admin-only database function; never delete a published game.
+function tsgSeasonAdjustmentPreview(){
+ const season=seasons.find(x=>x.id===$('tsg-v61b-season')?.value), end=$('tsg-season-new-end')?.value;
+ const impact=$('tsg-season-impact'),apply=$('tsg-season-apply');
+ apply.classList.add('hidden');
+ if(!season||!end||end<season.starts_on){impact.textContent='Enter a valid end date on or after the start.';return;}
+ if(end===season.ends_on){impact.textContent='No date change selected.';return;}
+ if(season.status==='completed'){impact.textContent='A completed season cannot be adjusted. Reopen it through the season lifecycle process first.';return;}
+ const originalWeeks=weekCount(season), revisedWeeks=weekCount({...season,ends_on:end});
+ const affected=matchups.filter(m=>m.season_id===season.id&&(
+   new Date(Date.parse(season.starts_on+'T12:00:00Z')+7*(m.week_number-1)*86400000).toISOString().slice(0,10)>end ||
+   (m.deadline&&m.deadline.slice(0,10)>end)
+ ));
+ if(end<season.ends_on && affected.length){
+  impact.textContent=`Shortening would conflict with ${affected.length} already-published matchup(s). No scores or fixtures will be removed automatically. Resolve or reschedule these games first, then retry.`;
+  return;
+ }
+ impact.textContent=end>season.ends_on?
+  `Extend from ${season.ends_on} to ${end}. ${originalWeeks} → ${revisedWeeks} season weeks. Published games and scores remain unchanged; any new weeks are handled by the existing scheduling process.`:
+  `Shorten from ${season.ends_on} to ${end}. ${originalWeeks} → ${revisedWeeks} season weeks. No published matchup conflicts were found in the loaded schedule. The server will verify again before saving.`;
+ apply.classList.remove('hidden');
+}
+$('tsg-season-preview')?.addEventListener('click',tsgSeasonAdjustmentPreview);
+$('tsg-season-new-end')?.addEventListener('change',()=>{$('tsg-season-apply').classList.add('hidden');$('tsg-season-impact').textContent='Date changed. Preview the impact before confirming.';});
+$('tsg-season-apply')?.addEventListener('click',async function(){
+ const season=seasons.find(x=>x.id===$('tsg-v61b-season')?.value),end=$('tsg-season-new-end').value,note=$('tsg-season-adjust-message');
+ if(!isAdmin||!season){note.textContent='Administrator access required.';return;}
+ tsgSeasonAdjustmentPreview();
+ if(this.classList.contains('hidden'))return;
+ if(!confirm(`Change the end of "${season.name}" from ${season.ends_on} to ${end}? No published results will be removed.`))return;
+ this.disabled=true;note.textContent='Checking and saving…';
+ try{
+  const {error}=await client.rpc('league_admin_adjust_season_end',{p_season_id:season.id,p_new_end:end});
+  if(error)throw error;
+  await loadPublic();note.textContent=`Season end updated to ${end}. The schedule and season information now reflect the new date.`;
+ }catch(e){note.textContent=e.message||'Unable to update season date. Check the server-side rules.';}
+ finally{this.disabled=false;}
+});
+
 $('tsg-v61b-save-season')?.addEventListener('click',async function(){
  const id=$('tsg-v61b-season').value,s=seasons.find(x=>x.id===id);
  const note=$('tsg-v61b-season-message');if(!isAdmin||!s){note.textContent='Choose a season as an administrator.';return;}
