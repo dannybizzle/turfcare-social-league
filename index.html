@@ -1347,6 +1347,12 @@ body:not(.display-mode) .tsg-v61t-stats span{display:inline-block;background:#e4
 body:not(.display-mode) .tsg-v61t-week-check p{margin:7px 0 0;color:#3c5647;font-size:.88rem}
 body:not(.display-mode) .tsg-v61t-week-check .tsg-v61t-attention{color:#803825;font-weight:750}
 .tsg-projection-box{border:1px dashed #c9ab68;background:#f5f1e3;margin:12px 0 18px}.tsg-projection-pill{display:inline-block;background:#f0dcac;color:#173d32;border-radius:5px;font-size:.72rem;font-weight:800;letter-spacing:.06em;padding:4px 8px}.tsg-projection-heading h3{margin:8px 0}.tsg-projection-box table{width:100%}
+
+/* v62a: quiet, optional forecast underneath published matchups */
+.tsg-projection-details{margin-top:22px;border:1px solid var(--line);border-radius:12px;background:#f5f7f2;padding:0 14px;}
+.tsg-projection-details>summary{cursor:pointer;list-style:revert;padding:15px 6px;font-weight:700;color:#153e30;}
+.tsg-projection-details>summary small{display:inline-block;margin-left:8px;font-weight:400;color:#496656;}
+.tsg-projection-details>.tsg-projection-box{margin:0 0 14px;box-shadow:none;}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1925,7 +1931,7 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <div class="section-head" id="standings-section"><div><div class="eyebrow" style="color:var(--green2)">The leaderboard</div><h2>Overall standings</h2></div><span class="muted" id="season-label">Loading season…</span></div>
 <div class="grid home-standings-grid"><section class="panel"><h3>League table</h3><div id="standings"><div class="empty">Connecting to the league…</div></div></section></div>
 <section id="tsg-potential-schedule" class="tsg-potential-schedule" hidden aria-label="Potential league schedule"><div class="tsg-potential-head"><div><span class="tsg-potential-eyebrow">REGISTRATION PREVIEW · NOT OFFICIAL</span><h2>Who might face whom?</h2><p>As players are approved, this potential draw updates automatically. Final matchups and sports are assigned when the official schedule is published.</p></div><span id="tsg-potential-count" class="tsg-potential-count"></span></div><div id="tsg-potential-content" class="tsg-potential-grid"></div></section>
-<div class="section-head" id="matchups-section"><div><div class="eyebrow" style="color:var(--green2)">Who's up next</div><h2>Weekly matchups</h2></div></div><section class="panel"><div id="tsg-live-projection" class="tsg-live-projection" aria-live="polite"></div><div id="matchups"><div class="empty">Matchups will show here when the season schedule is published.</div></div></section>
+<div class="section-head" id="matchups-section"><div><div class="eyebrow" style="color:var(--green2)">Who's up next</div><h2>Weekly matchups</h2></div></div><section class="panel"><div id="matchups"><div class="empty">Matchups will show here when the season schedule is published.</div></div><div id="tsg-live-projection" class="tsg-live-projection" aria-live="polite"></div></section>
 <div class="section-head" id="statistics-section"><div><div class="eyebrow" style="color:var(--green2)">Head-to-head</div><h2>Player statistics</h2></div></div>
 <section class="panel" id="profile-panel"><div id="profile-content" class="muted">Select a player name on the leaderboard to see their results across all five sports.</div></section>
 <div class="section-head" id="player-signin"><div><div class="eyebrow" style="color:var(--green2)">Participant access</div><h2>Player sign in</h2></div></div><section class="panel authbox"><div id="auth-state" class="muted">Sign in to access your player tools and submit completed matchups.</div><form id="auth-form"><label for="email">Email</label><input id="email" type="email" autocomplete="username" placeholder="you@example.com"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Your password"><div style="display:flex;gap:8px;margin-top:14px"><button id="signin" type="submit">Sign in</button><button type="button" class="secondary" id="reset">Reset password</button></div></form><button id="signout" class="secondary hidden">Sign out</button><div id="auth-message" role="status"></div></section>
@@ -2451,7 +2457,12 @@ function tsgProjectionHtml(onlyMine=false){
  return `<section class="panel tsg-projection-box">${heading}${message}${table}${notes}</section>`;
 }
 function tsgRenderLiveProjection(){
- const target=$('tsg-live-projection');if(target)target.innerHTML=tsgProjectionHtml(false);
+ const target=$('tsg-live-projection');
+ if(target){
+  const wasOpen=target.querySelector('details')?.open===true;
+  const forecast=tsgProjectionHtml(false);
+  target.innerHTML=forecast?`<details class="tsg-projection-details" ${wasOpen?'open':''}><summary>▸ View projected week ${tsgLiveProjection?.week_number||''} <small>Not official · may change</small></summary>${forecast}</details>`:'';
+ }
  const mine=$('tsg-my-projection');if(mine)mine.innerHTML=currentUserId?tsgProjectionHtml(true):'';
  const admin=$('tsg-admin-projection');if(admin)admin.innerHTML=isAdmin?tsgProjectionHtml(false):'';
 }
@@ -3390,7 +3401,14 @@ $('my-matchups').addEventListener('submit',async e=>{
   let when;try{when=meetupDayInstant(input.value);}catch{return showScoreMessage('Invalid playing day.',true);}
   // Supabase currently stores an instant; Calgary noon is an internal day-only placeholder.
   const b=proposal.querySelector('button');b.disabled=true;
-  try{const {error}=await client.rpc('propose_league_meetup',{p_matchup_id:matchId,p_starts_at:when.toISOString()});if(error)throw error;await loadPublic();showScoreMessage('Playing day proposed. Your opponent can confirm it from My League.');}
+  try{const {error}=await client.rpc('propose_league_meetup',{p_matchup_id:matchId,p_starts_at:when.toISOString()});if(error)throw error;
+   const {data:notification,error:notificationError}=await client.functions.invoke('league-meetup-email',{body:{matchup_id:matchId}});
+   await loadPublic();
+   if(notification?.sent===true)showScoreMessage('Playing day proposed. Your opponent has been emailed to confirm it.');
+   else if(notification?.duplicate===true)showScoreMessage('Playing day proposed. A notification was already sent for this proposal.');
+   else showScoreMessage('Playing day proposed. Email notification is not yet configured or could not be sent; please contact your opponent directly.');
+   if(notificationError)console.warn('Matchup email not sent:',notificationError.message);
+  }
   catch(err){showScoreMessage(err.message||'Could not propose the playing day.',true);b.disabled=false;}
   return;
  }
