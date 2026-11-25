@@ -2020,10 +2020,6 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 </nav>
 <div id="admin-category-inbox" class="admin-category"><section class="panel"><h3>Scheduling Inbox</h3><p class="muted">Reported matchup issues. Resolve or dismiss a report to remove it from the active inbox; history is preserved.</p><div class="tsg-inbox-tabs"><button type="button" id="tsg-inbox-open" class="secondary active">Open</button><button type="button" id="tsg-inbox-history" class="secondary">History</button><button type="button" id="tsg-inbox-refresh" class="secondary">Refresh</button></div><div id="tsg-inbox-items" role="region" aria-live="polite"><div class="empty">Loading reports…</div></div><div id="tsg-inbox-message" role="status" aria-live="polite"></div></section></div>
 <div id="admin-category-overview" class="admin-category hidden">
- <section class="panel tsg-v59c-current-season" aria-label="Current season">
-  <div class="tsg-v59-overview-head"><div><h3>Current Season</h3><p class="muted">Your season at a glance.</p></div><button type="button" class="secondary" id="tsg-v59-refresh">Refresh</button></div>
-  <div id="tsg-v59c-season-summary" role="status" aria-live="polite"><p class="muted">Loading season…</p></div>
- </section>
  <section class="panel tsg-admin-quick-actions" aria-label="Common administration tasks">
   <h3>Quick actions</h3>
   <p class="muted">Go straight to a task without searching through the Administration menus.</p>
@@ -2035,6 +2031,10 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
    <button type="button" class="secondary" data-v59b-open="seasons:manage">Manage seasons</button>
    <button type="button" class="secondary" data-v59b-open="tv:settings">TV display settings</button>
   </div>
+ </section>
+ <section class="panel tsg-v59c-current-season" aria-label="Current season">
+  <div class="tsg-v59-overview-head"><div><h3>Current Season</h3><p class="muted">Your season at a glance.</p></div><button type="button" class="secondary" id="tsg-v59-refresh">Refresh</button></div>
+  <div id="tsg-v59c-season-summary" role="status" aria-live="polite"><p class="muted">Loading season…</p></div>
  </section>
 </div>
 <div id="admin-category-players" class="admin-category hidden"></div>
