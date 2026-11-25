@@ -2224,7 +2224,7 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <div id="forfeit-message" class="notice" role="status"></div>
 </section>
 <section class="panel score-panel"><h3>Correct a matchup result</h3><p class="muted">Admin only. Select a published matchup, choose the winners of its three assigned sports, and save the corrected result. All changes replace the previous result.</p><label for="correction-matchup">Choose matchup</label><select id="correction-matchup"></select><div id="correction-games"></div><button id="save-correction" type="button" style="margin-top:12px">Save corrected result</button><div id="correction-message" class="notice" role="status"></div></section>
-<div id="tsg-admin-projection" class="tsg-live-projection"></div><section id="schedule-preview-panel" class="panel hidden" style="margin-top:16px"><h3>Schedule preview</h3><div id="schedule-preview" class="preview"></div><div class="notice" id="schedule-summary"></div><button id="publish-schedule" class="hidden" disabled>Automatic publishing only</button> <button id="cancel-preview" class="secondary">Discard preview</button><div id="admin-message" role="status"></div></section>
+<section id="schedule-preview-panel" class="panel hidden" style="margin-top:16px"><h3>Schedule preview</h3><div id="schedule-preview" class="preview"></div><div class="notice" id="schedule-summary"></div><button id="publish-schedule" class="hidden" disabled>Automatic publishing only</button> <button id="cancel-preview" class="secondary">Discard preview</button><div id="admin-message" role="status"></div></section>
 </section>
 <div class="foot">Turfcare Social Games League · Built for the crew</div>
 </main>
@@ -2464,7 +2464,6 @@ function tsgRenderLiveProjection(){
   target.innerHTML=forecast?`<details class="tsg-projection-details" ${wasOpen?'open':''}><summary>▸ View projected week ${tsgLiveProjection?.week_number||''} <small>Not official · may change</small></summary>${forecast}</details>`:'';
  }
  const mine=$('tsg-my-projection');if(mine)mine.innerHTML=currentUserId?tsgProjectionHtml(true):'';
- const admin=$('tsg-admin-projection');if(admin)admin.innerHTML=isAdmin?tsgProjectionHtml(false):'';
 }
 async function tsgRefreshLiveProjection(){
  const req=++tsgProjectionRequest;
@@ -3391,7 +3390,17 @@ $('my-matchups').addEventListener('click',async e=>{
  const b=e.target.closest('[data-meetup-confirm]');if(!b)return;
  if(!confirm('Confirm this playing day? It will be shown publicly on the league website and TV display.'))return;
  b.disabled=true;
- try{const {error}=await client.rpc('confirm_league_meetup',{p_matchup_id:b.dataset.meetupConfirm});if(error)throw error;await loadPublic();showScoreMessage('Playing day confirmed and now visible on the league TV schedule.');}
+ try{
+  const matchId=b.dataset.meetupConfirm;
+  const {error}=await client.rpc('confirm_league_meetup',{p_matchup_id:matchId});
+  if(error)throw error;
+  const {data:notification,error:notificationError}=await client.functions.invoke('league-meetup-confirmed-email',{body:{matchup_id:matchId}});
+  await loadPublic();
+  if(notification?.sent===true)showScoreMessage('Playing day confirmed. Your opponent has been emailed.');
+  else if(notification?.duplicate===true)showScoreMessage('Playing day confirmed. The confirmation notification was already sent.');
+  else showScoreMessage('Playing day confirmed and visible on the league TV schedule. Email notification could not be verified; please contact your opponent directly.');
+  if(notificationError)console.warn('Matchup confirmation email not sent:',notificationError.message);
+ }
  catch(err){showScoreMessage(err.message||'Unable to confirm this time.',true);b.disabled=false;}
 });
 $('my-matchups').addEventListener('submit',async e=>{
