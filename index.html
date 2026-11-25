@@ -4577,7 +4577,9 @@ document.addEventListener('click',async e=>{
      const currentCount=unavailableDaysInWeek(season,week,currentUserId);
      if(currentCount>=3&&!playerSittingOutWeek(sid,week,currentUserId)){
        sitOutWeek=week;
-       sitOutRequested=confirm(`You will have ${currentCount+1} unavailable days in Week ${week}, leaving ${6-currentCount} days to play.\n\nWould you prefer to SIT OUT the whole week?\n\nOK = Sit out this week (no new matchup).\nCancel = Stay in the schedule with your remaining available days.`);
+       const choseSitOut=confirm(`You will have ${currentCount+1} unavailable days in Week ${week}, leaving ${6-currentCount} days to play.\n\nWould you prefer to SIT OUT the whole week?\n\nOK = Choose Sit Out (requires one more confirmation).\nCancel = Keep playing on your remaining available days.`);
+       // Do not record a sit-out until the player explicitly confirms a second time.
+       sitOutRequested=choseSitOut&&confirm(`CONFIRM WEEK ${week} SIT-OUT\n\nAre you sure you want to sit out the entire week?\n\nYou will be excluded from NEW matchups for Week ${week}. This does not cancel an existing matchup.\n\nOK = Yes, confirm sit-out.\nCancel = No, keep me eligible to play.`);
        if(sitOutRequested&&matchups.some(m=>m.season_id===sid&&Number(m.week_number)===week&&(m.player1_id===currentUserId||m.player2_id===currentUserId))){
          alert('You already have a matchup for this week. It will stay scheduled under the league rules. Your unavailable day will still be saved, but you cannot automatically sit out an assigned matchup.');
          sitOutRequested=false;
