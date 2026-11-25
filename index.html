@@ -1346,6 +1346,7 @@ body:not(.display-mode) .tsg-v61t-stats{display:flex;gap:9px;flex-wrap:wrap;marg
 body:not(.display-mode) .tsg-v61t-stats span{display:inline-block;background:#e4eee1;padding:6px 9px;border-radius:7px;color:#173d32;font-weight:700;font-size:.83rem}
 body:not(.display-mode) .tsg-v61t-week-check p{margin:7px 0 0;color:#3c5647;font-size:.88rem}
 body:not(.display-mode) .tsg-v61t-week-check .tsg-v61t-attention{color:#803825;font-weight:750}
+.tsg-projection-box{border:1px dashed #c9ab68;background:#f5f1e3;margin:12px 0 18px}.tsg-projection-pill{display:inline-block;background:#f0dcac;color:#173d32;border-radius:5px;font-size:.72rem;font-weight:800;letter-spacing:.06em;padding:4px 8px}.tsg-projection-heading h3{margin:8px 0}.tsg-projection-box table{width:100%}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1924,7 +1925,7 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <div class="section-head" id="standings-section"><div><div class="eyebrow" style="color:var(--green2)">The leaderboard</div><h2>Overall standings</h2></div><span class="muted" id="season-label">Loading season…</span></div>
 <div class="grid home-standings-grid"><section class="panel"><h3>League table</h3><div id="standings"><div class="empty">Connecting to the league…</div></div></section></div>
 <section id="tsg-potential-schedule" class="tsg-potential-schedule" hidden aria-label="Potential league schedule"><div class="tsg-potential-head"><div><span class="tsg-potential-eyebrow">REGISTRATION PREVIEW · NOT OFFICIAL</span><h2>Who might face whom?</h2><p>As players are approved, this potential draw updates automatically. Final matchups and sports are assigned when the official schedule is published.</p></div><span id="tsg-potential-count" class="tsg-potential-count"></span></div><div id="tsg-potential-content" class="tsg-potential-grid"></div></section>
-<div class="section-head" id="matchups-section"><div><div class="eyebrow" style="color:var(--green2)">Who's up next</div><h2>Weekly matchups</h2></div></div><section class="panel"><div id="matchups"><div class="empty">Matchups will show here when the season schedule is published.</div></div></section>
+<div class="section-head" id="matchups-section"><div><div class="eyebrow" style="color:var(--green2)">Who's up next</div><h2>Weekly matchups</h2></div></div><section class="panel"><div id="tsg-live-projection" class="tsg-live-projection" aria-live="polite"></div><div id="matchups"><div class="empty">Matchups will show here when the season schedule is published.</div></div></section>
 <div class="section-head" id="statistics-section"><div><div class="eyebrow" style="color:var(--green2)">Head-to-head</div><h2>Player statistics</h2></div></div>
 <section class="panel" id="profile-panel"><div id="profile-content" class="muted">Select a player name on the leaderboard to see their results across all five sports.</div></section>
 <div class="section-head" id="player-signin"><div><div class="eyebrow" style="color:var(--green2)">Participant access</div><h2>Player sign in</h2></div></div><section class="panel authbox"><div id="auth-state" class="muted">Sign in to access your player tools and submit completed matchups.</div><form id="auth-form"><label for="email">Email</label><input id="email" type="email" autocomplete="username" placeholder="you@example.com"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Your password"><div style="display:flex;gap:8px;margin-top:14px"><button id="signin" type="submit">Sign in</button><button type="button" class="secondary" id="reset">Reset password</button></div></form><button id="signout" class="secondary hidden">Sign out</button><div id="auth-message" role="status"></div></section>
@@ -1966,7 +1967,7 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 </section>
 <section class="panel score-panel">
 <h3>Submit my match results</h3><p class="muted">Either opponent may submit once. All three assigned sports must be entered. After submission both players are locked out; an admin can correct mistakes.</p>
-<div id="my-matchups"><div class="empty">Sign in to view your matchups.</div></div>
+<div id="tsg-my-projection" class="tsg-live-projection"></div><div id="my-matchups"><div class="empty">Sign in to view your matchups.</div></div>
 <div id="score-message" role="status"></div>
 </section>
 <section class="panel player-tools tsg-single-issue-panel" aria-label="Scheduling help">
@@ -2022,15 +2023,15 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <section class="panel admin-form" id="tsg-v57-registration-editor"><h3>Public registration window</h3><p class="muted">Edit a season's public signup dates at any time. This does not restrict administrator invitations or approvals.</p><label for="tsg-v57-season">Season</label><select id="tsg-v57-season"></select><label for="tsg-v57-opens">Opens (Calgary)</label><input id="tsg-v57-opens" type="date"><label for="tsg-v57-closes">Closes (inclusive)</label><input id="tsg-v57-closes" type="date"><button id="tsg-v57-save-window" type="button">Save registration dates</button><div id="tsg-v57-editor-message" class="notice" role="status"></div></section>
 <section class="panel admin-form tsg-v59h-generator" id="rolling-generator">
  <h3>Weekly Scheduling</h3>
- <p class="muted">The league automatically publishes the next available week, up to two weeks ahead of the current week. Preview is optional; no administrator action is needed.</p>
+ <p class="muted">The current week and next week become official automatically. The next unpublished week is a live projection that changes as availability or the roster changes. No administrator publishing is needed.</p>
  <label for="schedule-season">Choose season</label>
  <select id="schedule-season" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit"></select>
  <div id="tsg-v59h-schedule-status" class="tsg-v59h-schedule-status" role="status" aria-live="polite">Choose a season to view its schedule.</div>
  <input id="deadline-time" type="hidden" value="23:59">
- <button id="preview-schedule" type="button">Preview suggested next week (optional)</button>
+ <button id="preview-schedule" type="button">Refresh projected week</button>
  <details class="tsg-v59h-schedule-help"><summary>How automatic scheduling works</summary>
   <div class="tsg-default-rules"><strong>Season defaults:</strong> Five sports (Ping Pong, Darts, Pool, Air Hockey and Beer Pong) · Three different sports per matchup · Two wins take the matchup · Total game wins break ties · Weekly deadline 11:59 PM (according to the schedule) · Fair rotating byes · Playing ahead allowed.</div>
-  <p class="muted">The automatic publisher maintains the current week plus the next two weeks. The optional preview uses approved participating players, tries to avoid repeat opponents, and shares byes fairly. Individual days off and league blackout dates do not remove or replace opponents. The preview flags pairs without any mutually available dates. Every matchup receives three randomly selected sports.</p>
+  <p class="muted">The automatic publisher locks the current and following week. The next unpublished week is shown as a live, changing projection. A projection is not an official matchup: opponents and assigned sports may change before publication.</p>
  </details>
 </section>
 </div>
@@ -2217,7 +2218,7 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <div id="forfeit-message" class="notice" role="status"></div>
 </section>
 <section class="panel score-panel"><h3>Correct a matchup result</h3><p class="muted">Admin only. Select a published matchup, choose the winners of its three assigned sports, and save the corrected result. All changes replace the previous result.</p><label for="correction-matchup">Choose matchup</label><select id="correction-matchup"></select><div id="correction-games"></div><button id="save-correction" type="button" style="margin-top:12px">Save corrected result</button><div id="correction-message" class="notice" role="status"></div></section>
-<section id="schedule-preview-panel" class="panel hidden" style="margin-top:16px"><h3>Schedule preview</h3><div id="schedule-preview" class="preview"></div><div class="notice" id="schedule-summary"></div><button id="publish-schedule">Publish preview manually (optional)</button> <button id="cancel-preview" class="secondary">Discard preview</button><div id="admin-message" role="status"></div></section>
+<div id="tsg-admin-projection" class="tsg-live-projection"></div><section id="schedule-preview-panel" class="panel hidden" style="margin-top:16px"><h3>Schedule preview</h3><div id="schedule-preview" class="preview"></div><div class="notice" id="schedule-summary"></div><button id="publish-schedule" class="hidden" disabled>Automatic publishing only</button> <button id="cancel-preview" class="secondary">Discard preview</button><div id="admin-message" role="status"></div></section>
 </section>
 <div class="foot">Turfcare Social Games League · Built for the crew</div>
 </main>
@@ -2427,6 +2428,47 @@ function renderPotentialSchedule(){
  if(preview.participants.length<2){content.innerHTML='<p class="tsg-potential-empty">The draw will appear once two players have been approved.</p>';return;}
  content.innerHTML=tsgPreviewMatchupRows(preview.weeks)||'<p class="tsg-potential-empty">These weeks already have official matchups. See Weekly Matchups below.</p>';
 }
+
+// V61z: Live projections are read-only, have no matchup IDs, and are not eligible for scoring.
+let tsgLiveProjection=null;
+let tsgProjectionRequest=0;
+function tsgProjectionHtml(onlyMine=false){
+ const p=tsgLiveProjection;
+ if(!p||!p.week_number)return '';
+ const plan=p.plan||{};
+ const rows=Array.isArray(plan.schedule)?plan.schedule:[];
+ const byes=Array.isArray(plan.byes)?plan.byes:[];
+ const mine=onlyMine?rows.filter(m=>m.player1_id===currentUserId||m.player2_id===currentUserId):rows;
+ const myBye=onlyMine?byes.some(b=>b.player_id===currentUserId):false;
+ if(onlyMine&&!mine.length&&!myBye)return '';
+ const season=seasons.find(s=>s.id===p.season_id);
+ const range=season?weekDates(season,p.week_number):'';
+ const heading=`<div class="tsg-projection-heading"><div><span class="tsg-projection-pill">PROJECTION · NOT OFFICIAL</span><h3>Week ${p.week_number} · ${esc(range)}</h3></div></div>`;
+ const message='<p class="muted" style="margin:8px 0">This is the league’s current best guess. Opponents and sports can change as availability or players change. Do not arrange games or submit results from this preview.</p>';
+ const table=mine.length?`<div class="table-scroll"><table><thead><tr><th>Likely matchup</th><th>Possible sports</th></tr></thead><tbody>${mine.map(m=>`<tr><td>${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}</td><td>${(m.disciplines||[]).map(s=>esc(s)).join(' · ')}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">No valid pairings at the moment.</p>';
+ const byeRows=byes.filter(b=>!onlyMine||b.player_id===currentUserId);
+ const notes=byeRows.length?`<p class="muted"><strong>Projected sit-out:</strong> ${byeRows.map(b=>esc(playerName(b.player_id))).join(', ')}</p>`:'';
+ return `<section class="panel tsg-projection-box">${heading}${message}${table}${notes}</section>`;
+}
+function tsgRenderLiveProjection(){
+ const target=$('tsg-live-projection');if(target)target.innerHTML=tsgProjectionHtml(false);
+ const mine=$('tsg-my-projection');if(mine)mine.innerHTML=currentUserId?tsgProjectionHtml(true):'';
+ const admin=$('tsg-admin-projection');if(admin)admin.innerHTML=isAdmin?tsgProjectionHtml(false):'';
+}
+async function tsgRefreshLiveProjection(){
+ const req=++tsgProjectionRequest;
+ const active=seasons.find(s=>s.status==='active')||seasons.find(s=>s.status==='upcoming');
+ if(!active){tsgLiveProjection=null;tsgRenderLiveProjection();return;}
+ try{
+  const {data,error}=await client.rpc('league_live_next_week_projection',{p_season_id:active.id});
+  if(error)throw error;
+  if(req!==tsgProjectionRequest)return;
+  tsgLiveProjection=data?.status==='projected'?data:null;
+  tsgRenderLiveProjection();
+ }catch(e){if(req!==tsgProjectionRequest)return;tsgLiveProjection=null;tsgRenderLiveProjection();console.warn('Live schedule projection unavailable:',e.message||e);}
+}
+setInterval(()=>{if(seasons?.length)tsgRefreshLiveProjection().catch(console.warn);},90000);
+
 function renderMatchups(){
  const list=matchups.filter(inRollingWindow).sort((a,b)=>a.week_number-b.week_number||new Date(a.deadline)-new Date(b.deadline));
  const box=$('matchups');
@@ -2598,7 +2640,7 @@ async function loadPublic(){
  playerUnavailableDates=dailyPlayers.data||[];
  leagueBlackoutDates=dailyBlackouts.data||[];
  const active=seasons.find(x=>x.status==='active')||seasons[0];$('season-label').textContent=active?.name||'Season not yet published';
- renderStandings();renderMatchups();renderPotentialSchedule();renderCountdown();renderProfile();renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
+ renderStandings();renderMatchups();tsgRefreshLiveProjection().catch(console.warn);renderPotentialSchedule();renderCountdown();renderProfile();renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
  if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();renderV61tWeekCheck();await loadScheduleLog();await loadPendingRegistrations();}else $('player-management-list').innerHTML='Administrator access required.';
  if(currentUserId)await loadLeagueFlags();
  updateV59Overview();renderSeasonAdmin();renderTvMediaSeasonOptions();if(isAdmin)renderTvMediaAdmin();
@@ -2932,8 +2974,8 @@ function updateV59hSchedulingStatus(){
  const total=weekCount(season);
  const current=rollingWeekNumber(season);
  if(next>total){target.textContent=`${season.name}: all ${total} weeks have been published.`;return;}
- const eligible=next<=Math.min(total,current+2);
- const advice=eligible?'The automatic publisher will post this week. You can preview its suggested matchups here.':'Outside the automatic three-week scheduling window.';
+ const eligible=next<=Math.min(total,current+1);
+ const advice=eligible?'Scheduled for automatic publication.':'Projected schedules refresh automatically until they enter the official window.';
  target.textContent=`${season.name} · ${published} of ${total} weeks published · Next: Week ${next} · Current: Week ${current}. ${advice}`;
 }
 $('schedule-season')?.addEventListener('change',updateV59hSchedulingStatus);
@@ -4998,40 +5040,9 @@ $('delete-season-button').onclick=async()=>{
   }catch(error){showSeasonMessage(error.message||'Could not delete season.',true);}
   finally{button.disabled=false;}
 };
-$('preview-schedule').onclick=async()=>{try{
- const {data:latestProfiles,error:rosterError}=await client.from('profiles').select('id,display_name,role,is_player,is_owner,is_approved');
- if(rosterError)throw rosterError;
- profiles=latestProfiles||[];
- pendingSchedule=null;
- const result=makeSchedule($('schedule-season').value);pendingSchedule=result.payload;
- const names=Object.fromEntries(result.players.map(p=>[p.id,p.display_name]));
- $('schedule-preview').innerHTML=[result.week].map(wk=>{const rows=pendingSchedule.filter(x=>x.week_number===wk),byes=result.byes.filter(x=>x.week_number===wk);
-  return `<h4>Week ${wk}</h4>${result.conflicts.some(c=>c.week_number===wk)?'<div class="notice" style="color:#a13b32">Scheduling warning: At least one pair has no shared available dates this week. The automatic publisher will instead give unpairable players a bye.</div>':''}${rows.length?`<table><thead><tr><th>Matchup</th><th>Three sports</th><th>Deadline</th></tr></thead><tbody>${rows.map(m=>`<tr><td>${esc(names[m.player1_id])} vs ${esc(names[m.player2_id])}${result.conflicts.some(c=>c.week_number===wk&&c.player1_id===m.player1_id&&c.player2_id===m.player2_id)?' ⚠ No shared available date':''}</td><td>${m.disciplines.map(esc).join(', ')}</td><td>${new Date(m.deadline).toLocaleString()}</td></tr>`).join('')}</tbody></table>`:''}${byes.map(b=>`<div class="notice">Bye: ${esc(names[b.player_id])}</div>`).join('')}`;
- }).join('');
- $('schedule-summary').textContent=`${result.players.length} approved players · Week ${result.week} only · ${pendingSchedule.length} matchups · ${result.conflicts.length} availability warnings. Optional preview; automatic publishing runs in the background.`;
- $('schedule-preview-panel').classList.remove('hidden');showAdminMessage('');
- }catch(e){showAdminMessage(e.message,true);}};
+$('preview-schedule').onclick=async()=>{await tsgRefreshLiveProjection();};
 $('cancel-preview').onclick=()=>{pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');};
-$('publish-schedule').onclick=async()=>{
- if(!pendingSchedule?.length)return showAdminMessage('Generate a preview first.',true);
- const btn=$('publish-schedule');btn.disabled=true;
- try{
-  const {data:latestProfiles,error:rosterError}=await client.from('profiles').select('id,display_name,is_player,is_approved');
-  if(rosterError)throw rosterError;
-  const latestEligible=(latestProfiles||[]).filter(p=>p.is_player===true&&p.is_approved===true).map(p=>p.id).sort();
-  const previousEligible=profiles.filter(p=>p.is_player===true&&p.is_approved===true).map(p=>p.id).sort();
-  if(JSON.stringify(latestEligible)!==JSON.stringify(previousEligible)){
-   pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');
-   profiles=latestProfiles||[];
-   throw new Error('The approved-player roster has changed. Generate a fresh preview before publishing.');
-  }
-  if(!confirm(`Publish Week ${pendingSchedule[0].week_number} only? Existing published weeks will stay unchanged.`))return;
-  const {data,error}=await client.rpc('publish_season_schedule',{p_season_id:$('schedule-season').value,p_schedule:pendingSchedule});
-  if(error)throw error;
-  pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');
-  await loadPublic();showAdminMessage(`Published ${data} matchups successfully.`);
- }catch(e){showAdminMessage(e.message||'Could not publish the schedule.',true);}finally{btn.disabled=false;}
-};
+$('publish-schedule').onclick=()=>showAdminMessage('Official weeks publish automatically. Live projections cannot be published manually.');
 // Public signup: Supabase trigger creates a non-participating, unapproved player profile.
 $('tsg-signup-form').addEventListener('submit',async(event)=>{
  event.preventDefault();
