@@ -2069,9 +2069,9 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <div class="tsg-v61b-two"><div><label for="tsg-v61b-start">Starts</label><input id="tsg-v61b-start" type="date"></div><div><label for="tsg-v61b-end">Ends</label><input id="tsg-v61b-end" type="date"></div></div>
 <label for="tsg-v61b-status">Season status</label><select id="tsg-v61b-status"><option value="upcoming">Upcoming</option><option value="active">Active</option><option value="completed">Completed</option></select>
 <div id="tsg-v61b-season-summary" class="notice"></div>
-<div id="tsg-season-close-review" style="margin:16px 0;padding:18px;border:1px solid #cdbb8e;border-radius:12px;background:#fffdf6">
+<div id="tsg-season-close-review" class="hidden" style="margin:16px 0;padding:18px;border:1px solid #cdbb8e;border-radius:12px;background:#fffdf6">
   <h3 style="margin:0 0 7px">Season completion review</h3>
-  <p class="notice">Review the published matchups and remaining season dates before closing. Finishing a season does not delete scores or create the next schedule.</p>
+  <p class="notice">This checklist appears when the season reaches its end date or you select Completed. It checks unfinished matchups before you close the season. Results remain saved.</p>
   <div id="tsg-season-close-details" role="status" aria-live="polite"></div>
   <button type="button" id="tsg-season-close-refresh" class="secondary" style="margin-top:12px">Refresh completion review</button>
 </div>
@@ -2088,7 +2088,7 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 </div>
 <button type="button" id="tsg-v61b-save-season">Save Season Changes</button>
 <p id="tsg-v61b-season-message" class="notice" role="status"></p>
-<p class="muted">Season status normally advances on its own at the scheduled start and end dates. A season with unresolved matchups will not be closed automatically.</p>
+<p class="muted">Season status normally advances on its own at the scheduled start and end dates. The review appears once the end date is reached; it does not automatically close or delete a season.</p>
 </section>
 <section class="panel admin-form tsg-v61c-tv-editor" id="tsg-v61b-tv-editor">
   <div class="tsg-v61c-tv-heading">
@@ -4801,7 +4801,16 @@ function tsgSeasonClosureReadiness(season){
 }
 function tsgRenderClosureReview(){
  const target=$('tsg-season-close-details'),season=seasons.find(s=>s.id===$('tsg-v61b-season')?.value);
- if(!target||!season)return;
+ const panel=$('tsg-season-close-review');
+ if(!target||!panel)return;
+ if(!season){panel.classList.add('hidden');return;}
+ // Only show during an attempted closure or after the scheduled season end.
+ // Never interrupt normal admin work before that date.
+ const tryingToClose=$('tsg-v61b-status')?.value==='completed'&&season.status!=='completed';
+ const reachedEnd=calDate(new Date())>=season.ends_on;
+ const shouldShow=season.status!=='completed'&&(tryingToClose||reachedEnd);
+ panel.classList.toggle('hidden',!shouldShow);
+ if(!shouldShow){target.innerHTML='';return;}
  const r=tsgSeasonClosureReadiness(season);
  const summary=r.outstanding.length?`<strong style="color:#8b2d1d">${r.outstanding.length} unresolved matchup(s)</strong> across Week ${r.byWeek.join(', Week ')}.`:'<strong style="color:#18573c">No unresolved published matchups detected.</strong>';
  const when=r.seasonEnded?'The scheduled end date has been reached.':`Season is scheduled through <strong>${esc(season.ends_on)}</strong>; wait until then or safely shorten it first.`;
@@ -4913,7 +4922,7 @@ $('tsg-v61b-save-season')?.addEventListener('click',async function(){
  if(status==='completed'&&s.status!=='completed'){
    const r=tsgSeasonClosureReadiness(s);
    if(!r.ready){
-     note.textContent=`Cannot complete this season yet: ${r.outstanding.length} unresolved matchup(s) and ${r.seasonEnded?'the end date has passed':'the end date has not been reached'}. Review the panel above.`;
+     note.textContent=`Cannot complete this season yet: ${r.outstanding.length} unresolved matchup(s) and ${r.seasonEnded?'the end date has passed':'the end date has not been reached'}. Review the completion checklist above.`;
      tsgRenderClosureReview();return;
    }
    if(!confirm(`Mark "${name}" completed? ${r.completed} published matchup(s) are finalized. This does not delete results or automatically create the next season.`))return;
