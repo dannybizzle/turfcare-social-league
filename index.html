@@ -2074,7 +2074,8 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
   <p class="notice">Change the end date without resetting scores. Preview the impact on each week before adjusting the end date. Published matchups and scores are protected, and nothing changes until you confirm.</p>
   <label for="tsg-season-new-end">New season end date</label>
   <input id="tsg-season-new-end" type="date" style="max-width:320px">
-  <button type="button" id="tsg-season-preview" class="secondary" style="margin:12px 0">Preview change</button>
+  <button type="button" id="tsg-season-preview" class="secondary" style="margin:12px 8px 12px 0">Preview change</button>
+  <button type="button" id="tsg-season-cancel" class="secondary" style="margin:12px 0">Cancel / Reset</button>
   <div id="tsg-season-impact" class="notice" role="status" aria-live="polite">Select a new end date to see its impact.</div>
   <button type="button" id="tsg-season-apply" class="hidden">Confirm end date change</button>
   <div id="tsg-season-adjust-message" class="notice" role="status"></div>
@@ -4843,6 +4844,14 @@ function tsgSeasonAdjustmentPreview(){
  </div>`;
  if(!affected.length)apply.classList.remove('hidden');
 }
+$('tsg-season-cancel')?.addEventListener('click',()=>{
+ const season=seasons.find(x=>x.id===$('tsg-v61b-season')?.value);
+ if(!season)return;
+ $('tsg-season-new-end').value=season.ends_on;
+ $('tsg-season-impact').textContent='No changes pending. The original season end date has been restored.';
+ $('tsg-season-apply').classList.add('hidden');
+ $('tsg-season-adjust-message').textContent='';
+});
 $('tsg-season-preview')?.addEventListener('click',tsgSeasonAdjustmentPreview);
 $('tsg-season-new-end')?.addEventListener('change',()=>{$('tsg-season-apply').classList.add('hidden');$('tsg-season-impact').textContent='Date changed. Preview the impact before confirming.';});
 $('tsg-season-apply')?.addEventListener('click',async function(){
