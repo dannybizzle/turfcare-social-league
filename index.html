@@ -2071,7 +2071,7 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <div id="tsg-v61b-season-summary" class="notice"></div>
 <div id="tsg-season-duration-editor" style="margin:18px 0;padding:18px;border:1px solid #cdbb8e;border-radius:12px;background:#f7f3e8">
   <h3 style="margin:0 0 7px">Extend or shorten this season</h3>
-  <p class="notice">Change the end date without resetting scores. Longer seasons have room for additional weeks; shortening is allowed only when it does not conflict with existing published matchups. Nothing changes until you confirm.</p>
+  <p class="notice">Change the end date without resetting scores. Preview the impact on each week before adjusting the end date. Published matchups and scores are protected, and nothing changes until you confirm.</p>
   <label for="tsg-season-new-end">New season end date</label>
   <input id="tsg-season-new-end" type="date" style="max-width:320px">
   <button type="button" id="tsg-season-preview" class="secondary" style="margin:12px 0">Preview change</button>
@@ -4804,22 +4804,44 @@ function tsgSeasonAdjustmentPreview(){
  const season=seasons.find(x=>x.id===$('tsg-v61b-season')?.value), end=$('tsg-season-new-end')?.value;
  const impact=$('tsg-season-impact'),apply=$('tsg-season-apply');
  apply.classList.add('hidden');
- if(!season||!end||end<season.starts_on){impact.textContent='Enter a valid end date on or after the start.';return;}
- if(end===season.ends_on){impact.textContent='No date change selected.';return;}
- if(season.status==='completed'){impact.textContent='A completed season cannot be adjusted. Reopen it through the season lifecycle process first.';return;}
- const originalWeeks=weekCount(season), revisedWeeks=weekCount({...season,ends_on:end});
- const affected=matchups.filter(m=>m.season_id===season.id&&(
-   new Date(Date.parse(season.starts_on+'T12:00:00Z')+7*(m.week_number-1)*86400000).toISOString().slice(0,10)>end ||
-   (m.deadline&&m.deadline.slice(0,10)>end)
- ));
- if(end<season.ends_on && affected.length){
-  impact.textContent=`Shortening would conflict with ${affected.length} already-published matchup(s). No scores or fixtures will be removed automatically. Resolve or reschedule these games first, then retry.`;
-  return;
+ const plain=message=>{impact.textContent=message;};
+ if(!season||!end||end<season.starts_on){plain('Enter a valid end date on or after the start.');return;}
+ if(end===season.ends_on){plain('No date change selected.');return;}
+ if(season.status==='completed'){plain('A completed season cannot be adjusted. Reopen it through the season lifecycle process first.');return;}
+ const originalWeeks=weekCount(season),revisedWeeks=weekCount({...season,ends_on:end});
+ const all=matchups.filter(m=>m.season_id===season.id);
+ const weekDate=n=>new Date(Date.parse(season.starts_on+'T12:00:00Z')+7*(n-1)*86400000).toISOString().slice(0,10);
+ const datePlus=(date,n)=>new Date(Date.parse(date+'T12:00:00Z')+n*86400000).toISOString().slice(0,10);
+ const ed=esc;
+ const affected=all.filter(m=>weekDate(m.week_number)>end||(m.deadline&&m.deadline.slice(0,10)>end));
+ const shortened=end<season.ends_on, total=Math.max(originalWeeks,revisedWeeks);
+ let kept=0,removed=0;
+ const weekRows=[];
+ for(let w=1;w<=total;w++){
+   const ws=weekDate(w),we=datePlus(ws,6),inside=ws<=end,previous=ws<=season.ends_on;
+   const matches=all.filter(m=>m.week_number===w), risk=matches.some(m=>weekDate(m.week_number)>end||(m.deadline&&m.deadline.slice(0,10)>end));
+   if(inside)kept++;else if(previous)removed++;
+   const kind=!inside?'Removed from season':!previous?'New scheduling space':risk?'Published conflict':'Retained';
+   const color=risk?'#8b2d1d':!inside?'#795c2e':!previous?'#18573c':'#245b49';
+   weekRows.push(`<tr><td>Week ${w}</td><td>${ed(ws)} – ${ed(we)}</td><td>${matches.length} published</td><td style="font-weight:750;color:${color}">${kind}</td></tr>`);
  }
- impact.textContent=end>season.ends_on?
-  `Extend from ${season.ends_on} to ${end}. ${originalWeeks} → ${revisedWeeks} season weeks. Published games and scores remain unchanged; any new weeks are handled by the existing scheduling process.`:
-  `Shorten from ${season.ends_on} to ${end}. ${originalWeeks} → ${revisedWeeks} season weeks. No published matchup conflicts were found in the loaded schedule. The server will verify again before saving.`;
- apply.classList.remove('hidden');
+ const heading=shortened?'Shortening preview':'Extension preview';
+ const status=affected.length?
+   `<p style="color:#8b2d1d;font-weight:750">Blocked: ${affected.length} published matchup(s) have a week start or deadline after the proposed end. Nothing will be deleted. Keep the current end date or resolve the conflict before shortening.</p>`:
+   `<p style="color:#18573c;font-weight:750">No published-matchup conflicts detected in the currently loaded schedule. The database will check again when you confirm.</p>`;
+ impact.innerHTML=`<div style="margin-top:10px;padding:16px;border:1px solid #d6cbad;border-radius:12px;background:#fffdf6">
+   <h4 style="margin:0 0 12px;font-size:1rem;color:#103b2b">${heading}</h4>
+   <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+     <div style="flex:1;min-width:150px"><small>Current end date</small><strong style="display:block">${ed(season.ends_on)}</strong></div>
+     <div style="flex:1;min-width:150px"><small>Proposed end date</small><strong style="display:block">${ed(end)}</strong></div>
+     <div style="flex:1;min-width:120px"><small>Season weeks</small><strong style="display:block">${originalWeeks} → ${revisedWeeks}</strong></div>
+   </div>
+   <p style="margin:6px 0 12px">${kept} week(s) retained · ${removed} week(s) removed · ${all.length} published matchups currently loaded.</p>
+   <div class="table-scroll"><table style="font-size:.82rem"><thead><tr><th>Week</th><th>Dates</th><th>Matchups</th><th>Impact</th></tr></thead><tbody>${weekRows.join('')}</tbody></table></div>
+   ${status}
+   <p style="font-size:.8rem;color:#607267">Unpublished projected matchups are not official. Extending does not automatically publish new games. This is a preview, not a saved change.</p>
+ </div>`;
+ if(!affected.length)apply.classList.remove('hidden');
 }
 $('tsg-season-preview')?.addEventListener('click',tsgSeasonAdjustmentPreview);
 $('tsg-season-new-end')?.addEventListener('change',()=>{$('tsg-season-apply').classList.add('hidden');$('tsg-season-impact').textContent='Date changed. Preview the impact before confirming.';});
