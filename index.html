@@ -1891,6 +1891,11 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 @media(max-width:650px){
  body:not(.display-mode) #tsg-v59g-invitation-panel button{width:100%;min-height:46px;}
 }
+
+/* V61r: clear pending-public-registration state on the homepage. */
+body:not(.display-mode) #tsg-public-approval-notice:not(.hidden){display:flex;flex-direction:column;gap:5px;margin:20px 0;padding:18px 20px;border:1px solid #b9c8b9;border-radius:12px;background:#f2f6ed;color:#173d32;line-height:1.45}
+body:not(.display-mode) #tsg-public-approval-notice strong{font-size:1.05rem}
+body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 </style>
 </head>
 <body>
@@ -1899,7 +1904,7 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 <button class="tsg-v56g-login" id="tsg-v56g-login" type="button">Already a member? Sign in</button>
 
 </div></div><div class="home-hero-mark tsg-hero-crest" aria-label="The Glencoe crest"><img src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><i>FIVE SPORTS · ONE CREW</i></div></div></header>
-<main class="wrap home-body"><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a data-sport-rules="Ping Pong" aria-haspopup="dialog" aria-label="View Ping Pong rules" href="#sport-rules" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a data-sport-rules="Darts" aria-haspopup="dialog" aria-label="View Darts rules" href="#sport-rules" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a data-sport-rules="Pool" aria-haspopup="dialog" aria-label="View Pool rules" href="#sport-rules" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a data-sport-rules="Air Hockey" aria-haspopup="dialog" aria-label="View Air Hockey rules" href="#sport-rules" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a data-sport-rules="Beer Pong" aria-haspopup="dialog" aria-label="View Beer Pong rules" href="#sport-rules" class="home-sport-tile tsg-beer-tile"><img src="assets/beer-pong.jpg" alt="Beer pong game with red cups and a ping-pong ball" loading="lazy"><span>05 <strong>BEER PONG</strong></span></a></div></section>
+<main class="wrap home-body"><div id="tsg-public-approval-notice" class="hidden" role="status" aria-live="polite"><strong>Registration submitted — awaiting league admin approval.</strong><span>Your account request is saved. You can sign in after a league administrator approves you.</span></div><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a data-sport-rules="Ping Pong" aria-haspopup="dialog" aria-label="View Ping Pong rules" href="#sport-rules" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a data-sport-rules="Darts" aria-haspopup="dialog" aria-label="View Darts rules" href="#sport-rules" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a data-sport-rules="Pool" aria-haspopup="dialog" aria-label="View Pool rules" href="#sport-rules" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a data-sport-rules="Air Hockey" aria-haspopup="dialog" aria-label="View Air Hockey rules" href="#sport-rules" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a data-sport-rules="Beer Pong" aria-haspopup="dialog" aria-label="View Beer Pong rules" href="#sport-rules" class="home-sport-tile tsg-beer-tile"><img src="assets/beer-pong.jpg" alt="Beer pong game with red cups and a ping-pong ball" loading="lazy"><span>05 <strong>BEER PONG</strong></span></a></div></section>
 
 <section class="countdown" id="deadline-section"><div><h2>Time left to finish this week's matchup</h2><div id="deadline-label" class="muted">The weekly deadline will appear here once matchups are published.</div></div><div class="timer" id="timer"><div class="timebox"><strong>--</strong><span>Days</span></div><div class="timebox"><strong>--</strong><span>Hours</span></div><div class="timebox"><strong>--</strong><span>Minutes</span></div><div class="timebox"><strong>--</strong><span>Seconds</span></div></div></section>
 <div class="section-head" id="standings-section"><div><div class="eyebrow" style="color:var(--green2)">The leaderboard</div><h2>Overall standings</h2></div><span class="muted" id="season-label">Loading season…</span></div>
@@ -1924,7 +1929,7 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 <div id="tsg-signup-message" role="status" aria-live="polite"></div>
 </form>
 </section>
-<div id="tsg-pending-approval" class="tsg-pending-panel hidden" role="status"><strong>Account awaiting approval</strong>Your email is signed in, but league participation has not yet been approved. Please check back after an administrator approves your account and player access opens.</div>
+<div id="tsg-pending-approval" class="tsg-pending-panel hidden" role="status"><strong>Awaiting league admin approval</strong>Your registration is saved, but league access has not yet been approved.</div>
 <section id="player-area" class="hidden">
 <section class="tsg-approved-welcome" id="tsg-approved-welcome" hidden aria-label="League access approved" role="status">
  <button type="button" id="tsg-welcome-dismiss" aria-label="Dismiss welcome message">✕</button>
@@ -2135,8 +2140,8 @@ body:not(.display-mode) #tsg-v59g-invitation-panel input{max-width:540px;}
 <div id="season-management-message" class="notice" role="status"></div>
 </section>
 <section class="panel tsg-approval-panel" id="tsg-approval-panel" aria-labelledby="tsg-approval-heading">
-<h3 id="tsg-approval-heading">Pending Public Registrations & Invites <span id="tsg-approval-count" class="tag">0</span></h3>
-<p class="muted">Invited players become eligible only after they actually set a password. The system verifies a password-setup event, not an invitation timestamp or previous login. Once approved, current-week scheduling is checked automatically.</p>
+<h3 id="tsg-approval-heading">Pending Registrations & Invitations <span id="tsg-approval-count" class="tag">0</span></h3>
+<p class="muted">Admin-invited players are approved automatically after completing password setup. Public applicants still need your approval. Use Resend invitation if an invited player has not received their setup email.</p>
 <div id="tsg-approval-list" aria-live="polite"><div class="notice">Loading registration requests…</div></div>
 <div id="tsg-approval-message" role="status" aria-live="polite" class="notice"></div>
 <button class="secondary" id="tsg-refresh-approvals" type="button">Refresh registrations</button>
@@ -2287,6 +2292,15 @@ function weekDates(s,w){const start=seasonWeekStart(s,w),end=new Date(start);end
 function weekLocked(s,w){const date=new Date(s.starts_on+'T12:00:00Z');date.setUTCDate(date.getUTCDate()+7*(w-1));return calDate(new Date())>calMonday(date.toISOString().slice(0,10));}
 
 function showMessage(msg,error=false){$('auth-message').className=error?'status error':'status';$('auth-message').textContent=msg;}
+const TSG_PUBLIC_PENDING_TEXT='Registration submitted — awaiting league admin approval. You can sign in once a league administrator approves your account.';
+let tsgPendingSignoutInProgress=false;
+function tsgSetPendingNotice(visible){
+ const banner=$('tsg-public-approval-notice');
+ if(banner)banner.classList.toggle('hidden',!visible);
+ try{if(visible)sessionStorage.setItem('tsg-v61r-public-pending','1');else sessionStorage.removeItem('tsg-v61r-public-pending');}catch{}
+}
+try{if(sessionStorage.getItem('tsg-v61r-public-pending')==='1')tsgSetPendingNotice(true);}catch{}
+
 const SPORTS=['Ping Pong','Darts','Pool','Air Hockey','Beer Pong'];
 const sportIcon={'Ping Pong':'🏓','Darts':'🎯','Pool':'🎱','Air Hockey':'🏒','Beer Pong':'🥤'};
 const playerName=id=>profiles.find(p=>p.id===id)?.display_name||'Unknown player';
@@ -2589,11 +2603,37 @@ $('tsg-welcome-dismiss').addEventListener('click',()=>{
  $('tsg-approved-welcome').hidden=true;
 });
 async function refreshAuth(){
- const {data:{session}}=await client.auth.getSession();currentUserId=session?.user?.id||null;
+ const {data:{session}}=await client.auth.getSession();
+ // Only a completed administrator invitation may temporarily keep a pending
+ // profile authenticated while the secure invitation password dialog runs.
+ // For public applicants, never render authenticated navigation before approval.
+ let verifiedProfile=null;
+ if(session && !tsgInviteLink.isInvite){
+  const {data:profile,error:profileError}=await client.from('profiles')
+   .select('role,is_owner,is_player,is_approved,display_name').eq('id',session.user.id).maybeSingle();
+  if(!profileError)verifiedProfile=profile;
+  if(!profileError && profile && profile.is_approved!==true && profile.is_owner!==true){
+   if(!tsgPendingSignoutInProgress){
+    tsgPendingSignoutInProgress=true;
+    try{await client.auth.signOut();}catch(error){console.warn('Could not sign out pending account:',error);}
+    finally{tsgPendingSignoutInProgress=false;}
+   }
+   currentUserId=null;isAdmin=false;isOwner=false;
+   $('auth-form').classList.remove('hidden');$('signout').classList.add('hidden');
+   $('admin-area').classList.add('hidden');$('player-area').classList.add('hidden');
+   $('tsg-pending-approval').classList.add('hidden');
+   $('auth-state').textContent='Sign in to access your player tools and submit completed matchups.';
+   updatePlayerApprovalWelcome(false);
+   tsgSetPendingNotice(true);showMessage(TSG_PUBLIC_PENDING_TEXT);
+   if(typeof window.tsgV57RefreshRegistration==='function')window.tsgV57RefreshRegistration();
+   return false;
+  }
+ }
+ currentUserId=session?.user?.id||null;
  $('auth-form').classList.toggle('hidden',!!session);$('signout').classList.toggle('hidden',!session);
  $('auth-state').textContent=session?'Signed in as '+session.user.email+'.':'Sign in to access your player tools and submit completed matchups.';
  isAdmin=false;isOwner=false;
- if(session){const {data:profile}=await client.from('profiles').select('role,is_owner,is_player,is_approved,display_name').eq('id',session.user.id).maybeSingle();isAdmin=profile?.role==='admin'||profile?.is_owner===true;isOwner=profile?.is_owner===true;const approved=profile?.is_approved===true&&(profile?.is_player===true||isAdmin);const cal=calDate(new Date());const unlocked=cal>='2026-11-20'||isAdmin;$('tsg-pending-approval').classList.toggle('hidden',approved&&unlocked);$('player-area').classList.toggle('hidden',!(approved&&unlocked));updatePlayerApprovalWelcome(approved&&unlocked);if(profile&&document.activeElement!==$('my-display-name'))$('my-display-name').value=profile.display_name||'';}else{$('tsg-pending-approval').classList.add('hidden');$('player-area').classList.add('hidden');updatePlayerApprovalWelcome(false);}
+ if(session){const profile=verifiedProfile||(await client.from('profiles').select('role,is_owner,is_player,is_approved,display_name').eq('id',session.user.id).maybeSingle()).data;isOwner=profile?.is_owner===true;isAdmin=isOwner||(profile?.role==='admin'&&profile?.is_approved===true);const approved=profile?.is_approved===true&&(profile?.is_player===true||isAdmin);const cal=calDate(new Date());const unlocked=cal>='2026-11-20'||isAdmin;$('tsg-pending-approval').classList.toggle('hidden',approved&&unlocked);$('player-area').classList.toggle('hidden',!(approved&&unlocked));updatePlayerApprovalWelcome(approved&&unlocked);if(approved)tsgSetPendingNotice(false);if(profile&&document.activeElement!==$('my-display-name'))$('my-display-name').value=profile.display_name||'';}else{$('tsg-pending-approval').classList.add('hidden');$('player-area').classList.add('hidden');updatePlayerApprovalWelcome(false);}
  $('tsg-registration').classList.toggle('hidden',!!session || !window.tsgV57RegistrationOpen?.() || $('tsg-registration').dataset.open!=='true');
  $('admin-area').classList.toggle('hidden',!isAdmin);
  if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();}
@@ -2892,23 +2932,32 @@ $('tsg-fill-current-week')?.addEventListener('click',async e=>{
 });
 // Invitation readiness is checked on the server, not inferred from public profile rows.
 let tsgInvitationReadiness=new Map();
+let tsgResendInviteRecipients=new Map();
+const tsgResendInviteCooldown=new Map();
 async function loadPendingRegistrations(){
  const list=$('tsg-approval-list'),count=$('tsg-approval-count');
  if(!list||!count)return;
  if(!isAdmin){list.textContent='Administrator access required.';count.textContent='0';return;}
  list.innerHTML='<div class="notice">Loading invitations and registration requests…</div>';
- const [profilesResult,readinessResult]=await Promise.all([
+ const [profilesResult,readinessResult,inviteRecipientsResult]=await Promise.all([
   client.from('profiles').select('id,display_name,role,is_owner,is_approved,is_player')
     .eq('is_approved',false).eq('role','player').eq('is_owner',false).order('created_at',{ascending:true}),
-  client.rpc('league_pending_account_readiness')
+  client.rpc('league_pending_account_readiness'),
+  client.rpc('league_pending_invitation_recipients')
  ]);
  if(profilesResult.error){list.textContent='Could not load requests: '+profilesResult.error.message;count.textContent='—';return;}
  const pending=profilesResult.data||[];
  count.textContent=String(pending.length);
  // Fail closed if the database guard/readiness function is not installed yet.
  tsgInvitationReadiness=new Map();
+ tsgResendInviteRecipients=new Map();
  if(!readinessResult.error){
   for(const entry of readinessResult.data||[])tsgInvitationReadiness.set(entry.player_id,{ready:entry.is_ready===true,state:entry.readiness_state});
+ }
+ if(!inviteRecipientsResult.error){
+  for(const entry of inviteRecipientsResult.data||[]){
+   if(entry.player_id && entry.email)tsgResendInviteRecipients.set(entry.player_id,entry.email);
+  }
  }
  if(!pending.length){list.innerHTML='<div class="notice">No pending invitations or registrations.</div>';return;}
  const readError=readinessResult.error;
@@ -2916,16 +2965,50 @@ async function loadPendingRegistrations(){
  pending.map(p=>{
   const readiness=tsgInvitationReadiness.get(p.id);
   const ready=readiness?.ready===true&&!readError;
-  const status=ready?'Ready for approval':readiness?.state==='awaiting_player_setup'?'Awaiting player password setup':readiness?.state==='awaiting_email_confirmation'?'Awaiting email confirmation':'Waiting for account setup verification';
+  const invited=tsgResendInviteRecipients.has(p.id);
+  const status=invited?'Admin invitation — awaiting player password setup':ready?'Public registration — ready for approval':readiness?.state==='awaiting_player_setup'?'Awaiting player password setup':readiness?.state==='awaiting_email_confirmation'?'Awaiting email confirmation':'Waiting for account setup verification';
   return `<div class="tsg-approval-row">
    <div><strong>${esc(p.display_name)}</strong><small>${esc(status)}</small></div>
    <div class="tsg-approval-actions">
-    <button type="button" data-approval-id="${esc(p.id)}" data-approval-name="${esc(p.display_name)}" ${ready?'':'disabled title="Player must finish setting up their account first"'}>Approve player</button>
+    ${invited?`<button type="button" class="secondary" data-resend-invite-id="${esc(p.id)}" data-resend-invite-name="${esc(p.display_name)}" ${tsgResendInviteCooldown.get(p.id)>Date.now()?'disabled title="Recently sent; please allow time for delivery"':''}>Resend invitation</button>`:`<button type="button" data-approval-id="${esc(p.id)}" data-approval-name="${esc(p.display_name)}" ${ready?'':'disabled title="Player must finish setting up their account first"'}>Approve player</button>`}
     <button type="button" class="danger" data-denial-id="${esc(p.id)}" data-denial-name="${esc(p.display_name)}">Deny access</button>
    </div>
   </div>`;
  }).join('');
 }
+// Send an existing admin-invited account a fresh Supabase password-setup link.
+// A server-side, admin-only RPC supplies the email so the browser never guesses it.
+// This does NOT create another account, approve the player, or modify matches.
+$('tsg-approval-list').addEventListener('click',async event=>{
+ const button=event.target.closest('button[data-resend-invite-id]');
+ if(!button||button.disabled||!isAdmin)return;
+ const id=button.dataset.resendInviteId;
+ const name=button.dataset.resendInviteName||'this player';
+ const message=$('tsg-approval-message');
+ if(tsgResendInviteCooldown.get(id)>Date.now()){
+  message.className='notice';message.textContent='An invitation was requested recently. Please allow time for delivery.';return;
+ }
+ // Fetch again: a stale browser list must not target an approved or public account.
+ button.disabled=true;button.textContent='Resending…';
+ try{
+  const {data,error}=await client.rpc('league_pending_invitation_recipients');
+  if(error)throw new Error('Unable to verify invitation: '+error.message);
+  const recipient=(data||[]).find(row=>row.player_id===id);
+  if(!recipient?.email)throw new Error('This is no longer a pending admin invitation. Refresh the list.');
+  const {error:sendError}=await client.auth.resetPasswordForEmail(recipient.email,{
+   redirectTo:location.origin+location.pathname
+  });
+  if(sendError)throw sendError;
+  tsgResendInviteCooldown.set(id,Date.now()+60000);
+  message.className='status';
+  message.textContent=`A fresh password-setup email was requested for ${name} (${recipient.email}). Ask them to check their inbox and junk folder. Delivery depends on the configured Supabase email service and its rate limits.`;
+  button.textContent='Invitation requested';
+ }catch(error){
+  message.className='status error';
+  message.textContent=error.message||'Could not resend the setup email.';
+  button.disabled=false;button.textContent='Resend invitation';
+ }
+});
 // Denial removes a *pending* account via the existing administrator-only
 // delete-player Edge Function so its Auth login is removed as well.
 $('tsg-approval-list').addEventListener('click',async event=>{
@@ -4844,14 +4927,18 @@ $('tsg-signup-form').addEventListener('submit',async(event)=>{
  if(password.length<8||password!==confirmPassword){message.textContent='Use a password of at least eight characters and make sure both passwords match.';message.classList.add('error');return;}
  button.disabled=true;button.textContent='Submitting…';
  try{
-  const {error}=await client.auth.signUp({email,password,options:{data:{display_name:name},emailRedirectTo:location.origin+location.pathname+'#page-player'}});
+  const {data,error}=await client.auth.signUp({email,password,options:{data:{display_name:name},emailRedirectTo:location.origin+location.pathname+'#page-home'}});
   if(error)throw error;
+  // Supabase may automatically authenticate a new signup. This is an
+  // application, not active league membership; close that session immediately.
+  if(data?.session){const {error:outError}=await client.auth.signOut();if(outError)console.warn('Public signup session signout:',outError.message);}
   $('tsg-signup-form').reset();
-  message.textContent='Registration received. Check your email for a verification link. After confirming your email, your account will remain pending league approval.';
+  tsgSetPendingNotice(true);
+  message.textContent='Registration submitted — awaiting league admin approval. If an email verification link arrives, open it to verify your email. You will receive league access after an administrator approves you.';
  }catch(error){message.classList.add('error');message.textContent=error.message||'Registration could not be completed.';}
  finally{button.disabled=false;button.textContent='Request League Access';}
 });
-$('auth-form').addEventListener('submit',async(e)=>{e.preventDefault();const button=$('signin');if(button.disabled)return;button.disabled=true;try{const {error}=await client.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)showMessage(error.message,true);else{showMessage('Signed in.');await refreshAuth();}}finally{button.disabled=false;}});
+$('auth-form').addEventListener('submit',async(e)=>{e.preventDefault();const button=$('signin');if(button.disabled)return;button.disabled=true;try{const {error}=await client.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)showMessage(error.message,true);else{const permitted=await refreshAuth();if(permitted!==false)showMessage('Signed in.');}}catch(error){showMessage(error.message||'Could not finish sign-in.',true);}finally{button.disabled=false;}});
 $('reset').onclick=async()=>{const email=$('email').value.trim();if(!email)return showMessage('Enter your email address first.',true);const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:location.origin});showMessage(error?error.message:'If that email is registered, a password reset link will be sent.',!!error);};
 $('signout').onclick=async()=>{await client.auth.signOut();await refreshAuth();showMessage('You have signed out.');};
 client.auth.onAuthStateChange(()=>{setTimeout(()=>{refreshAuth().catch(console.error);},0);});
