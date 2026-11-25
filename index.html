@@ -2022,15 +2022,15 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <section class="panel admin-form" id="tsg-v57-registration-editor"><h3>Public registration window</h3><p class="muted">Edit a season's public signup dates at any time. This does not restrict administrator invitations or approvals.</p><label for="tsg-v57-season">Season</label><select id="tsg-v57-season"></select><label for="tsg-v57-opens">Opens (Calgary)</label><input id="tsg-v57-opens" type="date"><label for="tsg-v57-closes">Closes (inclusive)</label><input id="tsg-v57-closes" type="date"><button id="tsg-v57-save-window" type="button">Save registration dates</button><div id="tsg-v57-editor-message" class="notice" role="status"></div></section>
 <section class="panel admin-form tsg-v59h-generator" id="rolling-generator">
  <h3>Weekly Scheduling</h3>
- <p class="muted">Review your next week, preview the draw, then publish when ready.</p>
+ <p class="muted">The league automatically publishes the next available week, up to two weeks ahead of the current week. Preview is optional; no administrator action is needed.</p>
  <label for="schedule-season">Choose season</label>
  <select id="schedule-season" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit"></select>
  <div id="tsg-v59h-schedule-status" class="tsg-v59h-schedule-status" role="status" aria-live="polite">Choose a season to view its schedule.</div>
  <input id="deadline-time" type="hidden" value="23:59">
- <button id="preview-schedule" type="button">Preview next unpublished week</button>
+ <button id="preview-schedule" type="button">Preview suggested next week (optional)</button>
  <details class="tsg-v59h-schedule-help"><summary>How automatic scheduling works</summary>
   <div class="tsg-default-rules"><strong>Season defaults:</strong> Five sports (Ping Pong, Darts, Pool, Air Hockey and Beer Pong) · Three different sports per matchup · Two wins take the matchup · Total game wins break ties · Weekly deadline 11:59 PM (according to the schedule) · Fair rotating byes · Playing ahead allowed.</div>
-  <p class="muted">Only the next unpublished week is generated. The draw uses approved participating players, tries to avoid repeat opponents, and shares byes fairly. Individual days off and league blackout dates do not remove or replace opponents. The preview flags pairs without any mutually available dates. Every matchup receives three randomly selected sports.</p>
+  <p class="muted">The automatic publisher maintains the current week plus the next two weeks. The optional preview uses approved participating players, tries to avoid repeat opponents, and shares byes fairly. Individual days off and league blackout dates do not remove or replace opponents. The preview flags pairs without any mutually available dates. Every matchup receives three randomly selected sports.</p>
  </details>
 </section>
 </div>
@@ -2217,7 +2217,7 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <div id="forfeit-message" class="notice" role="status"></div>
 </section>
 <section class="panel score-panel"><h3>Correct a matchup result</h3><p class="muted">Admin only. Select a published matchup, choose the winners of its three assigned sports, and save the corrected result. All changes replace the previous result.</p><label for="correction-matchup">Choose matchup</label><select id="correction-matchup"></select><div id="correction-games"></div><button id="save-correction" type="button" style="margin-top:12px">Save corrected result</button><div id="correction-message" class="notice" role="status"></div></section>
-<section id="schedule-preview-panel" class="panel hidden" style="margin-top:16px"><h3>Schedule preview</h3><div id="schedule-preview" class="preview"></div><div class="notice" id="schedule-summary"></div><button id="publish-schedule">Approve and publish schedule</button> <button id="cancel-preview" class="secondary">Discard preview</button><div id="admin-message" role="status"></div></section>
+<section id="schedule-preview-panel" class="panel hidden" style="margin-top:16px"><h3>Schedule preview</h3><div id="schedule-preview" class="preview"></div><div class="notice" id="schedule-summary"></div><button id="publish-schedule">Publish preview manually (optional)</button> <button id="cancel-preview" class="secondary">Discard preview</button><div id="admin-message" role="status"></div></section>
 </section>
 <div class="foot">Turfcare Social Games League · Built for the crew</div>
 </main>
@@ -2893,7 +2893,7 @@ function makeSchedule(seasonId){
  const targetWeek=previous.length?Math.max(...previous.map(m=>m.week_number))+1:1;
  const allowed=rollingWeeks(season);
  if(targetWeek>weekCount(season))throw new Error('All season weeks have already been published.');
- if(!allowed.includes(targetWeek))throw new Error(`The next unpublished week is Week ${targetWeek}. Only the current and following weeks (${allowed.join(' and ')}) can be published right now.`);
+ if(targetWeek>Math.min(weekCount(season),rollingWeekNumber(season)+2))throw new Error(`Week ${targetWeek} is beyond the three-week publication window. The league will publish it automatically when it enters that window.`);
  const players=profiles.filter(p=>p.is_player===true&&p.is_approved===true&&!isUnavail(seasonId,targetWeek,p.id));
  if(players.length<2)throw new Error('Fewer than two eligible players. This week will be a bye.');
  const pairKey=(a,b)=>[a,b].sort().join(':');
@@ -2932,8 +2932,8 @@ function updateV59hSchedulingStatus(){
  const total=weekCount(season);
  const current=rollingWeekNumber(season);
  if(next>total){target.textContent=`${season.name}: all ${total} weeks have been published.`;return;}
- const eligible=rollingWeeks(season).includes(next);
- const advice=eligible?'Ready to preview the next unpublished week.':'Outside the current rolling scheduling window; previewing may be restricted.';
+ const eligible=next<=Math.min(total,current+2);
+ const advice=eligible?'The automatic publisher will post this week. You can preview its suggested matchups here.':'Outside the automatic three-week scheduling window.';
  target.textContent=`${season.name} · ${published} of ${total} weeks published · Next: Week ${next} · Current: Week ${current}. ${advice}`;
 }
 $('schedule-season')?.addEventListener('change',updateV59hSchedulingStatus);
@@ -5006,9 +5006,9 @@ $('preview-schedule').onclick=async()=>{try{
  const result=makeSchedule($('schedule-season').value);pendingSchedule=result.payload;
  const names=Object.fromEntries(result.players.map(p=>[p.id,p.display_name]));
  $('schedule-preview').innerHTML=[result.week].map(wk=>{const rows=pendingSchedule.filter(x=>x.week_number===wk),byes=result.byes.filter(x=>x.week_number===wk);
-  return `<h4>Week ${wk}</h4>${result.conflicts.some(c=>c.week_number===wk)?'<div class="notice" style="color:#a13b32">Scheduling warning: At least one pair has no shared available dates this week. Review the daily calendars before publishing.</div>':''}${rows.length?`<table><thead><tr><th>Matchup</th><th>Three sports</th><th>Deadline</th></tr></thead><tbody>${rows.map(m=>`<tr><td>${esc(names[m.player1_id])} vs ${esc(names[m.player2_id])}${result.conflicts.some(c=>c.week_number===wk&&c.player1_id===m.player1_id&&c.player2_id===m.player2_id)?' ⚠ No shared available date':''}</td><td>${m.disciplines.map(esc).join(', ')}</td><td>${new Date(m.deadline).toLocaleString()}</td></tr>`).join('')}</tbody></table>`:''}${byes.map(b=>`<div class="notice">Bye: ${esc(names[b.player_id])}</div>`).join('')}`;
+  return `<h4>Week ${wk}</h4>${result.conflicts.some(c=>c.week_number===wk)?'<div class="notice" style="color:#a13b32">Scheduling warning: At least one pair has no shared available dates this week. The automatic publisher will instead give unpairable players a bye.</div>':''}${rows.length?`<table><thead><tr><th>Matchup</th><th>Three sports</th><th>Deadline</th></tr></thead><tbody>${rows.map(m=>`<tr><td>${esc(names[m.player1_id])} vs ${esc(names[m.player2_id])}${result.conflicts.some(c=>c.week_number===wk&&c.player1_id===m.player1_id&&c.player2_id===m.player2_id)?' ⚠ No shared available date':''}</td><td>${m.disciplines.map(esc).join(', ')}</td><td>${new Date(m.deadline).toLocaleString()}</td></tr>`).join('')}</tbody></table>`:''}${byes.map(b=>`<div class="notice">Bye: ${esc(names[b.player_id])}</div>`).join('')}`;
  }).join('');
- $('schedule-summary').textContent=`${result.players.length} approved players · Week ${result.week} only · ${pendingSchedule.length} matchups · ${result.conflicts.length} availability warnings. Preview only.`;
+ $('schedule-summary').textContent=`${result.players.length} approved players · Week ${result.week} only · ${pendingSchedule.length} matchups · ${result.conflicts.length} availability warnings. Optional preview; automatic publishing runs in the background.`;
  $('schedule-preview-panel').classList.remove('hidden');showAdminMessage('');
  }catch(e){showAdminMessage(e.message,true);}};
 $('cancel-preview').onclick=()=>{pendingSchedule=null;$('schedule-preview-panel').classList.add('hidden');};
