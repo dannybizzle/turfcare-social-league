@@ -1332,6 +1332,20 @@ body:not(.display-mode) .tsg-v61o-list{display:grid;gap:10px;margin-top:15px}
 body:not(.display-mode) .tsg-v61o-entry{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fbfaf5;overflow-wrap:anywhere}
 body:not(.display-mode) .tsg-v61o-entry strong{display:block;color:var(--green)}
 body:not(.display-mode) .tsg-v61o-entry small{display:block;margin:3px 0;color:var(--muted)}
+
+/* V61t: accessible resend button and at-a-glance scheduling monitor. */
+body:not(.display-mode) .tsg-approval-actions button[data-resend-invite-id]{
+ background:#e3eddf!important;color:#173d32!important;border:2px solid #426a4e!important;
+ font-weight:800!important;opacity:1;
+}
+body:not(.display-mode) .tsg-approval-actions button[data-resend-invite-id]:hover:not(:disabled){background:#d0e5cd!important;color:#102c25!important}
+body:not(.display-mode) .tsg-approval-actions button[data-resend-invite-id]:disabled{background:#e5e9e2!important;color:#47584e!important;opacity:.74}
+body:not(.display-mode) .tsg-v61t-week-check{margin:13px 0 15px;padding:15px;border:1px solid #abc3af;border-radius:12px;background:#f5f9f2;color:#173d32}
+body:not(.display-mode) .tsg-v61t-week-check strong{color:#173d32}
+body:not(.display-mode) .tsg-v61t-stats{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0}
+body:not(.display-mode) .tsg-v61t-stats span{display:inline-block;background:#e4eee1;padding:6px 9px;border-radius:7px;color:#173d32;font-weight:700;font-size:.83rem}
+body:not(.display-mode) .tsg-v61t-week-check p{margin:7px 0 0;color:#3c5647;font-size:.88rem}
+body:not(.display-mode) .tsg-v61t-week-check .tsg-v61t-attention{color:#803825;font-weight:750}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -2145,7 +2159,7 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <div id="tsg-approval-list" aria-live="polite"><div class="notice">Loading registration requests…</div></div>
 <div id="tsg-approval-message" role="status" aria-live="polite" class="notice"></div>
 <button class="secondary" id="tsg-refresh-approvals" type="button">Refresh registrations</button>
-<div class="notice" style="margin-top:15px"><strong>Mid-season additions</strong><p>Approving or activating a player attempts to pair available, previously unscheduled players in the current week without changing existing games. When only one player is waiting for an opponent, they remain unmatched and are flagged for review.</p><button type="button" class="secondary" id="tsg-fill-current-week">Check / add current-week matchups</button><div id="tsg-fill-current-week-status" class="status" role="status" aria-live="polite"></div></div>
+<div class="notice" style="margin-top:15px"><strong>Mid-season players & byes</strong><div id="tsg-v61t-week-check" class="tsg-v61t-week-check" role="status" aria-live="polite">Loading current-week overview…</div><p>Approving or activating a player attempts to pair available, previously unscheduled players in the current week without changing existing games. When a player has no available opponent, they automatically sit out the week. No manual intervention is required.</p><button type="button" class="secondary" id="tsg-fill-current-week">Check / add current-week matchups</button><div id="tsg-fill-current-week-status" class="status" role="status" aria-live="polite"></div></div>
 </section>
 <section class="panel" style="margin-top:16px">
 <h3>Player Management</h3>
@@ -2585,7 +2599,7 @@ async function loadPublic(){
  leagueBlackoutDates=dailyBlackouts.data||[];
  const active=seasons.find(x=>x.status==='active')||seasons[0];$('season-label').textContent=active?.name||'Season not yet published';
  renderStandings();renderMatchups();renderPotentialSchedule();renderCountdown();renderProfile();renderMyMatchups();renderAdminCorrections();renderWeeklyAvailability();renderForfeitControl();
- if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();await loadScheduleLog();await loadPendingRegistrations();}else $('player-management-list').innerHTML='Administrator access required.';
+ if(isAdmin){populateSeasonSelect();populateDeleteSeasonSelect();renderPlayerManagement();populateBlackoutControl();renderV61tWeekCheck();await loadScheduleLog();await loadPendingRegistrations();}else $('player-management-list').innerHTML='Administrator access required.';
  if(currentUserId)await loadLeagueFlags();
  updateV59Overview();renderSeasonAdmin();renderTvMediaSeasonOptions();if(isAdmin)renderTvMediaAdmin();
  if(document.body.classList.contains('display-mode')){const oldPage=LB_TABS[lbSlideIndex%LB_TABS.length];LB_TABS=tvSequence();const sameIndex=LB_TABS.indexOf(oldPage);if(sameIndex>=0)lbSlideIndex=sameIndex;else lbSlideIndex=0;renderLunchroom();}
@@ -2823,28 +2837,75 @@ async function refreshAuth(){
 function localDatePlus(dateString, days){const d=new Date(dateString+'T12:00:00');d.setDate(d.getDate()+days);return d;}
 function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function roundRobin(players){const list=shuffle(players);if(list.length%2)list.push(null);const rounds=[];for(let r=0;r<list.length-1;r++){const pairs=[];let bye=null;for(let i=0;i<list.length/2;i++){const a=list[i],b=list[list.length-1-i];if(a&&b)pairs.push([a,b]);else bye=a||b;}rounds.push({pairs,bye});list.splice(1,0,list.pop());}return rounds;}
+/* V61u: choose whole-week pairings, not just the next greedy opponent.
+   Preserve published weeks, favor unique opponents, and give an unmatched player a bye.
+   For large rosters, use a bounded heuristic to avoid exponential work. */
+function tsgBestWeekPairs(participants, sharedDays, previousMeetings, byeCounts){
+ const n=participants.length, ids=participants.map(p=>p.id), total=1<<n;
+ if(n>18){
+  const remaining=participants.slice().sort((a,b)=>(byeCounts[a.id]||0)-(byeCounts[b.id]||0));
+  const pairs=[],byes=[];
+  while(remaining.length>1){
+   let best=null;
+   for(let i=0;i<remaining.length;i++)for(let j=i+1;j<remaining.length;j++){
+    const a=remaining[i],b=remaining[j],days=sharedDays(a,b);
+    if(!days)continue;
+    const candidate={i,j,score:previousMeetings(a,b)*10000-days*10};
+    if(!best||candidate.score<best.score)best=candidate;
+   }
+   if(!best)break;
+   const a=remaining[best.i],b=remaining[best.j];pairs.push([a,b]);
+   remaining.splice(best.j,1);remaining.splice(best.i,1);
+  }
+  byes.push(...remaining);return {pairs,byes};
+ }
+ // Enumerate all valid pairings. Maximize matches first, minimize repeats second.
+ const memo=new Map();
+ function solve(mask){
+  if(!mask)return {pairs:[],byes:[],count:0,repeats:0,byePenalty:0,days:0};
+  if(memo.has(mask))return memo.get(mask);
+  let i=0;while(!(mask&(1<<i)))i++;
+  const rest=mask&~(1<<i);
+  const single=solve(rest);
+  let best={pairs:single.pairs,byes:[participants[i],...single.byes],count:single.count,
+   repeats:single.repeats,byePenalty:single.byePenalty+(byeCounts[ids[i]]||0),days:single.days};
+  function better(a,b){
+   return a.count>b.count||(a.count===b.count&&(a.repeats<b.repeats||
+    (a.repeats===b.repeats&&(a.byePenalty<b.byePenalty-1e-9||
+      (Math.abs(a.byePenalty-b.byePenalty)<1e-9&&a.days>b.days)))));
+  }
+  for(let j=i+1;j<n;j++){
+   if(!(rest&(1<<j)))continue;
+   const days=sharedDays(participants[i],participants[j]);if(!days)continue;
+   const prior=previousMeetings(participants[i],participants[j]);
+   const child=solve(rest&~(1<<j));
+   const candidate={pairs:[[participants[i],participants[j]],...child.pairs],byes:child.byes,
+    count:child.count+1,repeats:child.repeats+prior,byePenalty:child.byePenalty,days:child.days+days};
+   if(better(candidate,best))best=candidate;
+  }
+  memo.set(mask,best);return best;
+ }
+ return solve(total-1);
+}
 function makeSchedule(seasonId){
  const season=seasons.find(s=>s.id===seasonId);if(!season)throw new Error('Choose a season first.');
  const previous=matchups.filter(m=>m.season_id===seasonId);
  const targetWeek=previous.length?Math.max(...previous.map(m=>m.week_number))+1:1;
- const currentWeek=rollingWeekNumber(season),allowed=rollingWeeks(season);
+ const allowed=rollingWeeks(season);
  if(targetWeek>weekCount(season))throw new Error('All season weeks have already been published.');
  if(!allowed.includes(targetWeek))throw new Error(`The next unpublished week is Week ${targetWeek}. Only the current and following weeks (${allowed.join(' and ')}) can be published right now.`);
- const players=profiles.filter(p=>p.is_player===true&&p.is_approved===true);
- if(players.length<2)throw new Error('At least two approved participating players are required.');
+ const players=profiles.filter(p=>p.is_player===true&&p.is_approved===true&&!isUnavail(seasonId,targetWeek,p.id));
+ if(players.length<2)throw new Error('Fewer than two eligible players. This week will be a bye.');
  const pairKey=(a,b)=>[a,b].sort().join(':');
- const pairHistory={},gamesPlayed={},byeHistory={};
- previous.forEach(m=>{const key=pairKey(m.player1_id,m.player2_id);pairHistory[key]=(pairHistory[key]||0)+1;
-  gamesPlayed[m.player1_id]=(gamesPlayed[m.player1_id]||0)+1;gamesPlayed[m.player2_id]=(gamesPlayed[m.player2_id]||0)+1;});
+ const pairHistory={},byeHistory={};
+ previous.forEach(m=>{const key=pairKey(m.player1_id,m.player2_id);pairHistory[key]=(pairHistory[key]||0)+1;});
  const existingWeeks=[...new Set(previous.map(m=>m.week_number))];
- for(const w of existingWeeks)for(const p of players){if(!previous.some(m=>m.week_number===w&&(m.player1_id===p.id||m.player2_id===p.id)))byeHistory[p.id]=(byeHistory[p.id]||0)+1;}
- const active=shuffle(players),byes=[],conflicts=[],out=[];
- // A previous bye is preferred against receiving another; a player who has played less gets priority.
- if(active.length%2){active.sort((a,b)=>(byeHistory[b.id]||0)-(byeHistory[a.id]||0)||(gamesPlayed[b.id]||0)-(gamesPlayed[a.id]||0));
-  const bye=active.pop();byes.push({week_number:targetWeek,player_id:bye.id});}
+ for(const w of existingWeeks)for(const p of players){
+  if(!isUnavail(seasonId,w,p.id)&&!previous.some(m=>m.week_number===w&&(m.player1_id===p.id||m.player2_id===p.id)))byeHistory[p.id]=(byeHistory[p.id]||0)+1;
+ }
  const start=seasonWeekStart(season,targetWeek),last=new Date(season.ends_on+'T12:00:00');
  const deadline=new Date(start);deadline.setDate(deadline.getDate()+6);if(deadline>last)deadline.setTime(last.getTime());
- const [hh,mm]=($('deadline-time').value||'23:59').split(':').map(Number);deadline.setHours(hh,mm,0,0);
+ const [hh,mm]=($('deadline-time').value||'22:59').split(':').map(Number);deadline.setHours(hh,mm,0,0);
  const unavailable=new Set(playerUnavailableDates.filter(d=>d.season_id===seasonId).map(d=>`${d.player_id}:${d.unavailable_on}`));
  const blackouts=new Set(leagueBlackoutDates.filter(d=>d.season_id===seasonId).map(d=>d.blackout_on));
  const playable=[];for(let day=new Date(start);day<=last&&day<=deadline;day.setDate(day.getDate()+1)){
@@ -2852,17 +2913,12 @@ function makeSchedule(seasonId){
   if(!blackouts.has(ds))playable.push(ds);
  }
  const shared=(a,b)=>playable.filter(d=>!unavailable.has(`${a.id}:${d}`)&&!unavailable.has(`${b.id}:${d}`)).length;
- while(active.length>=2){
-  const a=active.shift();active.sort((b,c)=>{
-   const ab=shared(a,b),ac=shared(a,c);
-   return (ab===0)-(ac===0)||(pairHistory[pairKey(a.id,b.id)]||0)-(pairHistory[pairKey(a.id,c.id)]||0)||ac-ab;
-  });
-  const b=active.shift();
-  const n=shared(a,b);if(!n)conflicts.push({week_number:targetWeek,player1_id:a.id,player2_id:b.id});
-  out.push({week_number:targetWeek,player1_id:a.id,player2_id:b.id,deadline:deadline.toISOString(),disciplines:shuffle(SPORTS).slice(0,3)});
- }
- if(!out.length)throw new Error('No matchups available to generate.');
- return {payload:out,byes,conflicts,players,weeks:1,week:targetWeek,season};
+ const selected=tsgBestWeekPairs(players,shared,(a,b)=>pairHistory[pairKey(a.id,b.id)]||0,byeHistory);
+ const out=selected.pairs.map(([a,b])=>({week_number:targetWeek,player1_id:a.id,player2_id:b.id,
+  deadline:deadline.toISOString(),disciplines:shuffle(SPORTS).slice(0,3)}));
+ const byes=selected.byes.map(p=>({week_number:targetWeek,player_id:p.id}));
+ if(!out.length)throw new Error('No valid matchups this week. All eligible players sit out.');
+ return {payload:out,byes,conflicts:[],players,weeks:1,week:targetWeek,season};
 }
 /* V59h: informative scheduling status, all based on existing published data. */
 function updateV59hSchedulingStatus(){
@@ -2905,6 +2961,31 @@ function showPlayerMessage(msg,error=false){
   $('player-management-message').textContent=msg;
 }
 
+/* V61t: read-only weekly roster snapshot. It does not create or alter pairings. */
+function renderV61tWeekCheck(){
+ const target=$('tsg-v61t-week-check');if(!target||!isAdmin)return;
+ const today=calDate(new Date());
+ const s=seasons.find(x=>x.status==='active'&&x.starts_on<=today&&x.ends_on>=today);
+ if(!s){target.innerHTML='<strong>No season currently active</strong><p>There is no current-week schedule to check. Manage seasons under Administration → Seasons.</p>';return;}
+ const week=rollingWeekNumber(s);
+ const weekMatches=matchups.filter(m=>m.season_id===s.id&&m.week_number===week);
+ const published=weekMatches.length>0;
+ const approved=profiles.filter(p=>p.is_player===true&&p.is_approved===true);
+ const optedOut=approved.filter(p=>isUnavail(s.id,week,p.id));
+ const eligible=approved.filter(p=>!isUnavail(s.id,week,p.id));
+ const matchedIds=new Set(weekMatches.flatMap(m=>[m.player1_id,m.player2_id]));
+ const unmatched=eligible.filter(p=>!matchedIds.has(p.id));
+ const playersMatched=eligible.filter(p=>matchedIds.has(p.id)).length;
+ const status=!published?'This week has not been published yet. Use Schedule Generator to publish it.':
+  isBlackout(s.id,week)?'This week is marked as a league blackout. Review availability before adding matchups.':
+  unmatched.length?`${unmatched.length} eligible player${unmatched.length===1?' has':'s have'} no current-week matchup.`:
+  'Every eligible player is included in a current-week matchup.';
+ const summary=unmatched.length&&published&&!isBlackout(s.id,week)?`<p class="tsg-v61t-attention">Sitting out this week: ${unmatched.map(p=>esc(p.display_name||'Unnamed player')).join(', ')}</p>`:'';
+ target.innerHTML=`<strong>${esc(s.name)} · Week ${week} · ${esc(weekDates(s,week))}</strong>`+
+  `<div class="tsg-v61t-stats"><span>${weekMatches.length} matchups</span><span>${playersMatched} matched</span><span>${unmatched.length} sitting out</span><span>${optedOut.length} opted out</span></div>`+
+  `<p>${esc(status)}</p>${summary}`+
+  `<p>Automatic pairing preserves existing matchups. If nobody is available, that player sits out this week. No admin decision required.</p>`;
+}
 // Approval list is fetched only for the signed-in administrator.
 // The database RPC independently validates the caller's administrator privileges.
 async function fillCurrentWeekSchedule(showMessage=true){
@@ -2919,7 +3000,7 @@ async function fillCurrentWeekSchedule(showMessage=true){
   data?.status==='week_not_published'?'This week has not been published yet.':
   data?.status==='week_closed'?'The current week has ended. New participants will join the next published week.':
   `${created} new matchup${created===1?'':'s'} added to this week.`+
-  (waiting?` ${waiting} eligible player${waiting===1?' is':'s are'} still without an opponent and need an admin decision.`:' All currently eligible players have a matchup.');
+  (waiting?` ${waiting} eligible player${waiting===1?' is':'s are'} still without an opponent and sit out this week.`:' All currently eligible players have a matchup.');
  if(status){status.className=waiting?'status error':'status';status.textContent=summary;}
  if(created)await loadPublic();
  return data;
@@ -3063,8 +3144,8 @@ $('tsg-approval-list').addEventListener('click',async event=>{
    try{
      const outcome=await fillCurrentWeekSchedule(false);
      if(outcome?.status==='ok'&&Number(outcome?.unpaired_players||0)===0){message.textContent+=` Current-week scheduling checked.`;}
-     else if(Number(outcome?.unpaired_players||0)>0){message.textContent+=` Current-week opponent is not available yet; see Mid-season additions below.`;}
-   }catch(scheduleError){message.textContent+=` Scheduling needs attention: ${scheduleError.message}. Approval was saved.`;}
+     else if(Number(outcome?.unpaired_players||0)>0){message.textContent+=` No available current-week opponent; player sits out this week.`;}
+   }catch(scheduleError){message.textContent+=` Automatic scheduling check failed: ${scheduleError.message}. Approval was saved.`;}
    await loadPublic();
    await loadPendingRegistrations();
  }catch(error){message.className='status error';message.textContent=error.message||'Approval failed.';button.disabled=false;}
@@ -3110,7 +3191,7 @@ $('player-management-list').addEventListener('click',async e=>{
       await loadPublic();
       let extra='';
       if(newStatus){
-       try{const result=await fillCurrentWeekSchedule(false);if(Number(result?.unpaired_players||0)>0)extra=' Unmatched players remain; see Mid-season additions.';}
+       try{const result=await fillCurrentWeekSchedule(false);if(Number(result?.unpaired_players||0)>0)extra=' Unmatched players automatically sit out this week.';}
        catch(err){extra=' Current-week scheduling requires attention: '+err.message;}
       }
       showPlayerMessage(`${player.display_name} has been ${newStatus?'activated':'deactivated'}.${extra}`);
