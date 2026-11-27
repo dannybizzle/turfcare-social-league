@@ -2086,6 +2086,14 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <button type="button" class="secondary" id="tsg-adjust-refresh">Preview this week</button>
 <div id="tsg-adjust-summary" class="notice" role="status">Choose a season and week to review.</div>
 <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line)"><h4>Fill missing current-week pairs</h4><p class="muted">Pairs two eligible, unscheduled players. Does not reshuffle existing games.</p><button id="tsg-adjust-fill" type="button">Fill missing current-week pairs</button><div id="tsg-adjust-fill-result" role="status" class="notice"></div></div>
+<div style="margin-top:18px;padding-top:12px;border-top:1px solid var(--line)"><h4>Two-unfinished-game exception</h4>
+<p class="muted">Players with two older unfinished matchups are paused for NEW assignments. Existing games stay scheduled. You can allow one player to be scheduled in the selected week when an opponent is holding things up.</p>
+<button type="button" class="secondary" id="tsg-backlog-load">Check unfinished-game limits</button>
+<div id="tsg-backlog-summary" class="notice" role="status">Choose a season and week, then check.</div>
+<label for="tsg-backlog-player">Player to review</label><select id="tsg-backlog-player"></select>
+<label for="tsg-backlog-reason">Reason for exception</label><input id="tsg-backlog-reason" type="text" placeholder="Example: Previous opponent hasn't responded">
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"><button type="button" id="tsg-backlog-allow">Allow this week's assignment</button><button type="button" class="secondary" id="tsg-backlog-revoke">Remove exception</button></div>
+<div id="tsg-backlog-result" class="notice" role="status"></div></div>
 <div style="margin-top:18px;padding-top:12px;border-top:1px solid var(--line)"><h4>Replace a withdrawn player</h4><p class="muted">Only before the original weekly deadline, and only when no scores or playing day have been entered. One opponent stays the same; the three assigned sports stay the same.</p>
 <label for="tsg-adjust-match">Unplayed matchup</label><select id="tsg-adjust-match"></select>
 <label for="tsg-adjust-out">Player who withdrew</label><select id="tsg-adjust-out"></select>
@@ -5956,6 +5964,32 @@ document.querySelector('#admin-category-tv [data-admin-task="diagnostics"]')?.ad
   }catch(e){status('tsg-adjust-fill-result','No games added: '+e.message,true);}
   finally{btn.disabled=false;}
  }
+
+ async function backlogLoad(){
+  const sel=get('tsg-backlog-player');resetSelect(sel,'Choose player');
+  if(!seasonSel.value||!weekSel.value)return status('tsg-backlog-summary','Choose a season and published week.',true);
+  status('tsg-backlog-summary','Checking players…');
+  const {data,error}=await client.rpc('league_admin_backlog_review',{p_season_id:seasonSel.value,p_week_number:Number(weekSel.value)});
+  if(error)return status('tsg-backlog-summary','Could not check: '+error.message,true);
+  const people=(data?.players||[]).filter(p=>Number(p.older_unfinished)>0||p.override);
+  people.forEach(p=>sel.append(option(p.player_id,p.display_name+' — '+p.older_unfinished+' older unfinished'+(p.override?' (exception active)':'')+(p.already_scheduled?' (already assigned)':''))));
+  status('tsg-backlog-summary',(data?.players||[]).filter(p=>Number(p.older_unfinished)>=2&&!p.override&&!p.already_scheduled).length+' unscheduled player(s) paused by the two-unfinished rule. '+people.length+' player(s) have older unfinished matches or exceptions.');
+ }
+ async function backlogSet(enabled){
+  if(!seasonSel.value||!weekSel.value||!get('tsg-backlog-player').value)return status('tsg-backlog-result','Choose a player to review first.',true);
+  const name=get('tsg-backlog-player').selectedOptions[0]?.textContent||'this player';
+  if(!confirm((enabled?'Allow a new assignment for ':'Remove the assignment exception for ')+name+' in Week '+weekSel.value+'?'))return;
+  const reason=get('tsg-backlog-reason').value.trim();
+  if(enabled&&reason.length<10)return status('tsg-backlog-result','Enter a reason of at least 10 characters.',true);
+  const args={p_season_id:seasonSel.value,p_week_number:Number(weekSel.value),p_player_id:get('tsg-backlog-player').value,p_enable:enabled,p_reason:enabled?reason:null};
+  const {error}=await client.rpc('league_admin_set_backlog_override',args);
+  if(error)return status('tsg-backlog-result','Could not update exception: '+error.message,true);
+  status('tsg-backlog-result',enabled?'Exception saved. This player may be considered for a NEW matchup this week.':'Exception removed.');
+  await backlogLoad();
+ }
+ get('tsg-backlog-load').addEventListener('click',backlogLoad);
+ get('tsg-backlog-allow').addEventListener('click',()=>backlogSet(true));
+ get('tsg-backlog-revoke').addEventListener('click',()=>backlogSet(false));
  seasonSel.addEventListener('change',chooseWeek);
  weekSel.addEventListener('change',resetChoices);
  matchSel.addEventListener('change',showMatch);
