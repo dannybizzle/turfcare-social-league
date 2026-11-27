@@ -1380,6 +1380,13 @@ body.display-mode .tsg-schedule-guide{display:none!important}
 .tsg-tv-schedule-lesson b{color:#dcca89}
 .tsg-tv-schedule-lesson .end{padding:12px 20px;border-radius:10px;background:#c8d98b;color:#0c3023;font-size:clamp(17px,1.7vw,29px);font-weight:950}
 @media(max-width:600px){.tsg-schedule-guide{padding:14px 15px}.tsg-schedule-guide p{font-size:14px}}
+
+/* Scheduling review: informative only; backend rules are separately enforced. */
+.tsg-backlog-report{margin-top:14px;padding:14px;background:#f3f6ee;border:1px solid #d6dfcb;border-radius:10px}
+.tsg-backlog-report table{width:100%;font-size:.87rem}
+.tsg-backlog-report .tsg-review-alert{font-weight:800;color:#814c1a}
+.tsg-backlog-report .tsg-review-note{font-size:.82rem;color:#506556}
+@media(max-width:650px){.tsg-backlog-report{overflow-x:auto}}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1954,13 +1961,18 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 </div></div><div class="home-hero-mark tsg-hero-crest" aria-label="The Glencoe crest"><img src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><i>FIVE SPORTS · ONE CREW</i></div></div></header>
 <main class="wrap home-body"><div id="tsg-public-approval-notice" class="hidden" role="status" aria-live="polite"><strong>Registration submitted — awaiting league admin approval.</strong><span>Your account request is saved. You can sign in after a league administrator approves you.</span></div><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a data-sport-rules="Ping Pong" aria-haspopup="dialog" aria-label="View Ping Pong rules" href="#sport-rules" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a data-sport-rules="Darts" aria-haspopup="dialog" aria-label="View Darts rules" href="#sport-rules" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a data-sport-rules="Pool" aria-haspopup="dialog" aria-label="View Pool rules" href="#sport-rules" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a data-sport-rules="Air Hockey" aria-haspopup="dialog" aria-label="View Air Hockey rules" href="#sport-rules" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a data-sport-rules="Beer Pong" aria-haspopup="dialog" aria-label="View Beer Pong rules" href="#sport-rules" class="home-sport-tile tsg-beer-tile"><img src="assets/beer-pong.jpg" alt="Beer pong game with red cups and a ping-pong ball" loading="lazy"><span>05 <strong>BEER PONG</strong></span></a></div></section>
 
-<section id="tsg-home-scheduling-guide" class="tsg-schedule-guide" aria-label="How weekly scheduling works">
-<span class="tsg-guide-kicker">HOW IT WORKS · PLAYER SCHEDULING</span><h3>We assign the matchup. You choose the day.</h3>
-<p>The league assigns your opponent and three sports — <strong>you and your opponent choose the playing day</strong>. We don't assign days because your schedules are different.</p>
-<p><strong>Excited about your upcoming opponent?</strong> Get together, agree on a day, and have both players confirm it on My League. Upcoming unconfirmed pairings may change until <strong>Sunday, 11:59 PM (Calgary time)</strong>; completed games stay put.</p>
-<p class="tsg-guide-foot">We assign the competition. You arrange when it happens.</p>
+<section id="tsg-home-scheduling-guide" class="tsg-schedule-guide" aria-label="How to schedule your games">
+<span class="tsg-guide-kicker">HOW TO GET YOUR GAMES PLAYED</span>
+<h3>WE PICK YOUR OPPONENT. YOU PICK THE DAY.</h3>
+<p><strong>1. CHECK YOUR MATCHUP.</strong> Log in. See who you play and your three sports.</p>
+<p><strong>2. PICK A DAY TOGETHER.</strong> Talk to your opponent. Choose a day that works for both of you.</p>
+<p><strong>3. CONFIRM IT ONLINE.</strong> Propose the day on My League. Your opponent confirms it.</p>
+<p><strong>4. PLAY &amp; ENTER YOUR SCORES.</strong> Play all three sports. Enter the winners online.</p>
+<p><strong>IF YOU FALL BEHIND:</strong> You get 7 extra days to finish a late matchup. With 2 older unfinished matchups, you may be skipped for a new one until you catch up.</p>
+<p><strong>CAN'T REACH YOUR OPPONENT?</strong> Tell a league admin. Don't just take the forfeit.</p>
+<p class="tsg-guide-foot">PLAY THE GAMES. HAVE FUN.</p>
 </section>
-<section class="countdown" id="deadline-section"><div><h2>Time left to finish this week's matchup</h2><div id="deadline-label" class="muted">The weekly deadline will appear here once matchups are published.</div></div><div class="timer" id="timer"><div class="timebox"><strong>--</strong><span>Days</span></div><div class="timebox"><strong>--</strong><span>Hours</span></div><div class="timebox"><strong>--</strong><span>Minutes</span></div><div class="timebox"><strong>--</strong><span>Seconds</span></div></div></section>
+<section class="countdown" id="deadline-section"><div><h2>Time left to submit your matchup</h2><div id="deadline-label" class="muted">The weekly deadline will appear here once matchups are published.</div></div><div class="timer" id="timer"><div class="timebox"><strong>--</strong><span>Days</span></div><div class="timebox"><strong>--</strong><span>Hours</span></div><div class="timebox"><strong>--</strong><span>Minutes</span></div><div class="timebox"><strong>--</strong><span>Seconds</span></div></div></section>
 <div class="section-head" id="standings-section"><div><div class="eyebrow" style="color:var(--green2)">The leaderboard</div><h2>Overall standings</h2></div><span class="muted" id="season-label">Loading season…</span></div>
 <div class="grid home-standings-grid"><section class="panel"><h3>League table</h3><div id="standings"><div class="empty">Connecting to the league…</div></div></section></div>
 <section id="tsg-potential-schedule" class="tsg-potential-schedule" hidden aria-label="Potential league schedule"><div class="tsg-potential-head"><div><span class="tsg-potential-eyebrow">REGISTRATION PREVIEW · NOT OFFICIAL</span><h2>Who might face whom?</h2><p>As players are approved, this potential draw updates automatically. Final matchups and sports are assigned when the official schedule is published.</p></div><span id="tsg-potential-count" class="tsg-potential-count"></span></div><div id="tsg-potential-content" class="tsg-potential-grid"></div></section>
@@ -2004,7 +2016,7 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <div id="weekly-availability-list" class="day-calendar-shell"><div class="empty">Loading dates…</div></div>
 <div id="weekly-availability-message" role="status" aria-live="polite" class="notice"></div>
 </section>
-<div class="tsg-schedule-guide compact" aria-label="My matchup scheduling reminder"><h3>League picks the opponent. You pick the day.</h3><p>See an upcoming matchup you want to keep? Agree on a playing day and have <strong>both players confirm it</strong>. Unconfirmed future pairings may be adjusted until Sunday at 11:59 PM (Calgary time). A proposal alone does not lock it in.</p></div>
+<div class="tsg-schedule-guide compact" aria-label="My matchup scheduling reminder"><h3>We pick your opponent. You pick the day.</h3><p><strong>Check your matchup → agree on a day → confirm it online → play all three sports and enter scores.</strong></p><p><strong>Running late?</strong> You get 7 extra days. Two older unfinished matchups may pause your next assignment. Can’t reach your opponent? Tell an admin.</p></div>
 <section class="panel score-panel">
 <h3>Submit my match results</h3><p class="muted">Either opponent may submit once. All three assigned sports must be entered. After submission both players are locked out; an admin can correct mistakes.</p>
 <div id="tsg-my-projection" class="tsg-live-projection"></div><div id="my-matchups"><div class="empty">Sign in to view your matchups.</div></div>
@@ -2235,7 +2247,7 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <div id="tsg-approval-list" aria-live="polite"><div class="notice">Loading registration requests…</div></div>
 <div id="tsg-approval-message" role="status" aria-live="polite" class="notice"></div>
 <button class="secondary" id="tsg-refresh-approvals" type="button">Refresh registrations</button>
-<div class="notice" style="margin-top:15px"><strong>Mid-season players & byes</strong><div id="tsg-v61t-week-check" class="tsg-v61t-week-check" role="status" aria-live="polite">Loading current-week overview…</div><p>Approving or activating a player attempts to pair available, previously unscheduled players in the current week without changing existing games. When a player has no available opponent, they automatically sit out the week. No manual intervention is required.</p><button type="button" class="secondary" id="tsg-fill-current-week">Check / add current-week matchups</button><div id="tsg-fill-current-week-status" class="status" role="status" aria-live="polite"></div></div>
+<div class="notice" style="margin-top:15px"><strong>Mid-season players & byes</strong><div id="tsg-v61t-week-check" class="tsg-v61t-week-check" role="status" aria-live="polite">Loading current-week overview…</div><p>Check newly approved, previously unpaired, or replacement players here. Existing matches stay unchanged. If no eligible opponent is available, flag the player for an administrator rather than creating an unfair assignment. The two-backlog limit and withdrawal replacement need the database scheduler update before they are enforced.</p><button type="button" class="secondary" id="tsg-fill-current-week">Check / add current-week matchups</button><div id="tsg-fill-current-week-status" class="status" role="status" aria-live="polite"></div><div id="tsg-backlog-review" class="tsg-backlog-report" aria-live="polite"></div></div>
 </section>
 <section class="panel" style="margin-top:16px">
 <h3>Player Management</h3>
@@ -2286,7 +2298,7 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 </section>
 <section class="panel score-panel" id="forfeit-panel">
 <h3>🏅 Resolve missed matchups</h3>
-<p class="muted">After the deadline, award a freebie win to the player who was available, or record a double forfeit. Freebie wins count toward matchup standings but never create game wins.</p>
+<p class="muted">Every unresolved matchup receives a seven-day grace window. Wait until the extended deadline has passed before awarding a Freebie or double forfeit. Players can submit all three sport results during the grace window. Finalized forfeits are not automatically reopened.</p>
 <label for="forfeit-matchup">Matchup to resolve</label><select id="forfeit-matchup"></select>
 <label for="forfeit-resolution">Decision</label><select id="forfeit-resolution" class="forfeit-choice"></select>
 <button id="resolve-forfeit" type="button" style="margin-top:12px">Record decision</button>
@@ -2377,7 +2389,7 @@ function rollingWeekNumber(s){
  return Math.min(weekCount(s),Math.max(1,Math.floor((now-start)/604800000)+1));
 }
 function rollingWeeks(s){const current=rollingWeekNumber(s);return [current,current+1].filter(w=>w<=weekCount(s));}
-function inRollingWindow(m){const s=seasons.find(s=>s.id===m.season_id);return !!s&&rollingWeeks(s).includes(m.week_number);}
+function inRollingWindow(m){const s=seasons.find(s=>s.id===m.season_id);if(!s)return false;if(rollingWeeks(s).includes(m.week_number))return true;return m.week_number<rollingWeekNumber(s)&&m.status==='scheduled'&&m.resolution==='normal'&&m.deadline&&new Date(m.deadline).getTime()>Date.now();}
 function weekDates(s,w){const start=seasonWeekStart(s,w),end=new Date(start);end.setDate(end.getDate()+6);const last=new Date(s.ends_on+'T12:00:00');if(end>last)end.setTime(last.getTime());return `${start.toLocaleDateString(undefined,{month:'short',day:'numeric'})} – ${end.toLocaleDateString(undefined,{month:'short',day:'numeric'})}`;}
 function weekLocked(s,w){const date=new Date(s.starts_on+'T12:00:00Z');date.setUTCDate(date.getUTCDate()+7*(w-1));return calDate(new Date())>calMonday(date.toISOString().slice(0,10));}
 
@@ -2564,7 +2576,7 @@ function renderMatchups(){
   const range=season?weekDates(season,sample.week_number):'';
   return `<section class="tsg-matchups-week" aria-label="Week ${sample.week_number} matchups">
     <div class="tsg-matchups-week-heading"><div><span class="tsg-week-eyebrow">${current?'CURRENT WEEK':'UPCOMING WEEK'}</span><h3>Week ${sample.week_number} <small>${esc(range)}</small></h3></div><span class="tsg-week-matchup-count">${items.length} matchup${items.length===1?'':'s'}</span></div>
-    <div class="table-scroll"><table><thead><tr><th>Matchup</th><th>3 sports</th><th>Deadline</th><th>Status</th></tr></thead><tbody>${items.map(m=>`<tr><td>${playerLink(m.player1_id)} vs ${playerLink(m.player2_id)}</td><td>${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' '))}</td><td>${m.deadline?new Date(m.deadline).toLocaleString():'—'}</td><td>${appointmentFor(m.id)?.confirmed_at?`<span class="tag">📅 ${esc(meetupWhen(appointmentFor(m.id).starts_at))}</span> · `:''}${esc(matchStatus(m))}${m.resolution==='normal'&&countsInStandings(m)?` · ${matchupScore(m).a}–${matchupScore(m).b}`:''}</td></tr>`).join('')}</tbody></table></div>
+    <div class="table-scroll"><table><thead><tr><th>Matchup</th><th>3 sports</th><th>Deadline</th><th>Status</th></tr></thead><tbody>${items.map(m=>`<tr><td>${playerLink(m.player1_id)} vs ${playerLink(m.player2_id)}</td><td>${esc(matchupGames(m).map(g=>sportIcon[g.discipline]||g.discipline).join(' '))}</td><td>${m.deadline?new Date(m.deadline).toLocaleString():'—'}</td><td>${appointmentFor(m.id)?.confirmed_at?`<span class="tag">📅 ${esc(meetupWhen(appointmentFor(m.id).starts_at))}</span> · `:''}${esc(matchStatus(m))}${graceWindows[m.id]&&Date.now()>Date.parse(graceWindows[m.id].original_deadline)&&m.status==='scheduled'?' · Makeup week open':''}${m.resolution==='normal'&&countsInStandings(m)?` · ${matchupScore(m).a}–${matchupScore(m).b}`:''}</td></tr>`).join('')}</tbody></table></div>
    </section>`;
  }).join('')+'</div>';
 }
@@ -2577,7 +2589,7 @@ function renderCountdown(){
   const pending=matchups.filter(m=>m.status==='scheduled'&&m.deadline&&new Date(m.deadline)>new Date()).sort((a,b)=>new Date(a.deadline)-new Date(b.deadline))[0];
   if(!pending){$('deadline-label').textContent='No active weekly deadline is published.';$('timer').innerHTML='';return;}
   const d=new Date(pending.deadline);
-  $('deadline-label').textContent='Week '+pending.week_number+' deadline · '+d.toLocaleString();
+  $('deadline-label').textContent='Week '+pending.week_number+(graceWindows[pending.id]&&Date.now()>Date.parse(graceWindows[pending.id].original_deadline)?' grace deadline':' final submission deadline')+' · '+d.toLocaleString('en-CA',{timeZone:'America/Edmonton'})+' (Calgary time)';
   const tick=()=>{const ms=Math.max(0,d-Date.now()),days=Math.floor(ms/86400000),hours=Math.floor(ms%86400000/3600000),mins=Math.floor(ms%3600000/60000),secs=Math.floor(ms%60000/1000);$('timer').innerHTML=[[days,'Days'],[hours,'Hours'],[mins,'Minutes'],[secs,'Seconds']].map(x=>`<div class="timebox"><strong>${String(x[0]).padStart(2,'0')}</strong><span>${x[1]}</span></div>`).join('');if(ms===0){clearInterval(countdownInterval);countdownInterval=null;}};
   tick();if(countdownInterval===null && d>Date.now())countdownInterval=setInterval(tick,1000);
 }
@@ -2705,9 +2717,11 @@ $('tsg-report-form').addEventListener('submit',async e=>{
  }
 });
 
+let graceWindows={};
 async function loadPublic(){
- const [p,m,g,s,u,b,meet]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner,is_approved'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status,submitted_by,submitted_at,resolution,forfeit_winner_id,resolved_at'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status,registration_opens_on,registration_closes_on'),client.from('league_weekly_unavailability').select('season_id,week_number,player_id'),client.from('league_blackout_weeks').select('season_id,week_number,reason'),client.from('league_matchup_meetups').select('matchup_id,starts_at,proposed_by,confirmed_by,confirmed_at')]);
+ const [p,m,g,s,u,b,meet,grace]=await Promise.all([client.from('profiles').select('id,display_name,role,is_player,is_owner,is_approved'),client.from('matchups').select('id,season_id,week_number,player1_id,player2_id,deadline,status,submitted_by,submitted_at,resolution,forfeit_winner_id,resolved_at'),client.from('games').select('id,matchup_id,discipline,winner_id'),client.from('seasons').select('id,name,starts_on,ends_on,status,registration_opens_on,registration_closes_on'),client.from('league_weekly_unavailability').select('season_id,week_number,player_id'),client.from('league_blackout_weeks').select('season_id,week_number,reason'),client.from('league_matchup_meetups').select('matchup_id,starts_at,proposed_by,confirmed_by,confirmed_at'),client.from('league_matchup_grace').select('matchup_id,original_deadline,grace_deadline')]);
  for(const r of [p,m,g,s,b])if(r.error)throw r.error;
+ graceWindows=Object.fromEntries((grace.error?[]:grace.data||[]).map(x=>[x.matchup_id,x]));if(grace.error&&grace.error.code!=='42P01')console.warn('Grace period status:',grace.error.message);
  profiles=p.data||[];matchups=m.data||[];games=g.data||[];seasons=s.data||[];if(typeof window.tsgV57RefreshRegistration==='function')window.tsgV57RefreshRegistration();blackoutWeeks=b.data||[];weeklyUnavailable=u.error?[]:(u.data||[]);meetups=meet.error?[]:(meet.data||[]);if(meet.error&&meet.error.code!=='42P01')console.warn('Meetup schedule loading:',meet.error.message);
  // Daily calendars use authenticated SELECT policies. Anonymous visitors see no availability data.
  const [dailyPlayers,dailyBlackouts]=await Promise.all([
@@ -3082,6 +3096,29 @@ function showPlayerMessage(msg,error=false){
   $('player-management-message').textContent=msg;
 }
 
+/* Scheduling readiness snapshot: diagnostic display, never modifies assignments. */
+function renderSchedulingBacklogReview(){
+ const el=$('tsg-backlog-review');if(!el||!isAdmin)return;
+ const today=calDate(new Date());
+ const season=seasons.find(x=>x.status==='active'&&x.starts_on<=today&&x.ends_on>=today);
+ if(!season){el.textContent='No active season to review.';return;}
+ const week=rollingWeekNumber(season);
+ const current=matchups.filter(m=>m.season_id===season.id&&Number(m.week_number)===week);
+ const assigned=new Set(current.flatMap(m=>[m.player1_id,m.player2_id]));
+ const rows=profiles.filter(p=>p.is_player===true&&p.is_approved===true).map(p=>{
+   const old=matchups.filter(m=>m.season_id===season.id&&Number(m.week_number)<week&&
+     (m.player1_id===p.id||m.player2_id===p.id)&&!m.submitted_at&&
+     ['scheduled','missed'].includes(m.status)&&m.resolution==='normal');
+   return {name:p.display_name||'Unnamed player',backlog:old.length,assigned:assigned.has(p.id),off:isUnavail(season.id,week,p.id)};
+ }).sort((a,b)=>b.backlog-a.backlog||a.name.localeCompare(b.name));
+ const concerns=rows.filter(p=>p.backlog>=2||(!p.assigned&&!p.off));
+ el.innerHTML='<strong>Scheduling health · Week '+week+'</strong>'+
+   '<p class="tsg-review-note">This is a read-only preview, not an automatic scheduling restriction. It counts unfinished <em>earlier</em> weeks, not unpublished future games.</p>'+
+   (concerns.length?'<table><thead><tr><th>Player</th><th>Older unfinished</th><th>This week</th></tr></thead><tbody>'+concerns.map(p=>
+      '<tr><td>'+esc(p.name)+'</td><td class="'+(p.backlog>=2?'tsg-review-alert':'')+'">'+p.backlog+'</td><td>'+(p.off?'Sitting out':p.assigned?'Assigned':'Needs opponent')+'</td></tr>').join('')+'</tbody></table>':
+      '<p>No players with two older unfinished games or an unfilled current-week slot.</p>')+
+   '<p class="tsg-review-note">Existing pairings remain protected. An unmatched player requires an available eligible opponent; resolving withdrawal vacancies and enforcing the backlog cap require the server-side scheduling upgrade.</p>';
+}
 /* V61t: read-only weekly roster snapshot. It does not create or alter pairings. */
 function renderV61tWeekCheck(){
  const target=$('tsg-v61t-week-check');if(!target||!isAdmin)return;
@@ -3105,7 +3142,8 @@ function renderV61tWeekCheck(){
  target.innerHTML=`<strong>${esc(s.name)} · Week ${week} · ${esc(weekDates(s,week))}</strong>`+
   `<div class="tsg-v61t-stats"><span>${weekMatches.length} matchups</span><span>${playersMatched} matched</span><span>${unmatched.length} sitting out</span><span>${optedOut.length} opted out</span></div>`+
   `<p>${esc(status)}</p>${summary}`+
-  `<p>Automatic pairing preserves existing matchups. If nobody is available, that player sits out this week. No admin decision required.</p>`;
+  `<p>Existing pairings are preserved. The current database helper can try pairing previously unassigned eligible players. If no eligible opponent is available, review the unmatched list rather than removing a scheduled game.</p>`;
+ renderSchedulingBacklogReview();
 }
 // Approval list is fetched only for the signed-in administrator.
 // The database RPC independently validates the caller's administrator privileges.
@@ -3119,7 +3157,7 @@ async function fillCurrentWeekSchedule(showMessage=true){
  const waiting=Number(data?.unpaired_players||0);
  const summary=data?.status==='no_active_season'?'No active season is currently running.':
   data?.status==='week_not_published'?'This week has not been published yet.':
-  data?.status==='week_closed'?'The current week has ended. New participants will join the next published week.':
+  data?.status==='week_closed'?'The current week has ended. The existing helper can only fill the current published week. Review the eligible-player list.':
   `${created} new matchup${created===1?'':'s'} added to this week.`+
   (waiting?` ${waiting} eligible player${waiting===1?' is':'s are'} still without an opponent and sit out this week.`:' All currently eligible players have a matchup.');
  if(status){status.className=waiting?'status error':'status';status.textContent=summary;}
@@ -3428,6 +3466,7 @@ function renderMyMatchups(){
  box.innerHTML=mine.map(m=>{const gs=matchupGames(m);const locked=m.status!=='scheduled';const finished=countsInStandings(m)||m.status==='played_ahead';
    const future=seasonWeekStarts(m)&&Date.now()<seasonWeekStarts(m).getTime();
    const expired=m.deadline&&new Date(m.deadline).getTime()<Date.now();
+   const inGrace=!!graceWindows[m.id]&&Date.now()>new Date(graceWindows[m.id].original_deadline).getTime()&&!expired;
    const canSubmit=!locked&&!expired&&gs.length===3&&new Set(gs.map(g=>g.discipline)).size===3&&gs.every(g=>!g.winner_id);
    const summary=finished?`<div class="match-result">Final: ${playerName(m.player1_id)} ${matchupScore(m).a} – ${matchupScore(m).b} ${playerName(m.player2_id)}</div>`:'';
    const s=seasons.find(x=>x.id===m.season_id);
@@ -3441,6 +3480,7 @@ function renderMyMatchups(){
    return `<details class="tsg-week-matchup" data-match-id="${esc(m.id)}" ${isOpen?'open':''}><summary><span class="tsg-week-title"><strong>Week ${m.week_number} — ${esc(playerName(opponent))}</strong><small>${esc(dateRange)} · ${weekLabel} · ${statusLabel}</small></span></summary><div class="tsg-week-body"><div class="match-card" data-match-id="${esc(m.id)}"><div class="match-head"><strong>Week ${m.week_number}: ${esc(playerName(m.player1_id))} vs ${esc(playerName(m.player2_id))}</strong><span class="tag ${future?'warning':''}">${esc(matchStatus(m))}</span></div>
    <div class="match-sports">${esc(gs.map(g=>`${sportIcon[g.discipline]||''} ${g.discipline}`).join(' · '))}</div>${summary}
    ${meetupControls(m)}
+   ${inGrace?`<p class="status" role="status"><strong>Makeup week is open.</strong> You may still play and submit all three sports until ${esc(new Date(m.deadline).toLocaleString('en-CA',{timeZone:'America/Edmonton'}))} (Calgary time).</p>`:''}
    ${m.submitted_at?`<div class="notice">Submitted ${new Date(m.submitted_at).toLocaleString()} by ${esc(playerName(m.submitted_by))}</div>`:''}
    ${canSubmit?`<details class="tsg-score-entry" data-match-id="${esc(m.id)}" ${draft?.open?'open':''}><summary><span>🏆 Enter results</span><small>${future?'Playing ahead? Results count when this week begins.':'Choose the winner of all three sports.'}</small></summary><div class="tsg-score-body"><form class="score-form" data-match-id="${esc(m.id)}">${gs.map(g=>`<div class="score-row"><label for="winner-${esc(g.id)}">${sportIcon[g.discipline]||''} ${esc(g.discipline)}</label><select required id="winner-${esc(g.id)}" data-game-id="${esc(g.id)}"><option value="">Choose winner</option><option value="${esc(m.player1_id)}">${esc(playerName(m.player1_id))}</option><option value="${esc(m.player2_id)}">${esc(playerName(m.player2_id))}</option></select></div>`).join('')}<p class="notice">Each sport counts as one league game win, whether you played a single game, best of 3 or best of 5.</p><button type="submit" style="margin-top:12px">Submit all 3 games</button></form></div></details>`:!finished?`<div class="notice">${expired?'Deadline passed. Contact an administrator.':gs.length!==3?'Matchup is missing its three assigned games. Contact an administrator.':'Score entry is closed.'}</div>`:''}</div></div></details>`;
  }).join('');
@@ -4397,7 +4437,7 @@ function renderLunchroom(){
     :`<div class="tsg-v61d-tv-announcement"><div class="tsg-tv-qr-kicker">TURFCARE SOCIAL LEAGUE · ANNOUNCEMENT</div><h2>${esc(media.title)}</h2><p>${esc(media.body)}</p></div>`;
   }
  }else if(page==='Scheduling explained'){
-  html=`<div class="tsg-tv-schedule-lesson"><div class="eyebrow">TURFCARE SOCIAL LEAGUE · HOW SCHEDULING WORKS</div><h2>WE PICK THE OPPONENT.<br>YOU PICK THE DAY.</h2><p>The league assigns your opponent and three sports. <b>Both players choose a playing day that works.</b></p><p>See an upcoming matchup you want to keep? Agree on a day and get it <b>confirmed by both players</b> before the Sunday-night schedule cutoff.</p><div class="end">NO ASSIGNED PLAYING DAYS. FEWER CONFLICTS. MORE GAMES.</div></div>`;
+  html=`<div class="tsg-tv-schedule-lesson"><div class="eyebrow">TURFCARE SOCIAL LEAGUE · HOW TO PLAY</div><h2>WE PICK YOUR OPPONENT.<br>YOU PICK THE DAY.</h2><p><b>1.</b> Check your matchup. <b>2.</b> Pick a day together.<br><b>3.</b> Confirm online. <b>4.</b> Play all three sports and enter scores.</p><p>Running late? <b>7 extra days to finish.</b> Two older unfinished games may pause your next assignment. Can’t reach your opponent? Tell an admin.</p><div class="end">PLAY THE GAMES. HAVE FUN.</div></div>`;
  }else if(page==='League QR'){
   html=`<div class="tsg-tv-qr-feature"><div class="tsg-tv-qr-intro"><div class="tsg-tv-qr-kicker">THE GLENCOE · TURFCARE SOCIAL LEAGUE</div><h2>YOUR LEAGUE.<br>YOUR NEXT MATCH.</h2><p>Scan with your phone to see matchups, set your availability and report your results.</p><div class="tsg-tv-qr-link">turfcare-social-league.pages.dev</div><div class="tsg-tv-qr-note">Late registration available · Admin approval required</div></div><div class="tsg-tv-qr-frame"><img src="assets/league-home-qr.png" alt="QR code to the Turfcare Social League homepage"><strong>SCAN TO OPEN</strong></div></div>`;
  }else if(page.startsWith('Potential schedule ')){
@@ -5488,7 +5528,7 @@ if (tsgInviteLink.isInvite) {
  }
  main.prepend(tabs);
  const sections={};
- const rulePage=document.createElement('section');rulePage.className='panel tsg-v58-rules-panel';rulePage.innerHTML='<article class="tsg-v58-rules-content" aria-label="Official league rules">\n<p class="tsg-v58-motto">All skill levels welcome. Good attitudes required.</p>\n<p>One crew. Five sports. Bragging rights. The league is about friendly competition and getting together after work. Whether you play to win or simply want to join in, you\'re welcome.</p>\n<section><h3>1. Weekly matchups</h3><p><strong>The three sports assigned to your matchup are the three sports you must play.</strong> They are chosen by the league and shown beside your opponent on the Matchups and My League pages. <strong>Players cannot substitute or choose different sports.</strong> Play at least one game in each of the three assigned sports. All three must be completed and reported for the matchup to count.</p></section>\n<section><h3>2. Choose how much you play</h3><p>For each assigned sport, both players agree <strong>before starting</strong> whether to play one game, best of 3, or best of 5. Winning the sport counts as <strong>one game win</strong> in league tracking, whether you won 1–0, 2–1, or 3–2.</p></section>\n<section><h3>3. Winning the matchup</h3><p>Each assigned sport awards one game win. Winning two of the three sports wins the weekly matchup, but <strong>you must still play the third sport</strong>.</p></section>\n<section><h3>4. Scheduling</h3><p>The league assigns your opponent and three sports; <strong>you and your opponent choose the playing day</strong>. We do not assign specific days because that would create more conflicts. Arrange the game directly and confirm the chosen day on My League. An unconfirmed upcoming pairing may change before the Sunday 11:59 PM Calgary-time schedule cutoff; a date proposal alone does not lock it in. Finish all three sports before the weekly deadline, or play ahead when allowed.</p></section>\n<section><h3>5. Standings</h3><p>Weekly matchup victories determine the standings. Total game wins across assigned sports break ties.</p><p><strong>So don\'t skip that third game!</strong> Even if you\'ve already won or lost the matchup, that final game could make all the difference in the standings. Plus, it\'s another chance to earn some bragging rights.</p></section>\n<section><h3>6. Freebies &amp; missed matchups</h3><p>Unfinished matchups may result in a forfeit — otherwise known as a <strong>Freebie</strong>. Administrators review scheduling issues and may award one player a Freebie win or record a loss for both players.</p><p>A Freebie is a win you didn\'t have to earn on the table — but hey, a win\'s a win! That said, we\'re here to play games, not collect free victories. Communicate, make an effort, and get those games played.</p></section>\n<section><h3>7. Official sporting rules</h3>\n<div class="tsg-v58-sport"><h4>🏓 Ping Pong</h4><p>First to 11, win by 2. Serves alternate every two points, then each point at 10–10. A serve bounces on your side and then your opponent\'s; a legal net-touching serve is replayed.</p></div>\n<div class="tsg-v58-sport"><h4>🎯 Darts</h4><p>301, <strong>double-out</strong>. Three darts per turn. Reach exactly zero with a double to win. Going below zero, leaving 1, or reaching zero without a double is a bust; reset to the score at the start of the turn.</p></div>\n<div class="tsg-v58-sport"><h4>🎱 Pool</h4><p>Standard 8-ball. Clear your solids or stripes, then call the pocket for the 8-ball. Pocketing the 8-ball early or in the wrong pocket, or scratching while pocketing it, is a loss. Other fouls follow agreed house rules.</p></div>\n<div class="tsg-v58-sport"><h4>🏒 Air Hockey</h4><p>First to 7 goals. No touching the puck with your hands or trapping it by lifting your mallet. Goals count when the puck enters the goal.</p></div>\n<div class="tsg-v58-sport"><h4>🏓 Beer Pong</h4><p>Ten cups in a triangle on each side. One throw per player per turn. A successful shot removes one cup. First to clear the opponent\'s cups wins.</p></div>\n</section>\n<section><h3>8. Most important rule</h3><p>Show up, respect your opponent, have a laugh, and enjoy some friendly competition with the crew.</p><p><strong>All skill levels welcome. Good attitudes required.</strong></p></section>\n</article>';pages.rules.push(rulePage);
+ const rulePage=document.createElement('section');rulePage.className='panel tsg-v58-rules-panel';rulePage.innerHTML='<article class="tsg-v58-rules-content" aria-label="Official league rules">\n<p class="tsg-v58-motto">All skill levels welcome. Good attitudes required.</p>\n<p>One crew. Five sports. Bragging rights. The league is about friendly competition and getting together after work. Whether you play to win or simply want to join in, you\'re welcome.</p>\n<section><h3>1. Weekly matchups</h3><p><strong>The three sports assigned to your matchup are the three sports you must play.</strong> They are chosen by the league and shown beside your opponent on the Matchups and My League pages. <strong>Players cannot substitute or choose different sports.</strong> Play at least one game in each of the three assigned sports. All three must be completed and reported for the matchup to count.</p></section>\n<section><h3>2. Choose how much you play</h3><p>For each assigned sport, both players agree <strong>before starting</strong> whether to play one game, best of 3, or best of 5. Winning the sport counts as <strong>one game win</strong> in league tracking, whether you won 1–0, 2–1, or 3–2.</p></section>\n<section><h3>3. Winning the matchup</h3><p>Each assigned sport awards one game win. Winning two of the three sports wins the weekly matchup, but <strong>you must still play the third sport</strong>.</p></section>\n<section><h3>4. Scheduling</h3><p>The league assigns your opponent and three sports; <strong>you and your opponent choose the playing day</strong>. We do not assign specific days because that would create more conflicts. Arrange the game directly and confirm the chosen day on My League. Published opponents and assigned sports stay in place. A proposed playing day still needs the other player’s confirmation. Eligible new players can be added without changing existing matchups. Finish all three sports before the weekly deadline, or play ahead when allowed.</p></section>\n<section><h3>4A. Late players and catch-up games</h3><p>New players and players without a matchup may be added if an eligible opponent is available. Existing matchups stay the same. A missed game gets 7 extra days to finish. If you have 2 older unfinished matchups, you may be skipped for a new one until you catch up. If your opponent is not answering, tell an admin.</p></section>\n<section><h3>5. Standings</h3><p>Weekly matchup victories determine the standings. Total game wins across assigned sports break ties.</p><p><strong>So don\'t skip that third game!</strong> Even if you\'ve already won or lost the matchup, that final game could make all the difference in the standings. Plus, it\'s another chance to earn some bragging rights.</p></section>\n<section><h3>6. Freebies &amp; missed matchups</h3><p>Unfinished matchups may result in a forfeit — otherwise known as a <strong>Freebie</strong>. Administrators review scheduling issues and may award one player a Freebie win or record a loss for both players.</p><p>A Freebie is a win you didn\'t have to earn on the table — but hey, a win\'s a win! That said, we\'re here to play games, not collect free victories. Communicate, make an effort, and get those games played.</p><p><strong>Seven-day grace period:</strong> If you miss the usual weekly cutoff, you have seven additional days to play all three assigned sports and submit results. Once the grace deadline passes, an administrator may resolve the matchup as a Freebie or double forfeit. Previously finalized decisions are not reversed automatically.</p></section>\n<section><h3>7. Official sporting rules</h3>\n<div class="tsg-v58-sport"><h4>🏓 Ping Pong</h4><p>First to 11, win by 2. Serves alternate every two points, then each point at 10–10. A serve bounces on your side and then your opponent\'s; a legal net-touching serve is replayed.</p></div>\n<div class="tsg-v58-sport"><h4>🎯 Darts</h4><p>301, <strong>double-out</strong>. Three darts per turn. Reach exactly zero with a double to win. Going below zero, leaving 1, or reaching zero without a double is a bust; reset to the score at the start of the turn.</p></div>\n<div class="tsg-v58-sport"><h4>🎱 Pool</h4><p>Standard 8-ball. Clear your solids or stripes, then call the pocket for the 8-ball. Pocketing the 8-ball early or in the wrong pocket, or scratching while pocketing it, is a loss. Other fouls follow agreed house rules.</p></div>\n<div class="tsg-v58-sport"><h4>🏒 Air Hockey</h4><p>First to 7 goals. No touching the puck with your hands or trapping it by lifting your mallet. Goals count when the puck enters the goal.</p></div>\n<div class="tsg-v58-sport"><h4>🏓 Beer Pong</h4><p>Ten cups in a triangle on each side. One throw per player per turn. A successful shot removes one cup. First to clear the opponent\'s cups wins.</p></div>\n</section>\n<section><h3>8. Most important rule</h3><p>Show up, respect your opponent, have a laugh, and enjoy some friendly competition with the crew.</p><p><strong>All skill levels welcome. Good attitudes required.</strong></p></section>\n</article>';pages.rules.push(rulePage);
  for(const key of Object.keys(pages)){
   const section=document.createElement('div');section.className='tsg-page';section.id='page-'+key;
   if(key!=='home'){
@@ -5504,7 +5544,7 @@ if (tsgInviteLink.isInvite) {
    const explainer=document.createElement('div');
    explainer.className='tsg-schedule-guide compact';
    explainer.setAttribute('aria-label','Matchup scheduling reminder');
-   explainer.innerHTML='<h3>Your opponent is assigned. Your playing day is not.</h3><p>Coordinate directly with your opponent and confirm a playing day through My League. Upcoming unconfirmed pairings may change until <strong>Sunday at 11:59 PM (Calgary time)</strong>; completed matchups stay locked.</p>';
+   explainer.innerHTML='<h3>We pick your opponent. You pick the day.</h3><p>Check your matchup, agree on a day together, confirm it on My League, then play all three sports and enter your scores.</p><p><strong>Running late?</strong> You get 7 extra days. If you have 2 older unfinished matchups, you may be skipped for a new one until you catch up. Cannot reach your opponent? Tell an admin.</p>';
    const heading=section.querySelector('.tsg-page-heading');
    if(heading)heading.insertAdjacentElement('afterend',explainer);else section.prepend(explainer);
   }
