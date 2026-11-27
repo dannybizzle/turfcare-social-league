@@ -1360,6 +1360,26 @@ body:not(.display-mode) .tsg-admin-quick-grid button{min-height:56px;text-align:
 body:not(.display-mode) .tsg-admin-quick-grid button:hover,body:not(.display-mode) .tsg-admin-quick-grid button:focus-visible{background:#dce8d7;border-color:#7ba08a}
 @media(max-width:760px){body:not(.display-mode) .tsg-admin-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:430px){body:not(.display-mode) .tsg-admin-quick-grid{grid-template-columns:1fr}}
+
+/* Player scheduling explainer — shown to signed-in players; TV has its own slide. */
+.tsg-schedule-guide{border:1px solid #cbb276;border-left:5px solid #b89448;background:linear-gradient(130deg,#fffdf5,#f1edda);border-radius:13px;padding:19px 22px;margin:18px 0;color:#173d32;box-shadow:0 6px 18px #163c2610}
+.tsg-schedule-guide h3{font:800 clamp(21px,2.3vw,28px)/1.12 'Barlow Condensed',Arial,sans-serif;text-transform:uppercase;letter-spacing:.03em;margin:0 0 8px;color:#103b2b}
+.tsg-schedule-guide p{margin:7px 0;line-height:1.6;font-size:15px}
+.tsg-schedule-guide strong{color:#0e4731}
+.tsg-schedule-guide .tsg-guide-kicker{display:block;color:#78602a;font-size:11px;letter-spacing:.13em;font-weight:900;margin-bottom:7px}
+.tsg-schedule-guide .tsg-guide-foot{font-weight:800;color:#225b42;margin-top:10px}
+.tsg-schedule-guide.compact{padding:13px 17px;margin:12px 0 16px}
+.tsg-schedule-guide.compact h3{font-size:20px}
+.tsg-schedule-guide.compact p{font-size:14px}
+body:not(.tsg-league-signed-in) #tsg-home-scheduling-guide{display:none!important}
+body.display-mode .tsg-schedule-guide{display:none!important}
+.tsg-tv-schedule-lesson{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:clamp(12px,2vh,25px);padding:clamp(12px,2vw,30px);color:#fff8e7}
+.tsg-tv-schedule-lesson .eyebrow{color:#e1bf75;letter-spacing:.17em;font-weight:900;font-size:clamp(14px,1.1vw,21px)}
+.tsg-tv-schedule-lesson h2{font:750 clamp(34px,4.2vw,72px)/1.02 'Cinzel',Georgia,serif;color:#f6e8c0;margin:0}
+.tsg-tv-schedule-lesson p{font:750 clamp(18px,1.85vw,32px)/1.35 'Manrope',sans-serif;margin:0;max-width:940px}
+.tsg-tv-schedule-lesson b{color:#dcca89}
+.tsg-tv-schedule-lesson .end{padding:12px 20px;border-radius:10px;background:#c8d98b;color:#0c3023;font-size:clamp(17px,1.7vw,29px);font-weight:950}
+@media(max-width:600px){.tsg-schedule-guide{padding:14px 15px}.tsg-schedule-guide p{font-size:14px}}
 </style>
 <style id="tsg-v30-clean-home">
 /* V30: The lounge screen is for televisions, not mobile-first site navigation. */
@@ -1934,6 +1954,12 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 </div></div><div class="home-hero-mark tsg-hero-crest" aria-label="The Glencoe crest"><img src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><i>FIVE SPORTS · ONE CREW</i></div></div></header>
 <main class="wrap home-body"><div id="tsg-public-approval-notice" class="hidden" role="status" aria-live="polite"><strong>Registration submitted — awaiting league admin approval.</strong><span>Your account request is saved. You can sign in after a league administrator approves you.</span></div><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a data-sport-rules="Ping Pong" aria-haspopup="dialog" aria-label="View Ping Pong rules" href="#sport-rules" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a data-sport-rules="Darts" aria-haspopup="dialog" aria-label="View Darts rules" href="#sport-rules" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a data-sport-rules="Pool" aria-haspopup="dialog" aria-label="View Pool rules" href="#sport-rules" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a data-sport-rules="Air Hockey" aria-haspopup="dialog" aria-label="View Air Hockey rules" href="#sport-rules" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a data-sport-rules="Beer Pong" aria-haspopup="dialog" aria-label="View Beer Pong rules" href="#sport-rules" class="home-sport-tile tsg-beer-tile"><img src="assets/beer-pong.jpg" alt="Beer pong game with red cups and a ping-pong ball" loading="lazy"><span>05 <strong>BEER PONG</strong></span></a></div></section>
 
+<section id="tsg-home-scheduling-guide" class="tsg-schedule-guide" aria-label="How weekly scheduling works">
+<span class="tsg-guide-kicker">HOW IT WORKS · PLAYER SCHEDULING</span><h3>We assign the matchup. You choose the day.</h3>
+<p>The league assigns your opponent and three sports — <strong>you and your opponent choose the playing day</strong>. We don't assign days because your schedules are different.</p>
+<p><strong>Excited about your upcoming opponent?</strong> Get together, agree on a day, and have both players confirm it on My League. Upcoming unconfirmed pairings may change until <strong>Sunday, 11:59 PM (Calgary time)</strong>; completed games stay put.</p>
+<p class="tsg-guide-foot">We assign the competition. You arrange when it happens.</p>
+</section>
 <section class="countdown" id="deadline-section"><div><h2>Time left to finish this week's matchup</h2><div id="deadline-label" class="muted">The weekly deadline will appear here once matchups are published.</div></div><div class="timer" id="timer"><div class="timebox"><strong>--</strong><span>Days</span></div><div class="timebox"><strong>--</strong><span>Hours</span></div><div class="timebox"><strong>--</strong><span>Minutes</span></div><div class="timebox"><strong>--</strong><span>Seconds</span></div></div></section>
 <div class="section-head" id="standings-section"><div><div class="eyebrow" style="color:var(--green2)">The leaderboard</div><h2>Overall standings</h2></div><span class="muted" id="season-label">Loading season…</span></div>
 <div class="grid home-standings-grid"><section class="panel"><h3>League table</h3><div id="standings"><div class="empty">Connecting to the league…</div></div></section></div>
@@ -1978,6 +2004,7 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <div id="weekly-availability-list" class="day-calendar-shell"><div class="empty">Loading dates…</div></div>
 <div id="weekly-availability-message" role="status" aria-live="polite" class="notice"></div>
 </section>
+<div class="tsg-schedule-guide compact" aria-label="My matchup scheduling reminder"><h3>League picks the opponent. You pick the day.</h3><p>See an upcoming matchup you want to keep? Agree on a playing day and have <strong>both players confirm it</strong>. Unconfirmed future pairings may be adjusted until Sunday at 11:59 PM (Calgary time). A proposal alone does not lock it in.</p></div>
 <section class="panel score-panel">
 <h3>Submit my match results</h3><p class="muted">Either opponent may submit once. All three assigned sports must be entered. After submission both players are locked out; an admin can correct mistakes.</p>
 <div id="tsg-my-projection" class="tsg-live-projection"></div><div id="my-matchups"><div class="empty">Sign in to view your matchups.</div></div>
@@ -3631,6 +3658,7 @@ function tvSequence(){
  if(tvSettings.weather_on)sequence.push('Weather 24h');
  if(tvSettings.matchups_on)sequence.push(...(official.length?official.map((_,i)=>tsgTVOfficialKey(i)):['Official schedule 1']));
  if(tvSettings.qr_on)sequence.push('League QR');
+ sequence.push('Scheduling explained');
  sequence.push(...tvActiveMedia().map(tvMediaKey));
  return sequence.length?sequence:['League QR'];
 }
@@ -3641,6 +3669,7 @@ const tvSlideDuration=page=>{
  if(page==='Weather 24h')return tvSettings.weather_minutes*60000;
  if(page.startsWith('Official schedule '))return tvSettings.matchups_minutes*60000/Math.max(1,tsgTVOfficialPages().length);
  if(page==='League QR')return tvSettings.qr_minutes*60000;
+ if(page==='Scheduling explained')return 30000;
  if(page.startsWith('Media '))return (tvMediaFromPage(page)?.duration_seconds||30)*1000;
  return 60000;
 };
@@ -4367,6 +4396,8 @@ function renderLunchroom(){
     ?`<div class="tsg-v61d-tv-poster"><img src="${esc(tvMediaPublicUrl(media.image_path))}" alt="${esc(media.title)}"></div>`
     :`<div class="tsg-v61d-tv-announcement"><div class="tsg-tv-qr-kicker">TURFCARE SOCIAL LEAGUE · ANNOUNCEMENT</div><h2>${esc(media.title)}</h2><p>${esc(media.body)}</p></div>`;
   }
+ }else if(page==='Scheduling explained'){
+  html=`<div class="tsg-tv-schedule-lesson"><div class="eyebrow">TURFCARE SOCIAL LEAGUE · HOW SCHEDULING WORKS</div><h2>WE PICK THE OPPONENT.<br>YOU PICK THE DAY.</h2><p>The league assigns your opponent and three sports. <b>Both players choose a playing day that works.</b></p><p>See an upcoming matchup you want to keep? Agree on a day and get it <b>confirmed by both players</b> before the Sunday-night schedule cutoff.</p><div class="end">NO ASSIGNED PLAYING DAYS. FEWER CONFLICTS. MORE GAMES.</div></div>`;
  }else if(page==='League QR'){
   html=`<div class="tsg-tv-qr-feature"><div class="tsg-tv-qr-intro"><div class="tsg-tv-qr-kicker">THE GLENCOE · TURFCARE SOCIAL LEAGUE</div><h2>YOUR LEAGUE.<br>YOUR NEXT MATCH.</h2><p>Scan with your phone to see matchups, set your availability and report your results.</p><div class="tsg-tv-qr-link">turfcare-social-league.pages.dev</div><div class="tsg-tv-qr-note">Late registration available · Admin approval required</div></div><div class="tsg-tv-qr-frame"><img src="assets/league-home-qr.png" alt="QR code to the Turfcare Social League homepage"><strong>SCAN TO OPEN</strong></div></div>`;
  }else if(page.startsWith('Potential schedule ')){
@@ -5457,7 +5488,7 @@ if (tsgInviteLink.isInvite) {
  }
  main.prepend(tabs);
  const sections={};
- const rulePage=document.createElement('section');rulePage.className='panel tsg-v58-rules-panel';rulePage.innerHTML='<article class="tsg-v58-rules-content" aria-label="Official league rules">\n<p class="tsg-v58-motto">All skill levels welcome. Good attitudes required.</p>\n<p>One crew. Five sports. Bragging rights. The league is about friendly competition and getting together after work. Whether you play to win or simply want to join in, you\'re welcome.</p>\n<section><h3>1. Weekly matchups</h3><p><strong>The three sports assigned to your matchup are the three sports you must play.</strong> They are chosen by the league and shown beside your opponent on the Matchups and My League pages. <strong>Players cannot substitute or choose different sports.</strong> Play at least one game in each of the three assigned sports. All three must be completed and reported for the matchup to count.</p></section>\n<section><h3>2. Choose how much you play</h3><p>For each assigned sport, both players agree <strong>before starting</strong> whether to play one game, best of 3, or best of 5. Winning the sport counts as <strong>one game win</strong> in league tracking, whether you won 1–0, 2–1, or 3–2.</p></section>\n<section><h3>3. Winning the matchup</h3><p>Each assigned sport awards one game win. Winning two of the three sports wins the weekly matchup, but <strong>you must still play the third sport</strong>.</p></section>\n<section><h3>4. Scheduling</h3><p>Arrange a playing <strong>day</strong> with your opponent. Matches are played after work; no exact start time is required. Finish all three sports before the weekly deadline, or play ahead when allowed.</p></section>\n<section><h3>5. Standings</h3><p>Weekly matchup victories determine the standings. Total game wins across assigned sports break ties.</p><p><strong>So don\'t skip that third game!</strong> Even if you\'ve already won or lost the matchup, that final game could make all the difference in the standings. Plus, it\'s another chance to earn some bragging rights.</p></section>\n<section><h3>6. Freebies &amp; missed matchups</h3><p>Unfinished matchups may result in a forfeit — otherwise known as a <strong>Freebie</strong>. Administrators review scheduling issues and may award one player a Freebie win or record a loss for both players.</p><p>A Freebie is a win you didn\'t have to earn on the table — but hey, a win\'s a win! That said, we\'re here to play games, not collect free victories. Communicate, make an effort, and get those games played.</p></section>\n<section><h3>7. Official sporting rules</h3>\n<div class="tsg-v58-sport"><h4>🏓 Ping Pong</h4><p>First to 11, win by 2. Serves alternate every two points, then each point at 10–10. A serve bounces on your side and then your opponent\'s; a legal net-touching serve is replayed.</p></div>\n<div class="tsg-v58-sport"><h4>🎯 Darts</h4><p>301, <strong>double-out</strong>. Three darts per turn. Reach exactly zero with a double to win. Going below zero, leaving 1, or reaching zero without a double is a bust; reset to the score at the start of the turn.</p></div>\n<div class="tsg-v58-sport"><h4>🎱 Pool</h4><p>Standard 8-ball. Clear your solids or stripes, then call the pocket for the 8-ball. Pocketing the 8-ball early or in the wrong pocket, or scratching while pocketing it, is a loss. Other fouls follow agreed house rules.</p></div>\n<div class="tsg-v58-sport"><h4>🏒 Air Hockey</h4><p>First to 7 goals. No touching the puck with your hands or trapping it by lifting your mallet. Goals count when the puck enters the goal.</p></div>\n<div class="tsg-v58-sport"><h4>🏓 Beer Pong</h4><p>Ten cups in a triangle on each side. One throw per player per turn. A successful shot removes one cup. First to clear the opponent\'s cups wins.</p></div>\n</section>\n<section><h3>8. Most important rule</h3><p>Show up, respect your opponent, have a laugh, and enjoy some friendly competition with the crew.</p><p><strong>All skill levels welcome. Good attitudes required.</strong></p></section>\n</article>';pages.rules.push(rulePage);
+ const rulePage=document.createElement('section');rulePage.className='panel tsg-v58-rules-panel';rulePage.innerHTML='<article class="tsg-v58-rules-content" aria-label="Official league rules">\n<p class="tsg-v58-motto">All skill levels welcome. Good attitudes required.</p>\n<p>One crew. Five sports. Bragging rights. The league is about friendly competition and getting together after work. Whether you play to win or simply want to join in, you\'re welcome.</p>\n<section><h3>1. Weekly matchups</h3><p><strong>The three sports assigned to your matchup are the three sports you must play.</strong> They are chosen by the league and shown beside your opponent on the Matchups and My League pages. <strong>Players cannot substitute or choose different sports.</strong> Play at least one game in each of the three assigned sports. All three must be completed and reported for the matchup to count.</p></section>\n<section><h3>2. Choose how much you play</h3><p>For each assigned sport, both players agree <strong>before starting</strong> whether to play one game, best of 3, or best of 5. Winning the sport counts as <strong>one game win</strong> in league tracking, whether you won 1–0, 2–1, or 3–2.</p></section>\n<section><h3>3. Winning the matchup</h3><p>Each assigned sport awards one game win. Winning two of the three sports wins the weekly matchup, but <strong>you must still play the third sport</strong>.</p></section>\n<section><h3>4. Scheduling</h3><p>The league assigns your opponent and three sports; <strong>you and your opponent choose the playing day</strong>. We do not assign specific days because that would create more conflicts. Arrange the game directly and confirm the chosen day on My League. An unconfirmed upcoming pairing may change before the Sunday 11:59 PM Calgary-time schedule cutoff; a date proposal alone does not lock it in. Finish all three sports before the weekly deadline, or play ahead when allowed.</p></section>\n<section><h3>5. Standings</h3><p>Weekly matchup victories determine the standings. Total game wins across assigned sports break ties.</p><p><strong>So don\'t skip that third game!</strong> Even if you\'ve already won or lost the matchup, that final game could make all the difference in the standings. Plus, it\'s another chance to earn some bragging rights.</p></section>\n<section><h3>6. Freebies &amp; missed matchups</h3><p>Unfinished matchups may result in a forfeit — otherwise known as a <strong>Freebie</strong>. Administrators review scheduling issues and may award one player a Freebie win or record a loss for both players.</p><p>A Freebie is a win you didn\'t have to earn on the table — but hey, a win\'s a win! That said, we\'re here to play games, not collect free victories. Communicate, make an effort, and get those games played.</p></section>\n<section><h3>7. Official sporting rules</h3>\n<div class="tsg-v58-sport"><h4>🏓 Ping Pong</h4><p>First to 11, win by 2. Serves alternate every two points, then each point at 10–10. A serve bounces on your side and then your opponent\'s; a legal net-touching serve is replayed.</p></div>\n<div class="tsg-v58-sport"><h4>🎯 Darts</h4><p>301, <strong>double-out</strong>. Three darts per turn. Reach exactly zero with a double to win. Going below zero, leaving 1, or reaching zero without a double is a bust; reset to the score at the start of the turn.</p></div>\n<div class="tsg-v58-sport"><h4>🎱 Pool</h4><p>Standard 8-ball. Clear your solids or stripes, then call the pocket for the 8-ball. Pocketing the 8-ball early or in the wrong pocket, or scratching while pocketing it, is a loss. Other fouls follow agreed house rules.</p></div>\n<div class="tsg-v58-sport"><h4>🏒 Air Hockey</h4><p>First to 7 goals. No touching the puck with your hands or trapping it by lifting your mallet. Goals count when the puck enters the goal.</p></div>\n<div class="tsg-v58-sport"><h4>🏓 Beer Pong</h4><p>Ten cups in a triangle on each side. One throw per player per turn. A successful shot removes one cup. First to clear the opponent\'s cups wins.</p></div>\n</section>\n<section><h3>8. Most important rule</h3><p>Show up, respect your opponent, have a laugh, and enjoy some friendly competition with the crew.</p><p><strong>All skill levels welcome. Good attitudes required.</strong></p></section>\n</article>';pages.rules.push(rulePage);
  for(const key of Object.keys(pages)){
   const section=document.createElement('div');section.className='tsg-page';section.id='page-'+key;
   if(key!=='home'){
@@ -5469,6 +5500,14 @@ if (tsgInviteLink.isInvite) {
    h.append(small,h2,p);section.append(h);
   }
   pages[key].forEach(el=>section.appendChild(el));
+  if(key==='matchups'){
+   const explainer=document.createElement('div');
+   explainer.className='tsg-schedule-guide compact';
+   explainer.setAttribute('aria-label','Matchup scheduling reminder');
+   explainer.innerHTML='<h3>Your opponent is assigned. Your playing day is not.</h3><p>Coordinate directly with your opponent and confirm a playing day through My League. Upcoming unconfirmed pairings may change until <strong>Sunday at 11:59 PM (Calgary time)</strong>; completed matchups stay locked.</p>';
+   const heading=section.querySelector('.tsg-page-heading');
+   if(heading)heading.insertAdjacentElement('afterend',explainer);else section.prepend(explainer);
+  }
   if(key==='home'){
    const tv=document.createElement('div');
    tv.className='tsg-footer-display';
@@ -5501,6 +5540,7 @@ if (tsgInviteLink.isInvite) {
   document.querySelectorAll('.tsg-admin-link,.tsg-page-tabs a[data-page="admin"]').forEach(a=>{a.hidden=!isAdmin;a.setAttribute('aria-hidden',String(!isAdmin));});
   document.querySelectorAll('#tsg-v56c-menu a[href^="#page-"],.home-mobile-tabs a[href^="#page-"],.tsg-page-tabs a[href^="#page-"]').forEach(a=>{const target=a.getAttribute('href');const adminOnly=target==='#page-admin'||a.classList.contains('tsg-admin-link')||a.dataset.page==='admin';const restricted=!['#page-home','#page-rules'].includes(target);const hide=adminOnly?!isAdmin:(restricted&&!signedIn);a.hidden=hide;a.setAttribute('aria-hidden',String(hide));});
   document.body.classList.toggle('tsg-v56g-guest',!signedIn);
+  document.body.classList.toggle('tsg-league-signed-in',signedIn);
   const quickNav=document.querySelector('.tsg-v59-bottom-nav');if(quickNav)quickNav.hidden=!signedIn;
   Object.entries(sections).forEach(([k,el])=>el.classList.toggle('tsg-page-active',k===key));
   document.body.classList.toggle('tsg-secondary-page',key!=='home');
