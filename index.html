@@ -2078,7 +2078,22 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
  </section>
 </div>
 <div id="admin-category-players" class="admin-category hidden"></div>
-<div id="admin-category-scheduling" class="admin-category hidden"></div>
+<div id="admin-category-scheduling" class="admin-category hidden"><section class="panel admin-form" id="tsg-scheduling-adjust" style="margin:16px 0">
+<h3>Fill missing games &amp; replace a withdrawn player</h3>
+<p class="muted">Preview first. Published games and scores are protected. No changes occur until you confirm an action.</p>
+<label for="tsg-adjust-season">Season</label><select id="tsg-adjust-season"></select>
+<label for="tsg-adjust-week">Week</label><select id="tsg-adjust-week"></select>
+<button type="button" class="secondary" id="tsg-adjust-refresh">Preview this week</button>
+<div id="tsg-adjust-summary" class="notice" role="status">Choose a season and week to review.</div>
+<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line)"><h4>Fill missing current-week pairs</h4><p class="muted">Pairs two eligible, unscheduled players. Does not reshuffle existing games.</p><button id="tsg-adjust-fill" type="button">Fill missing current-week pairs</button><div id="tsg-adjust-fill-result" role="status" class="notice"></div></div>
+<div style="margin-top:18px;padding-top:12px;border-top:1px solid var(--line)"><h4>Replace a withdrawn player</h4><p class="muted">Only before the original weekly deadline, and only when no scores or playing day have been entered. One opponent stays the same; the three assigned sports stay the same.</p>
+<label for="tsg-adjust-match">Unplayed matchup</label><select id="tsg-adjust-match"></select>
+<label for="tsg-adjust-out">Player who withdrew</label><select id="tsg-adjust-out"></select>
+<button id="tsg-adjust-candidates" type="button" class="secondary">Find replacement players</button>
+<label for="tsg-adjust-in">Available replacement</label><select id="tsg-adjust-in"></select>
+<label style="display:flex;gap:9px;align-items:flex-start;margin:12px 0"><input type="checkbox" id="tsg-adjust-confirm" style="width:auto;margin-top:5px"><span>I have confirmed this player withdrew, and I understand their place in this unplayed matchup will be reassigned.</span></label>
+<button id="tsg-adjust-apply" type="button" class="danger">Confirm replacement</button><div id="tsg-adjust-status" class="notice" role="status"></div>
+</div></section></div>
 <div id="admin-category-seasons" class="admin-category hidden"></div>
 <div id="admin-category-tv" class="admin-category hidden"></div>
 <div id="admin-category-availability" class="admin-category hidden"></div>
@@ -2248,7 +2263,7 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <div id="tsg-approval-list" aria-live="polite"><div class="notice">Loading registration requests…</div></div>
 <div id="tsg-approval-message" role="status" aria-live="polite" class="notice"></div>
 <button class="secondary" id="tsg-refresh-approvals" type="button">Refresh registrations</button>
-<div class="notice" style="margin-top:15px"><strong>Mid-season players & byes</strong><div id="tsg-v61t-week-check" class="tsg-v61t-week-check" role="status" aria-live="polite">Loading current-week overview…</div><p>Check newly approved, previously unpaired, or replacement players here. Existing matches stay unchanged. If no eligible opponent is available, flag the player for an administrator rather than creating an unfair assignment. The two-backlog limit and withdrawal replacement need the database scheduler update before they are enforced.</p><button type="button" class="secondary" id="tsg-fill-current-week">Check / add current-week matchups</button><div id="tsg-fill-current-week-status" class="status" role="status" aria-live="polite"></div><div id="tsg-backlog-review" class="tsg-backlog-report" aria-live="polite"></div></div>
+<div class="notice" style="margin-top:15px"><strong>Mid-season players & byes</strong><div id="tsg-v61t-week-check" class="tsg-v61t-week-check" role="status" aria-live="polite">Loading current-week overview…</div><p>Check newly approved, previously unpaired, or replacement players here. Existing matches stay unchanged. If no eligible opponent is available, flag the player for an administrator rather than creating an unfair assignment. New admin scheduling controls are under Administration → Scheduling → Fill & replace.</p><button type="button" class="secondary" id="tsg-fill-current-week">Check / add current-week matchups</button><div id="tsg-fill-current-week-status" class="status" role="status" aria-live="polite"></div><div id="tsg-backlog-review" class="tsg-backlog-report" aria-live="polite"></div></div>
 </section>
 <section class="panel" style="margin-top:16px">
 <h3>Player Management</h3>
@@ -2854,7 +2869,8 @@ async function refreshAuth(){
     ['invitations','Invite a player','Send an invitation to a new player', ['tsg-v59g-invitation-panel']]
   ],
   scheduling:[
-    ['weeks','Weekly schedules','View and manage weekly matchups', ['rolling-generator','schedule-preview-panel']]
+    ['weeks','Weekly schedules','View and manage weekly matchups', ['rolling-generator','schedule-preview-panel']],
+    ['adjust','Fill & replace','Fill missing games and review withdrawal replacements', ['tsg-scheduling-adjust']]
   ],
   seasons:[
     ['manage','Manage seasons','Edit season details and lifecycle', ['tsg-v61b-season-editor']],
@@ -5843,6 +5859,115 @@ $('tsg-v61o-clear')?.addEventListener('click',async function(){
 });
 // Reports refresh when an administrator opens the diagnostics task.
 document.querySelector('#admin-category-tv [data-admin-task="diagnostics"]')?.addEventListener('click',()=>{refreshSharedClipFailures();});
+
+// Admin-only fill and replacement workflow. All writes are verified by Supabase functions.
+(function setupSchedulingAdjust(){
+ const get=id=>document.getElementById(id);
+ const seasonSel=get('tsg-adjust-season'),weekSel=get('tsg-adjust-week'),matchSel=get('tsg-adjust-match');
+ if(!seasonSel)return;
+ let eligibleMatches=[];
+ let previewSeason=null,previewWeek=null;
+ function status(id,message,bad=false){const el=get(id);if(el){el.textContent=message;el.className=bad?'status error':'notice';}}
+ function option(value,name){const o=document.createElement('option');o.value=String(value);o.textContent=String(name);return o;}
+ function resetSelect(sel,label){sel.replaceChildren(option('',label));}
+ function chooseSeason(){
+   const old=seasonSel.value;
+   resetSelect(seasonSel,'Choose season');
+   (seasons||[]).filter(s=>['active','upcoming'].includes(s.status)).forEach(s=>seasonSel.append(option(s.id,s.name)));
+   if([...seasonSel.options].some(x=>x.value===old))seasonSel.value=old;
+   else if(seasonSel.options.length>1)seasonSel.selectedIndex=1;
+   chooseWeek();
+ }
+ function chooseWeek(){
+   resetSelect(weekSel,'Choose week');
+   const s=seasons.find(x=>x.id===seasonSel.value);if(!s)return;
+   const total=Math.max(1,Math.floor((Date.parse(s.ends_on+'T12:00:00Z')-Date.parse(s.starts_on+'T12:00:00Z'))/604800000)+1);
+   const published=[...new Set(matchups.filter(m=>m.season_id===s.id).map(m=>Number(m.week_number)))].sort((a,b)=>a-b);
+   published.forEach(w=>{if(w>=1&&w<=total)weekSel.append(option(w,'Week '+w));});
+   if(weekSel.options.length>1)weekSel.selectedIndex=1;
+   resetChoices();
+ }
+ function resetChoices(){
+   eligibleMatches=[];resetSelect(matchSel,'Preview a week first');resetSelect(get('tsg-adjust-out'),'Choose player');
+   resetSelect(get('tsg-adjust-in'),'Find replacements first');get('tsg-adjust-confirm').checked=false;
+   previewSeason=null;previewWeek=null;
+ }
+ function showMatch(){
+   const m=eligibleMatches.find(x=>x.matchup_id===matchSel.value);
+   const out=get('tsg-adjust-out');resetSelect(out,'Choose withdrawn player');
+   if(m){out.append(option(m.player1_id,m.player1_name),option(m.player2_id,m.player2_name));}
+   resetSelect(get('tsg-adjust-in'),'Find replacements first');get('tsg-adjust-confirm').checked=false;
+ }
+ async function review(){
+   if(!isAdmin)return;
+   resetChoices();
+   if(!seasonSel.value||!weekSel.value)return status('tsg-adjust-summary','Choose a published week first.',true);
+   status('tsg-adjust-summary','Checking safe replacement opportunities…');
+   const {data,error}=await client.rpc('league_admin_replacement_options',{p_season_id:seasonSel.value,p_week_number:Number(weekSel.value)});
+   if(error)return status('tsg-adjust-summary','Could not preview: '+error.message,true);
+   previewSeason=seasonSel.value;previewWeek=weekSel.value;
+   eligibleMatches=data?.matchups||[];
+   resetSelect(matchSel,eligibleMatches.length?'Choose matchup':'No safely replaceable matchups');
+   eligibleMatches.forEach(m=>matchSel.append(option(m.matchup_id,m.player1_name+' vs '+m.player2_name)));
+   status('tsg-adjust-summary',eligibleMatches.length+' unplayed matchup(s) eligible for withdrawal review. Completed, scored, and already arranged games are hidden.');
+ }
+ async function candidates(){
+  const match=eligibleMatches.find(x=>x.matchup_id===matchSel.value),out=get('tsg-adjust-out').value;
+  if(!match||!out)return status('tsg-adjust-status','Choose a matchup and withdrawn player first.',true);
+  if(previewSeason!==seasonSel.value||previewWeek!==weekSel.value)return status('tsg-adjust-status','Refresh the preview first.',true);
+  status('tsg-adjust-status','Checking available players…');
+  const {data,error}=await client.rpc('league_admin_replacement_options',{
+   p_season_id:previewSeason,p_week_number:Number(previewWeek),p_outgoing_player_id:out});
+  if(error)return status('tsg-adjust-status','Could not find replacements: '+error.message,true);
+  const row=(data?.matchups||[]).find(x=>x.matchup_id===match.matchup_id);
+  const list=row?.candidates||[];resetSelect(get('tsg-adjust-in'),list.length?'Choose replacement':'No eligible replacement available');
+  list.forEach(p=>get('tsg-adjust-in').append(option(p.id,p.name)));
+  status('tsg-adjust-status',list.length+' eligible replacement(s) available. Confirm the withdrawal before applying.');
+ }
+ async function apply(){
+  if(!isAdmin)return;
+  const m=eligibleMatches.find(x=>x.matchup_id===matchSel.value);
+  const out=get('tsg-adjust-out').value,player=get('tsg-adjust-in').value;
+  if(!m||!out||!player||!get('tsg-adjust-confirm').checked)return status('tsg-adjust-status','Select both players and check the withdrawal confirmation.',true);
+  const outgoing=out===m.player1_id?m.player1_name:m.player2_name;
+  const replacing=get('tsg-adjust-in').selectedOptions[0].textContent;
+  if(!confirm('Replace '+outgoing+' with '+replacing+' in this UNPLAYED matchup? This changes the published opponent for the remaining player.'))return;
+  const btn=get('tsg-adjust-apply');btn.disabled=true;
+  try{
+   const {data,error}=await client.rpc('league_admin_replace_withdrawn',{
+     p_matchup_id:m.matchup_id,p_outgoing_player_id:out,p_replacement_player_id:player,p_confirm_withdrawal:true});
+   if(error)throw error;
+   status('tsg-adjust-status','Replacement saved and recorded in the audit log.');
+   await loadPublic();await review();
+  }catch(e){status('tsg-adjust-status','Replacement not made: '+e.message,true);}
+  finally{btn.disabled=false;}
+ }
+ async function fill(){
+  const btn=get('tsg-adjust-fill');btn.disabled=true;
+  try{
+    const s=seasons.find(x=>x.id===seasonSel.value);
+    if(!s)throw new Error('Choose a season first');
+    const today=calDate(new Date());const week=Math.floor((Date.parse(today+'T12:00:00Z')-Date.parse(s.starts_on+'T12:00:00Z'))/604800000)+1;
+    if(s.id!==seasonSel.value||Number(weekSel.value)!==week)throw new Error('Fill missing games works only for the current published week. Select Week '+week+'.');
+    if(!confirm('Add eligible, unscheduled pairs to the current week? Existing games will stay unchanged.'))return;
+    const data=await fillCurrentWeekSchedule(false);
+    status('tsg-adjust-fill-result',(data?.pairs_created||0)+' new pair(s) created. '+(data?.unpaired_players||0)+' player(s) still unmatched.');
+    await loadPublic();chooseWeek();
+  }catch(e){status('tsg-adjust-fill-result','No games added: '+e.message,true);}
+  finally{btn.disabled=false;}
+ }
+ seasonSel.addEventListener('change',chooseWeek);
+ weekSel.addEventListener('change',resetChoices);
+ matchSel.addEventListener('change',showMatch);
+ get('tsg-adjust-refresh').addEventListener('click',review);
+ get('tsg-adjust-candidates').addEventListener('click',candidates);
+ get('tsg-adjust-apply').addEventListener('click',apply);
+ get('tsg-adjust-fill').addEventListener('click',fill);
+ document.querySelector('#admin-category-scheduling [data-admin-task="adjust"]')?.addEventListener('click',()=>{chooseSeason();});
+ // Initialize from public cached seasons, refresh again whenever opened.
+ chooseSeason();
+})();
+
 </script>
 </body>
 </html>
