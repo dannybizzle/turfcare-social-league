@@ -1372,6 +1372,8 @@ body:not(.display-mode) .tsg-admin-quick-grid button:hover,body:not(.display-mod
 .tsg-schedule-guide.compact h3{font-size:20px}
 .tsg-schedule-guide.compact p{font-size:14px}
 body:not(.tsg-league-signed-in) #tsg-home-scheduling-guide{display:none!important}
+/* Keep legacy timer elements for countdown logic, but do not show the clock on Home. */
+body:not(.display-mode) #page-home #deadline-section{display:none!important}
 body.display-mode .tsg-schedule-guide{display:none!important}
 .tsg-tv-schedule-lesson{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:clamp(12px,2vh,25px);padding:clamp(12px,2vw,30px);color:#fff8e7}
 .tsg-tv-schedule-lesson .eyebrow{color:#e1bf75;letter-spacing:.17em;font-weight:900;font-size:clamp(14px,1.1vw,21px)}
@@ -1961,16 +1963,12 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 </div></div><div class="home-hero-mark tsg-hero-crest" aria-label="The Glencoe crest"><img src="assets/glencoe-crest.jpg" alt="The Glencoe crest"><i>FIVE SPORTS · ONE CREW</i></div></div></header>
 <main class="wrap home-body"><div id="tsg-public-approval-notice" class="hidden" role="status" aria-live="polite"><strong>Registration submitted — awaiting league admin approval.</strong><span>Your account request is saved. You can sign in after a league administrator approves you.</span></div><section class="home-welcome" aria-label="League overview"><div class="home-welcome-head"><span class="home-overline">FIVE SPORTS · ONE CREW</span><h2>Play hard. Brag harder.</h2><p>Three different sports per matchup. Two wins take the week. Five ways to settle the score.</p></div><div class="home-sport-grid"><a data-sport-rules="Ping Pong" aria-haspopup="dialog" aria-label="View Ping Pong rules" href="#sport-rules" class="home-sport-tile"><img src="assets/ping-pong.jpg" alt="Table tennis paddle and ball" loading="lazy"><span>01 <strong>PING PONG</strong></span></a><a data-sport-rules="Darts" aria-haspopup="dialog" aria-label="View Darts rules" href="#sport-rules" class="home-sport-tile"><img src="assets/darts.jpg" alt="Dartboard and darts" loading="lazy"><span>02 <strong>DARTS</strong></span></a><a data-sport-rules="Pool" aria-haspopup="dialog" aria-label="View Pool rules" href="#sport-rules" class="home-sport-tile"><img src="assets/pool.jpg" alt="Billiards table and balls" loading="lazy"><span>03 <strong>POOL</strong></span></a><a data-sport-rules="Air Hockey" aria-haspopup="dialog" aria-label="View Air Hockey rules" href="#sport-rules" class="home-sport-tile"><img src="assets/air-hockey.jpg" alt="Air hockey puck and paddle" loading="lazy"><span>04 <strong>AIR HOCKEY</strong></span></a><a data-sport-rules="Beer Pong" aria-haspopup="dialog" aria-label="View Beer Pong rules" href="#sport-rules" class="home-sport-tile tsg-beer-tile"><img src="assets/beer-pong.jpg" alt="Beer pong game with red cups and a ping-pong ball" loading="lazy"><span>05 <strong>BEER PONG</strong></span></a></div></section>
 
-<section id="tsg-home-scheduling-guide" class="tsg-schedule-guide" aria-label="How to schedule your games">
-<span class="tsg-guide-kicker">HOW TO GET YOUR GAMES PLAYED</span>
+<section id="tsg-home-scheduling-guide" class="tsg-schedule-guide" aria-label="How the league works">
 <h3>WE PICK YOUR OPPONENT. YOU PICK THE DAY.</h3>
-<p><strong>1. CHECK YOUR MATCHUP.</strong> Log in. See who you play and your three sports.</p>
-<p><strong>2. PICK A DAY TOGETHER.</strong> Talk to your opponent. Choose a day that works for both of you.</p>
-<p><strong>3. CONFIRM IT ONLINE.</strong> Propose the day on My League. Your opponent confirms it.</p>
-<p><strong>4. PLAY &amp; ENTER YOUR SCORES.</strong> Play all three sports. Enter the winners online.</p>
-<p><strong>IF YOU FALL BEHIND:</strong> You get 7 extra days to finish a late matchup. With 2 older unfinished matchups, you may be skipped for a new one until you catch up.</p>
-<p><strong>CAN'T REACH YOUR OPPONENT?</strong> Tell a league admin. Don't just take the forfeit.</p>
-<p class="tsg-guide-foot">PLAY THE GAMES. HAVE FUN.</p>
+<p><strong>1.</strong> Check who you're playing.</p>
+<p><strong>2.</strong> Agree on a day and confirm it online.</p>
+<p><strong>3.</strong> Play your three sports and enter your scores.</p>
+<p><strong>Need more time?</strong> You get 7 extra days. Can't reach your opponent? Tell an admin.</p>
 </section>
 <section class="countdown" id="deadline-section"><div><h2>Time left to submit your matchup</h2><div id="deadline-label" class="muted">The weekly deadline will appear here once matchups are published.</div></div><div class="timer" id="timer"><div class="timebox"><strong>--</strong><span>Days</span></div><div class="timebox"><strong>--</strong><span>Hours</span></div><div class="timebox"><strong>--</strong><span>Minutes</span></div><div class="timebox"><strong>--</strong><span>Seconds</span></div></div></section>
 <div class="section-head" id="standings-section"><div><div class="eyebrow" style="color:var(--green2)">The leaderboard</div><h2>Overall standings</h2></div><span class="muted" id="season-label">Loading season…</span></div>
@@ -2005,21 +2003,18 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
  <p><strong>All skill levels welcome. Good attitudes required.</strong></p>
 </section>
 <div class="section-head"><div><div class="eyebrow" style="color:var(--green2)">Your league</div><h2>My Player Tools</h2></div></div>
-<section class="panel player-tools">
-<h3>Choose your display name</h3><p class="muted">Pick the name other players see on the board. Your sign-in email stays the same.</p>
-<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><input id="my-display-name" maxlength="40" placeholder="Your league display name" style="flex:1;min-width:180px"><button id="save-display-name" type="button">Save name</button></div>
-<div id="display-name-message" role="status" class="tool-status"></div>
-</section>
+<div class="tsg-schedule-guide compact" aria-label="My matchup scheduling reminder"><h3>We pick your opponent. You pick the day.</h3><p>Agree on a day, confirm it here, then play and enter scores.</p><p>Need more time? You get 7 extra days. Need help? Tell an admin.</p></div>
+
 <section class="panel player-tools day-availability-panel" id="weekly-availability-panel">
 <h3>📅 My Playing Availability</h3>
 <p class="muted">Everyone is available by default. Tap the days you cannot play. If you mark four or more days off in one week, you can choose to sit out that week instead. Existing matchups stay in place.</p>
 <div id="weekly-availability-list" class="day-calendar-shell"><div class="empty">Loading dates…</div></div>
 <div id="weekly-availability-message" role="status" aria-live="polite" class="notice"></div>
 </section>
-<div class="tsg-schedule-guide compact" aria-label="My matchup scheduling reminder"><h3>We pick your opponent. You pick the day.</h3><p><strong>Check your matchup → agree on a day → confirm it online → play all three sports and enter scores.</strong></p><p><strong>Running late?</strong> You get 7 extra days. Two older unfinished matchups may pause your next assignment. Can’t reach your opponent? Tell an admin.</p></div>
+
 <section class="panel score-panel">
 <h3>Submit my match results</h3><p class="muted">Either opponent may submit once. All three assigned sports must be entered. After submission both players are locked out; an admin can correct mistakes.</p>
-<div id="tsg-my-projection" class="tsg-live-projection"></div><div id="my-matchups"><div class="empty">Sign in to view your matchups.</div></div>
+<div id="my-matchups"><div class="empty">Sign in to view your matchups.</div></div>
 <div id="score-message" role="status"></div>
 </section>
 <section class="panel player-tools tsg-single-issue-panel" aria-label="Scheduling help">
@@ -2043,6 +2038,12 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
       <div id="tsg-report-status" class="notice" role="status" aria-live="polite"></div>
     </div>
   </details>
+</section>
+<div id="tsg-my-projection" class="tsg-live-projection" aria-label="Upcoming week projection"></div>
+<section class="panel player-tools">
+<h3>Choose your display name</h3><p class="muted">Pick the name other players see on the board. Your sign-in email stays the same.</p>
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><input id="my-display-name" maxlength="40" placeholder="Your league display name" style="flex:1;min-width:180px"><button id="save-display-name" type="button">Save name</button></div>
+<div id="display-name-message" role="status" class="tool-status"></div>
 </section>
 </section>
 <section id="admin-area" class="hidden">
@@ -4437,7 +4438,7 @@ function renderLunchroom(){
     :`<div class="tsg-v61d-tv-announcement"><div class="tsg-tv-qr-kicker">TURFCARE SOCIAL LEAGUE · ANNOUNCEMENT</div><h2>${esc(media.title)}</h2><p>${esc(media.body)}</p></div>`;
   }
  }else if(page==='Scheduling explained'){
-  html=`<div class="tsg-tv-schedule-lesson"><div class="eyebrow">TURFCARE SOCIAL LEAGUE · HOW TO PLAY</div><h2>WE PICK YOUR OPPONENT.<br>YOU PICK THE DAY.</h2><p><b>1.</b> Check your matchup. <b>2.</b> Pick a day together.<br><b>3.</b> Confirm online. <b>4.</b> Play all three sports and enter scores.</p><p>Running late? <b>7 extra days to finish.</b> Two older unfinished games may pause your next assignment. Can’t reach your opponent? Tell an admin.</p><div class="end">PLAY THE GAMES. HAVE FUN.</div></div>`;
+  html=`<div class="tsg-tv-schedule-lesson"><div class="eyebrow">TURFCARE SOCIAL LEAGUE</div><h2>WE PICK YOUR OPPONENT.<br>YOU PICK THE DAY.</h2><p>Check your matchup.<br>Agree on a day and confirm it online.<br>Play all three sports and enter scores.</p><div class="end">NEED MORE TIME? YOU GET 7 EXTRA DAYS.</div></div>`;
  }else if(page==='League QR'){
   html=`<div class="tsg-tv-qr-feature"><div class="tsg-tv-qr-intro"><div class="tsg-tv-qr-kicker">THE GLENCOE · TURFCARE SOCIAL LEAGUE</div><h2>YOUR LEAGUE.<br>YOUR NEXT MATCH.</h2><p>Scan with your phone to see matchups, set your availability and report your results.</p><div class="tsg-tv-qr-link">turfcare-social-league.pages.dev</div><div class="tsg-tv-qr-note">Late registration available · Admin approval required</div></div><div class="tsg-tv-qr-frame"><img src="assets/league-home-qr.png" alt="QR code to the Turfcare Social League homepage"><strong>SCAN TO OPEN</strong></div></div>`;
  }else if(page.startsWith('Potential schedule ')){
@@ -5544,7 +5545,7 @@ if (tsgInviteLink.isInvite) {
    const explainer=document.createElement('div');
    explainer.className='tsg-schedule-guide compact';
    explainer.setAttribute('aria-label','Matchup scheduling reminder');
-   explainer.innerHTML='<h3>We pick your opponent. You pick the day.</h3><p>Check your matchup, agree on a day together, confirm it on My League, then play all three sports and enter your scores.</p><p><strong>Running late?</strong> You get 7 extra days. If you have 2 older unfinished matchups, you may be skipped for a new one until you catch up. Cannot reach your opponent? Tell an admin.</p>';
+   explainer.innerHTML='<h3>We pick your opponent. You pick the day.</h3><p>Agree on a day, confirm it in My League, then play and enter scores.</p><p>Need more time? You get 7 extra days. Need help? Tell an admin.</p>';
    const heading=section.querySelector('.tsg-page-heading');
    if(heading)heading.insertAdjacentElement('afterend',explainer);else section.prepend(explainer);
   }
