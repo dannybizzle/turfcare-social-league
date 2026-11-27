@@ -2044,7 +2044,13 @@ body:not(.display-mode) #tsg-public-approval-notice span{font-size:.96rem}
 <div id="admin-category-availability" class="admin-category hidden"></div>
 <div id="admin-category-results" class="admin-category hidden"></div>
 <div class="admin-grid" id="season-setup-grid">
-<section class="panel admin-form"><h3>Create a season</h3><label for="season-name">Season name</label><input id="season-name" placeholder="Season 1 – Fall 2026"><label for="season-start">Start date</label><input id="season-start" type="date"><label for="season-end">End date</label><input id="season-end" type="date"><label for="registration-opens">Public registration opens (Calgary)</label><input id="registration-opens" type="date"><label for="registration-closes">Public registration closes (inclusive)</label><input id="registration-closes" type="date"><p class="notice">The public Register link appears only during these dates. Admin invitations and player approvals remain available throughout the season.</p><div class="tsg-default-rules">Competition settings are reused automatically. Just enter the season name and dates; the schedule generator keeps the five sports, three-game matchups, random draw and established scoring rules.</div><button id="create-season">Create season</button><div id="create-season-message" class="notice" role="status"></div><div class="notice">This creates the season record only. It does not publish any matchups.</div></section>
+<section class="panel admin-form"><h3>Create a season</h3>
+<div id="tsg-next-season-helper" style="border:1px solid #cdbb8e;background:#fffaf0;border-radius:11px;padding:15px;margin:12px 0 18px">
+  <strong style="display:block;color:#124631;margin-bottom:5px">Prepare the next season</strong>
+  <p class="notice" style="margin:5px 0 12px">Fill in a draft based on your most recent season. Nothing will be saved until you click Create season.</p>
+  <button id="tsg-prefill-next-season" type="button" class="secondary">Prefill next season</button>
+  <div id="tsg-next-season-message" class="notice" role="status" aria-live="polite"></div>
+</div><label for="season-name">Season name</label><input id="season-name" placeholder="Season 1 – Fall 2026"><label for="season-start">Start date</label><input id="season-start" type="date"><label for="season-end">End date</label><input id="season-end" type="date"><label for="registration-opens">Public registration opens (Calgary)</label><input id="registration-opens" type="date"><label for="registration-closes">Public registration closes (inclusive)</label><input id="registration-closes" type="date"><p class="notice">The public Register link appears only during these dates. Admin invitations and player approvals remain available throughout the season.</p><div class="tsg-default-rules">Competition settings are reused automatically. Just enter the season name and dates; the schedule generator keeps the five sports, three-game matchups, random draw and established scoring rules.</div><button id="create-season">Create season</button><div id="create-season-message" class="notice" role="status"></div><div class="notice">This creates the season record only. It does not publish any matchups.</div></section>
 <section class="panel admin-form" id="tsg-v57-registration-editor"><h3>Public registration window</h3><p class="muted">Edit a season's public signup dates at any time. This does not restrict administrator invitations or approvals.</p><label for="tsg-v57-season">Season</label><select id="tsg-v57-season"></select><label for="tsg-v57-opens">Opens (Calgary)</label><input id="tsg-v57-opens" type="date"><label for="tsg-v57-closes">Closes (inclusive)</label><input id="tsg-v57-closes" type="date"><button id="tsg-v57-save-window" type="button">Save registration dates</button><div id="tsg-v57-editor-message" class="notice" role="status"></div></section>
 <section class="panel admin-form tsg-v59h-generator" id="rolling-generator">
  <h3>Weekly Scheduling</h3>
@@ -5191,10 +5197,34 @@ $('tsg-media-create')?.addEventListener('click',async function(){
 setInterval(()=>refreshTvMedia().catch(console.warn),60000);
 refreshTvMedia().catch(console.warn);
 
+// Prepare a new season without writing data or altering any prior season.
+$('tsg-prefill-next-season')?.addEventListener('click',()=>{
+ const note=$('tsg-next-season-message');
+ const prior=[...seasons].sort((a,b)=>b.ends_on.localeCompare(a.ends_on))[0];
+ if(!prior){note.textContent='No previous season yet. Enter the first season details below.';return;}
+ const day=86400000;
+ const utcDate=value=>new Date(value+'T12:00:00Z');
+ const toDate=value=>value.toISOString().slice(0,10);
+ const prevStart=utcDate(prior.starts_on),prevEnd=utcDate(prior.ends_on);
+ const duration=Math.max(1,Math.round((prevEnd-prevStart)/day)+1);
+ // First Monday strictly after the previous end date.
+ const nextStart=new Date(prevEnd.getTime()+day);
+ while(nextStart.getUTCDay()!==1)nextStart.setUTCDate(nextStart.getUTCDate()+1);
+ const nextEnd=new Date(nextStart.getTime()+(duration-1)*day);
+ $('season-name').value=`Season ${seasons.length+1} — ${nextStart.getUTCFullYear()}`;
+ $('season-start').value=toDate(nextStart);
+ $('season-end').value=toDate(nextEnd);
+ $('registration-opens').value='';
+ $('registration-closes').value='';
+ note.textContent=`Draft based on ${prior.name}: ${toDate(nextStart)} to ${toDate(nextEnd)} (${duration} days). Review the name and dates, then choose a registration window if needed. Existing player accounts remain available; this draft does not create a schedule.`;
+ $('season-name').focus();
+});
 $('create-season').onclick=async()=>{
   const name=$('season-name').value.trim(),start=$('season-start').value,end=$('season-end').value,regOpen=$('registration-opens').value,regClose=$('registration-closes').value;
   if(!name||!start||!end)return showCreateSeasonMessage('Enter a season name, start date, and end date.',true);
   if(end<start)return showCreateSeasonMessage('End date must be on or after start date.',true);
+  const overlap=seasons.find(s=>start<=s.ends_on&&end>=s.starts_on);
+  if(overlap)return showCreateSeasonMessage(`These dates overlap with "${overlap.name}" (${overlap.starts_on} to ${overlap.ends_on}). Adjust the dates before creating the new season.`,true);
   if(!!regOpen!==!!regClose || (regOpen&&regClose<regOpen))return showCreateSeasonMessage('Enter both registration dates in order, or leave both blank.',true);
   const {error}=await client.from('seasons').insert({name,starts_on:start,ends_on:end,status:'upcoming',registration_opens_on:regOpen||null,registration_closes_on:regClose||null});
   if(error)return showCreateSeasonMessage(error.message,true);
